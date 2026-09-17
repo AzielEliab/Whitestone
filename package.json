@@ -1,6 +1,6 @@
 {
   "name": "whitestone",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "private": true,
   "description": "Ephemeral pro se family-law advisor. Session-only memory; wipe on close. Live Worker URL on phone or desktop — no download required. No exports, no third-party LLM APIs.",
   "license": "Apache-2.0",

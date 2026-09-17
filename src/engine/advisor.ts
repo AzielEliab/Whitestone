@@ -1,5 +1,7 @@
 import { FEDERAL_FRAMEWORK, getJurisdiction, retrieveGuidance, TOPIC_BY_ID } from "../knowledge";
 import { LEGAL_DISCLAIMER } from "../knowledge/common";
+import { fallbackResearchNote, formatWebNotes } from "../research/format";
+import type { ResearchResult } from "../research/types";
 import type { SessionState } from "../types";
 import { MATTER_LABELS } from "../types";
 import { nextQuestion } from "./dialogue";
@@ -13,6 +15,11 @@ export function openingMessage(state: SessionState): string {
     LEGAL_DISCLAIMER,
     "This chat exists only in your current session. There is no export of filings, chat, or evidence.",
   ];
+  if (state.webEnabled) {
+    bits.push(
+      "On the hosted app I may retrieve allowlisted public court, legal-aid, and government pages for currency. Those snippets stay in this session only. Offline copies fall back to the bundled knowledge layer. I still do not invent citations, and I am not a lawyer.",
+    );
+  }
   if (j) {
     bits.push(
       `Jurisdiction in this session: ${j.name}. Usual court: ${j.courtName}. Coverage level: ${j.coverage} (not a complete annotated code).`,
@@ -31,7 +38,11 @@ export function openingMessage(state: SessionState): string {
   return bits.join("\n\n");
 }
 
-export function advise(state: SessionState, userText: string): { reply: string; state: SessionState } {
+export function advise(
+  state: SessionState,
+  userText: string,
+  research?: ResearchResult | null,
+): { reply: string; state: SessionState } {
   const learned = learnFromText(learnFromSession(state), userText);
   const next: SessionState = { ...state, learned };
   const j = getJurisdiction(state.jurisdiction);
@@ -49,6 +60,18 @@ export function advise(state: SessionState, userText: string): { reply: string; 
     parts.push(
       "Safety first. If you are in danger, call 911. National Domestic Violence Hotline: 1-800-799-7233. A protection-order clerk window is usually faster than a long divorce packet.",
     );
+  }
+
+  if (research?.sources.length) {
+    parts.push(formatWebNotes(research));
+  } else {
+    const fallback = research ? fallbackResearchNote(research) : null;
+    if (fallback) parts.push(fallback);
+    else if (state.webNotes.length) {
+      parts.push(
+        "Previously retrieved public pages remain in the Web sources panel for this session only. End & erase clears them.",
+      );
+    }
   }
 
   if (/citation|case law|held that|precedent/i.test(userText)) {

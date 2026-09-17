@@ -2,7 +2,7 @@ import type { CoverageLevel } from "../types";
 
 export const PRODUCT = {
   name: "Whitestone",
-  version: "1.1.0",
+  version: "1.2.0",
   author: "Aziel Eliab",
   lens: ["Service", "Clarity", "Peace"] as const,
 };
@@ -87,5 +87,8 @@ export const FEDERAL_FRAMEWORK: {
 export const NO_EXPORT_COPY =
   "Whitestone never downloads, exports, prints, or packages your filings, chat, or evidence. You may upload files into this session. Captions and outlines stay on screen only. When you close the window or choose End & erase, the session is wiped.";
 
+export const WEB_RESEARCH_COPY =
+  "The live app may fetch allowlisted public court, legal-aid, and government pages so answers can cite current clerk/self-help material. Fetched snippets live only in this session (or a short Worker cache of the same public URL). Offline zip copies do not include live research. This is still not legal advice and not a complete statute book.";
+
 export const EPHEMERAL_COPY =
-  "Chat, uploads, and derived case state live only in this browser session (memory and session storage). There is no user account and no case file on a server. End & erase wipes chat, uploads, metadata, IndexedDB, and caches for this session.";
+  "Chat, uploads, fetched web notes, and derived case state live only in this browser session (memory and session storage). There is no user account and no case file on a server. End & erase wipes chat, uploads, web notes, metadata, IndexedDB, and caches for this session.";

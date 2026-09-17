@@ -1,10 +1,19 @@
+import { useEffect, useRef } from "react";
 import { buildFilingOutline } from "../../engine/filing";
 import { useSession } from "../../session/store";
 import { Button } from "../components/Button";
+import { WebSources } from "../components/WebSources";
 
 export function Filing() {
-  const { state, setStep } = useSession();
+  const { state, setStep, setWebEnabled, clearWebNotes, refreshResearch } = useSession();
   const outline = buildFilingOutline(state);
+  const seeded = useRef(false);
+
+  useEffect(() => {
+    if (seeded.current || !state.webEnabled || !state.jurisdiction || state.webNotes.length) return;
+    seeded.current = true;
+    void refreshResearch("clerk packet official forms filing self-help", "filing");
+  }, [state.webEnabled, state.jurisdiction, state.webNotes.length, refreshResearch]);
   return (
     <section className="card grid">
       <h2>Filing structure — on screen only</h2>
@@ -52,6 +61,17 @@ export function Filing() {
           </p>
         ))}
       </div>
+      <WebSources
+        sources={state.webNotes}
+        status={state.webStatus}
+        message={state.webMessage}
+        enabled={state.webEnabled}
+        onToggle={setWebEnabled}
+        onClear={clearWebNotes}
+        onRefresh={() => {
+          void refreshResearch("clerk packet official forms filing self-help", "manual");
+        }}
+      />
       <div className="chips sticky-actions">
         <Button onClick={() => setStep("advise")}>Back to advisor</Button>
       </div>

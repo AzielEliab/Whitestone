@@ -27,7 +27,7 @@ Whitestone walks a person through a **session-only** path:
 7. On-screen filing structure / caption draft
 8. **End & erase**
 
-The advisor is a **self-contained engine**: jurisdiction notes + topic checklists + retrieval + a deterministic dialogue / state machine that adapts from **this chat only**. The hosted Worker is enough; no API keys. A desktop zip exists only as an optional offline backup.
+The advisor is a **self-contained engine**: jurisdiction notes + topic checklists + retrieval + a deterministic dialogue / state machine that adapts from **this chat only**. On the hosted Worker it may also fetch **allowlisted public court, legal-aid, and government pages** and cite them in-session. No API keys. No third-party LLM. A desktop zip exists only as an optional offline backup and **does not include live research**.
 
 ## Use in a browser (no download)
 
@@ -45,7 +45,15 @@ Custody, parenting time, child support, spousal support / alimony, divorce / dis
 
 ### Coverage honesty
 
-The knowledge layer is a **procedural overview and checklist**, not an annotated code of every statute. Waiting periods, fees, form numbers, and local rules change. Whitestone **does not invent case citations**. Prefer the clerk’s packet over anything on this screen.
+The knowledge layer is a **procedural overview and checklist**, not an annotated code of every statute. Waiting periods, fees, form numbers, and local rules change. Whitestone **does not invent case citations**. Every web-backed claim shows a source title, URL, and retrieved date. Prefer the clerk’s packet over anything on this screen.
+
+### Live public-page research (hosted app)
+
+The live Worker (`POST /api/research`) selects a short allowlist — state judiciary / self-help portals, LawHelp and listed legal-aid sites, Cornell LII, Justia statute browsers (labeled unofficial), and USA.gov / justice.gov family-related public pages. Random blogs and SEO mills are blocked.
+
+Fetched text is ephemeral: session-only in the browser, plus a short Worker cache of the **same public URL** (not your case). End & erase wipes web notes with the rest of the session. Offline zip / `vite` without the Worker fall back to the bundled knowledge layer.
+
+**After merge, redeploy the Worker** so `/api/research` is live. `npm run dev` can proxy to `wrangler dev` on port 8787.
 
 ## What it is not
 
@@ -103,8 +111,10 @@ Details, counter paths, and sitemap notes: [DEPLOY.md](DEPLOY.md).
 
 - `GET /v1/software` — live catalog card (Worker)
 - `/catalog.json` — same description as static JSON
+- `GET /api/research` — research capability + allowlist summary
+- `POST /api/research` — allowlisted public-page lookup (`{ sources, notes }`)
 
-No third-party model is invoked.
+No third-party model is invoked. Synthesis stays in the advisor engine.
 
 ## License
 

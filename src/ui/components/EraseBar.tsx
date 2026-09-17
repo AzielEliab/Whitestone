@@ -10,7 +10,7 @@ export function EraseBar() {
       <p className="muted erase-note">
         <span className="erase-note-full">
           Uploads only. No export of case papers. End & erase wipes this session,
-          including any Home Screen shell cache.
+          including chat, uploads, web notes, and any Home Screen shell cache.
         </span>
         <span className="erase-note-short">Uploads only · no case export</span>
       </p>
@@ -18,7 +18,7 @@ export function EraseBar() {
         kind="danger"
         disabled={busy}
         onClick={async () => {
-          if (!confirm("End & erase this session? Chat, uploads, and derived state will be wiped.")) return;
+          if (!confirm("End & erase this session? Chat, uploads, web notes, and derived state will be wiped.")) return;
           setBusy(true);
           await erase();
           setBusy(false);

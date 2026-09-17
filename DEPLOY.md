@@ -41,6 +41,8 @@ If you own a custom domain, attach it in the Cloudflare dashboard to the `whites
 | `GET /download` | Increment downloads and 302 to the GitHub Release zip |
 | `GET /v1/software` | Agent-facing catalog card |
 | `GET /catalog.json` | Same product card as static JSON |
+| `GET /api/research` | Research capability + allowlist summary (no case body) |
+| `POST /api/research` | Allowlisted public-page fetch → `{ sources, notes }` |
 
 Counters use a **Durable Object** (`CounterDO`). No KV namespace has to be created first.
 
@@ -64,7 +66,13 @@ npm run build
 npx wrangler dev
 ```
 
-Open the printed `localhost` URL. `/count/view` and `/v1/software` work there.
+Open the printed `localhost` URL. `/count/view`, `/v1/software`, and `/api/research` work there.
+
+## Redeploy note (web research)
+
+`/api/research` is Worker code, not a static asset. **After this feature merges, redeploy the Worker** (`npm run deploy`) so the live hostname serves the new routes. Until then, the SPA falls back to the bundled knowledge layer and says the live lookup is unavailable.
+
+The Worker must not log request bodies (query text). Short metrics only (`qlen`, jurisdiction, matter, source count). URL excerpts may be cached for ~15 minutes by URL, never as a case file.
 
 ## Honesty
 
