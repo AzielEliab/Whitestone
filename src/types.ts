@@ -1,0 +1,151 @@
+export type CoverageLevel = "procedural-overview" | "checklist" | "federal-framework";
+
+export type MatterType =
+  | "divorce"
+  | "legal-separation"
+  | "custody"
+  | "parenting-time"
+  | "child-support"
+  | "spousal-support"
+  | "paternity"
+  | "guardianship"
+  | "protection-order"
+  | "adoption"
+  | "name-change";
+
+export type AppStep =
+  | "welcome"
+  | "jurisdiction"
+  | "matter"
+  | "facts"
+  | "evidence"
+  | "advise"
+  | "filing";
+
+export type ThemeMode = "light" | "dark" | "system";
+
+export interface Party {
+  role: "petitioner" | "respondent" | "other";
+  name: string;
+  relationship: string;
+}
+
+export interface Child {
+  name: string;
+  age: string;
+  livesWith: string;
+}
+
+export interface EvidenceFile {
+  id: string;
+  name: string;
+  mime: string;
+  size: number;
+  addedAt: string;
+  text: string;
+  note: string;
+  previewUrl?: string;
+}
+
+export interface EvidenceMapping {
+  evidenceId: string;
+  fileName: string;
+  snippet: string;
+  issueId: string;
+  issueLabel: string;
+  allegation: string;
+}
+
+export interface ChatMessage {
+  id: string;
+  role: "advisor" | "user" | "system";
+  text: string;
+  at: string;
+}
+
+export interface GuidedQuestion {
+  id: string;
+  prompt: string;
+  why: string;
+  options?: string[];
+  freeText?: boolean;
+}
+
+export interface LearnedSession {
+  keywords: string[];
+  priorities: string[];
+  safetyFlag: boolean;
+  contested: boolean | null;
+  notes: string[];
+}
+
+export interface SessionState {
+  version: 1;
+  createdAt: string;
+  disclaimerAccepted: boolean;
+  step: AppStep;
+  jurisdiction: string | null;
+  matter: MatterType | null;
+  parties: Party[];
+  children: Child[];
+  facts: Record<string, string>;
+  answers: Record<string, string>;
+  uploads: EvidenceFile[];
+  mappings: EvidenceMapping[];
+  messages: ChatMessage[];
+  learned: LearnedSession;
+  currentQuestionId: string | null;
+}
+
+export const MATTER_LABELS: Record<MatterType, string> = {
+  divorce: "Divorce / dissolution",
+  "legal-separation": "Legal separation",
+  custody: "Custody / decision-making",
+  "parenting-time": "Parenting time",
+  "child-support": "Child support",
+  "spousal-support": "Spousal support / alimony",
+  paternity: "Parentage / paternity",
+  guardianship: "Guardianship",
+  "protection-order": "Protection / restraining order (family)",
+  adoption: "Adoption (overview)",
+  "name-change": "Name change",
+};
+
+export const STEP_LABELS: Record<AppStep, string> = {
+  welcome: "Welcome",
+  jurisdiction: "Jurisdiction",
+  matter: "Matter",
+  facts: "People & facts",
+  evidence: "Evidence",
+  advise: "Guided advisor",
+  filing: "Filing structure",
+};
+
+export function emptySession(): SessionState {
+  return {
+    version: 1,
+    createdAt: new Date().toISOString(),
+    disclaimerAccepted: false,
+    step: "welcome",
+    jurisdiction: null,
+    matter: null,
+    parties: [
+      { role: "petitioner", name: "", relationship: "Self / filing party" },
+      { role: "respondent", name: "", relationship: "Other party" },
+    ],
+    children: [],
+    facts: {},
+    answers: {},
+    uploads: [],
+    mappings: [],
+    messages: [],
+    learned: {
+      keywords: [],
+      priorities: [],
+      safetyFlag: false,
+      contested: null,
+      notes: [],
+    },
+    currentQuestionId: null,
+  };
+}

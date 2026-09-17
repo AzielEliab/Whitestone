@@ -1,0 +1,13 @@
+node_modules
+dist
+release
+.wrangler
+.dev.vars
+*.local
+.DS_Store
+coverage
+.vite
+*.log
+.env
+.env.*
+!public/catalog.json

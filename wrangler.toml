@@ -1,0 +1,21 @@
+name = "whitestone"
+main = "worker/index.ts"
+compatibility_date = "2026-09-17"
+workers_dev = true
+
+[assets]
+directory = "./dist"
+binding = "ASSETS"
+html_handling = "auto-trailing-slash"
+not_found_handling = "single-page-application"
+
+[vars]
+RELEASE_ASSET_URL = "https://github.com/AzielEliab/Whitestone/releases/latest/download/whitestone-standalone.zip"
+
+[[durable_objects.bindings]]
+name = "COUNTERS"
+class_name = "CounterDO"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["CounterDO"]

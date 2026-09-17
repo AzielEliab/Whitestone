@@ -1,0 +1,22 @@
+{
+  "name": "Whitestone",
+  "slug": "whitestone",
+  "version": "1.0.0",
+  "author": "Aziel Eliab",
+  "identity": "Aziel Eliab",
+  "author_id": "https://www.azieleliab.com/#aziel",
+  "one_line": "Ephemeral pro se family-law advisor. Session-only memory; wipe on close. Uploads only, no case exports, no third-party LLM APIs.",
+  "kind": "software",
+  "door": "standalone",
+  "github": "https://github.com/AzielEliab/Whitestone",
+  "download_url": "https://github.com/AzielEliab/Whitestone/releases/latest/download/whitestone-standalone.zip",
+  "counted_download": "/download",
+  "license": "Apache-2.0",
+  "sha256_tip": "published on each GitHub Release",
+  "coverage": "High-level procedural overview and checklists for custody, parenting time, child support, spousal support, divorce, legal separation, parentage, guardianship, family protection orders, adoption overview, and name change — all 50 U.S. states and D.C. Not an annotated code.",
+  "ephemeral": true,
+  "exports": false,
+  "third_party_llm": false,
+  "lens": ["Service", "Clarity", "Peace"],
+  "disclaimer": "Educational procedural guidance only. Not a lawyer. Not legal advice. Verify with the court clerk and counsel."
+}

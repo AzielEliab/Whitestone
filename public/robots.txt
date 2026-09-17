@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://whitestone.azieleliab.workers.dev/sitemap.xml

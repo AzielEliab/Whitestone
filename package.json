@@ -1,0 +1,38 @@
+{
+  "name": "whitestone",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Ephemeral pro se family-law advisor. Session-only memory; wipe on close. No exports, no third-party LLM APIs.",
+  "license": "Apache-2.0",
+  "author": "Aziel Eliab",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --host 127.0.0.1 --port 4173",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "package": "npm run build && node scripts/package-release.mjs",
+    "deploy": "npm run build && wrangler deploy",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "mammoth": "^1.11.0",
+    "pdfjs-dist": "^5.4.296",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.13",
+    "@types/react-dom": "^19.1.9",
+    "@vitejs/plugin-react": "^5.0.3",
+    "jsdom": "^26.1.0",
+    "typescript": "^5.9.2",
+    "vite": "^7.1.6",
+    "vitest": "^3.2.4",
+    "wrangler": "^4.38.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

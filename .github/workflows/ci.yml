@@ -1,0 +1,25 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      - name: Guard against third-party LLM SDKs
+        run: |
+          if grep -E "openai|anthropic|@google/generative-ai|groq-sdk" package-lock.json package.json; then
+            echo "Third-party LLM SDK is not allowed"
+            exit 1
+          fi

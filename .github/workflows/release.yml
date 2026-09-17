@@ -1,0 +1,42 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run package
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          if [[ "$TAG" != v* ]]; then TAG="v1.0.0-dev.${GITHUB_SHA::7}"; fi
+          NOTES="Whitestone standalone UI zip.
+
+          Ephemeral session memory. No case exports. Not legal advice.
+
+          SHA256:
+          $(cat release/SHA256SUMS.txt)
+
+          Counted download path on the Worker: /download
+          "
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" release/whitestone-standalone.zip release/SHA256SUMS.txt --clobber
+          else
+            gh release create "$TAG" release/whitestone-standalone.zip release/SHA256SUMS.txt --title "Whitestone $TAG" --notes "$NOTES"
+          fi
