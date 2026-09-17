@@ -24,7 +24,11 @@ export function buildFilingOutline(state: SessionState): FilingOutline {
   const pName = petitioner?.name.trim() || "[Petitioner full legal name]";
   const rName = respondent?.name.trim() || "[Respondent full legal name]";
   const court = j?.courtName ?? "[Court name — confirm with the clerk]";
-  const place = j?.name ?? "[State / District]";
+  const place = !j
+    ? "[State / District]"
+    : j.code === "DC"
+      ? "DISTRICT OF COLUMBIA"
+      : `STATE OF ${j.name.toUpperCase()}`;
 
   const caseTitle = titleFor(matter, pName, rName);
   const caption = [

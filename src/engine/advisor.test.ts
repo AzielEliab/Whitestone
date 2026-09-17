@@ -60,6 +60,7 @@ describe("filing outline", () => {
     const outline = buildFilingOutline(s);
     expect(outline.caption).toContain("Alex Rivera");
     expect(outline.caption.toUpperCase()).toContain("SUPREME COURT");
+    expect(outline.caption).toContain("STATE OF NEW YORK");
     expect(outline.disclaimer).toMatch(/not legal advice/i);
   });
 });
