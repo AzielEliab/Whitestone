@@ -1,5 +1,5 @@
 import { useSyncExternalStore } from "react";
-import { isHostedWorkerApp, NARROW_QUERY, shouldOfferSoftwareDownload } from "../../host";
+import { NARROW_QUERY, shouldOfferSoftwareDownload } from "../../host";
 
 function subscribeNarrow(onChange: () => void) {
   const mql = window.matchMedia(NARROW_QUERY);
@@ -7,7 +7,8 @@ function subscribeNarrow(onChange: () => void) {
   return () => mql.removeEventListener("change", onChange);
 }
 
-export function SoftwareDownload({ className = "btn download-cta" }: { className?: string }) {
+/** Quiet optional zip — never shown on the hosted Worker or on phones. */
+export function SoftwareDownload() {
   const narrow = useSyncExternalStore(
     subscribeNarrow,
     () => window.matchMedia(NARROW_QUERY).matches,
@@ -17,12 +18,15 @@ export function SoftwareDownload({ className = "btn download-cta" }: { className
   if (!shouldOfferSoftwareDownload({ hostname, narrowViewport: narrow })) {
     return null;
   }
-  const href = isHostedWorkerApp(hostname)
-    ? "/download"
-    : "https://github.com/AzielEliab/Whitestone/releases/latest";
   return (
-    <a className={className} href={href} rel="noreferrer">
-      Optional desktop zip
-    </a>
+    <p className="offline-copy">
+      <a
+        className="quiet-link"
+        href="https://github.com/AzielEliab/Whitestone/releases/latest"
+        rel="noreferrer"
+      >
+        Optional offline copy
+      </a>
+    </p>
   );
 }

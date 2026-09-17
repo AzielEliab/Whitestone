@@ -32,7 +32,6 @@ export function App() {
           <a className="btn desktop-only" href="./catalog.json">
             Catalog
           </a>
-          <SoftwareDownload />
           <ThemeToggle />
         </div>
       </header>
@@ -47,6 +46,7 @@ export function App() {
         {state.step === "filing" && <Filing />}
       </main>
       {state.disclaimerAccepted && <EraseBar />}
+      <SoftwareDownload />
     </div>
   );
 }

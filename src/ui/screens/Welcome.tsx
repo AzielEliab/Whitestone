@@ -2,7 +2,6 @@ import { EPHEMERAL_COPY, LEGAL_DISCLAIMER, NO_EXPORT_COPY, PRODUCT } from "../..
 import { useSession } from "../../session/store";
 import { Button } from "../components/Button";
 import { LambLens } from "../components/LambLens";
-import { SoftwareDownload } from "../components/SoftwareDownload";
 
 export function Welcome() {
   const { acceptDisclaimer } = useSession();
@@ -41,7 +40,6 @@ export function Welcome() {
         <Button kind="primary" onClick={acceptDisclaimer}>
           I understand — begin a session
         </Button>
-        <SoftwareDownload />
       </div>
       <p className="muted" style={{ fontSize: "0.82rem" }}>
         {PRODUCT.name} {PRODUCT.version} · Author {PRODUCT.author}

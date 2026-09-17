@@ -16,7 +16,7 @@ export function isHostedWorkerApp(hostname: string): boolean {
   );
 }
 
-/** Primary “Download software” CTAs — hide on phones and on the hosted Worker. */
+/** Optional offline-zip footer — never on phones or the hosted Worker. */
 export function shouldOfferSoftwareDownload(opts: {
   hostname: string;
   narrowViewport: boolean;

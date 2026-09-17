@@ -1,7 +1,6 @@
 # Whitestone
 
 [![views](https://whitestone.vibelock.workers.dev/count/view)](https://whitestone.vibelock.workers.dev/)
-[![downloads](https://whitestone.vibelock.workers.dev/count/download)](https://whitestone.vibelock.workers.dev/download)
 [![release](https://img.shields.io/github/v/release/AzielEliab/Whitestone?label=release)](https://github.com/AzielEliab/Whitestone/releases/latest)
 [![license](https://img.shields.io/badge/license-Apache--2.0-241f1a)](LICENSE)
 
@@ -72,7 +71,7 @@ Latest portable **software** build (not your case):
 
 **https://github.com/AzielEliab/Whitestone/releases/latest/download/whitestone-standalone.zip**
 
-The live Worker UI hides download CTAs on both phone and desktop. A local/standalone build may show a quiet “Optional desktop zip” link. **https://whitestone.vibelock.workers.dev/download** still increments the download counter and redirects to the GitHub Release zip.
+The live Worker UI has no download button. A local/standalone build may show a quiet footer link. The counted redirect **https://whitestone.vibelock.workers.dev/download** and [![downloads](https://whitestone.vibelock.workers.dev/count/download)](https://whitestone.vibelock.workers.dev/download) stay here for people who want an offline copy.
 
 Unzip and serve the `whitestone/` folder (`npx serve .` or `python3 -m http.server`). Read `RUN.txt`.
 

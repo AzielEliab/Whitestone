@@ -319,7 +319,21 @@ img, video { max-width: 100%; height: auto; }
 .erase-note-short { display: none; }
 
 html[data-surface="hosted"] .download-cta,
-html[data-narrow="true"] .download-cta { display: none; }
+html[data-surface="hosted"] .offline-copy,
+html[data-narrow="true"] .download-cta,
+html[data-narrow="true"] .offline-copy { display: none; }
+
+.offline-copy {
+  margin: 18px 0 0;
+  font-size: 0.8rem;
+  color: var(--muted);
+  text-align: center;
+}
+.quiet-link {
+  color: var(--muted);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
 html[data-narrow="true"] .desktop-only { display: none !important; }
 
 @media (max-width: 800px) {
