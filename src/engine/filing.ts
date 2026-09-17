@@ -133,6 +133,11 @@ function nextSteps(state: SessionState, url?: string): string[] {
     steps.unshift("If you are in danger, call 911. Hotline 1-800-799-7233. Ask the clerk for today's protection-order window.");
   }
   if (url) steps.push(`Open the official self-help site in your own browser: ${url}`);
+  if (state.webNotes.length) {
+    steps.push(
+      "Public pages retrieved for this session are listed under Web sources — title, URL, and retrieved date. They are not a filing and not a complete statute book.",
+    );
+  }
   if (state.matter) steps.push(`Matter selected in this session: ${MATTER_LABELS[state.matter]}.`);
   steps.push("When finished, use End & erase. Whitestone keeps nothing after the session.");
   return steps;

@@ -47,6 +47,55 @@ describe("dialogue and advisor", () => {
     s.jurisdiction = "OR";
     s.matter = "divorce";
     expect(openingMessage(s)).toMatch(/not a lawyer/i);
+    expect(openingMessage(s)).toMatch(/allowlisted public/i);
+  });
+
+  it("cites retrieved web sources and does not invent them", () => {
+    const s = emptySession();
+    s.jurisdiction = "CA";
+    s.matter = "divorce";
+    const { reply } = advise(s, "What is the current divorce packet?", {
+      ok: true,
+      capability: "allowlisted-public-pages",
+      sources: [
+        {
+          title: "California Courts Self-Help — Divorce",
+          url: "https://selfhelp.courts.ca.gov/divorce",
+          excerpt: "Ask the clerk for the current forms.",
+          retrievedAt: "2026-09-17T00:00:00.000Z",
+          kind: "state-judiciary",
+          label: "Court / self-help portal",
+        },
+      ],
+      notes: "Excerpts are copied from the retrieved page.",
+      unavailable: false,
+      failed: [],
+      fetched: 1,
+      cached: 0,
+    });
+    expect(reply).toMatch(/From the web/i);
+    expect(reply).toContain("https://selfhelp.courts.ca.gov/divorce");
+    expect(reply).toContain("2026-09-17");
+    expect(reply).toMatch(/Ask the clerk for the current forms/);
+    expect(reply).not.toMatch(/123 U\.S\. 456/);
+  });
+
+  it("says so when a live lookup fails and stays on the local layer", () => {
+    const s = emptySession();
+    s.jurisdiction = "TX";
+    s.matter = "child-support";
+    const { reply } = advise(s, "current child support worksheet", {
+      ok: false,
+      capability: "allowlisted-public-pages",
+      sources: [],
+      notes: "",
+      unavailable: false,
+      failed: [{ url: "https://www.txcourts.gov/", reason: "fetch-failed" }],
+      fetched: 0,
+      cached: 0,
+    });
+    expect(reply).toMatch(/did not complete/i);
+    expect(reply).toMatch(/bundled knowledge layer/i);
   });
 });
 

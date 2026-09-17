@@ -1,11 +1,11 @@
 {
   "name": "Whitestone",
   "slug": "whitestone",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "author": "Aziel Eliab",
   "identity": "Aziel Eliab",
   "author_id": "https://www.azieleliab.com/#aziel",
-  "one_line": "Ephemeral pro se family-law advisor. Open the live Worker URL on a phone or desktop — no zip or App Store download. Session-only memory; wipe on close. Uploads only, no case exports, no third-party LLM APIs.",
+  "one_line": "Ephemeral pro se family-law advisor. Open the live Worker URL on a phone or desktop — no zip or App Store download. Session-only memory; wipe on close. Uploads only, no case exports, no third-party LLM APIs. Hosted app may fetch allowlisted public court/legal-aid pages for the session only.",
   "kind": "software",
   "door": "standalone",
   "github": "https://github.com/AzielEliab/Whitestone",
@@ -19,6 +19,7 @@
   "ephemeral": true,
   "exports": false,
   "third_party_llm": false,
+  "web_research": "allowlisted-public-pages",
   "lens": ["Service", "Clarity", "Peace"],
   "disclaimer": "Educational procedural guidance only. Not a lawyer. Not legal advice. Verify with the court clerk and counsel."
 }

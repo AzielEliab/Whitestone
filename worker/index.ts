@@ -1,3 +1,5 @@
+import { handleResearch } from "./research";
+
 export interface Env {
   ASSETS: Fetcher;
   COUNTERS: DurableObjectNamespace;
@@ -10,12 +12,12 @@ const DEFAULT_RELEASE =
 const SOFTWARE = {
   name: "Whitestone",
   slug: "whitestone",
-  version: "1.1.0",
+  version: "1.2.0",
   author: "Aziel Eliab",
   identity: "Aziel Eliab",
   author_id: "https://www.azieleliab.com/#aziel",
   one_line:
-    "Ephemeral pro se family-law advisor. Open the live Worker URL on a phone or desktop — no zip required. Session-only memory; wipe on close. Uploads only, no case exports, no third-party LLM APIs.",
+    "Ephemeral pro se family-law advisor. Open the live Worker URL on a phone or desktop — no zip required. Session-only memory; wipe on close. Uploads only, no case exports, no third-party LLM APIs. Hosted app may fetch allowlisted public court/legal-aid pages for this session only.",
   kind: "software",
   door: "standalone",
   github: "https://github.com/AzielEliab/Whitestone",
@@ -86,6 +88,10 @@ export default {
           },
         ],
       });
+    }
+
+    if (path === "/api/research" || path === "/api/research/allowlist") {
+      return handleResearch(request);
     }
 
     if (path === "/sw.js") {

@@ -1,3 +1,7 @@
+import type { WebSource } from "./research/types";
+
+export type { SourceKind, WebSource } from "./research/types";
+
 export type CoverageLevel = "procedural-overview" | "checklist" | "federal-framework";
 
 export type MatterType =
@@ -56,11 +60,14 @@ export interface EvidenceMapping {
   allegation: string;
 }
 
+export type WebStatus = "idle" | "loading" | "ok" | "unavailable" | "blocked" | "off";
+
 export interface ChatMessage {
   id: string;
   role: "advisor" | "user" | "system";
   text: string;
   at: string;
+  sources?: WebSource[];
 }
 
 export interface GuidedQuestion {
@@ -95,6 +102,10 @@ export interface SessionState {
   messages: ChatMessage[];
   learned: LearnedSession;
   currentQuestionId: string | null;
+  webEnabled: boolean;
+  webNotes: WebSource[];
+  webStatus: WebStatus;
+  webMessage: string;
 }
 
 export const MATTER_LABELS: Record<MatterType, string> = {
@@ -147,5 +158,9 @@ export function emptySession(): SessionState {
       notes: [],
     },
     currentQuestionId: null,
+    webEnabled: true,
+    webNotes: [],
+    webStatus: "idle",
+    webMessage: "",
   };
 }

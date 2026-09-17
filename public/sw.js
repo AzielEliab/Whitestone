@@ -27,7 +27,7 @@ self.addEventListener("fetch", (event) => {
   if (req.method !== "GET") return;
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return;
-  if (/^\/(count|download|v1)(\/|$)/.test(url.pathname)) return;
+  if (/^\/(count|download|v1|api)(\/|$)/.test(url.pathname)) return;
 
   event.respondWith(
     fetch(req)

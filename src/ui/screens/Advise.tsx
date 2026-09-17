@@ -1,12 +1,21 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { nextQuestion, starterPrompts } from "../../engine/dialogue";
 import { useSession } from "../../session/store";
 import { Button } from "../components/Button";
+import { SourceChips, WebSources } from "../components/WebSources";
 
 export function Advise() {
-  const { state, ask, answerQuestion, setStep } = useSession();
+  const { state, ask, answerQuestion, setStep, setWebEnabled, clearWebNotes, refreshResearch } =
+    useSession();
   const [draft, setDraft] = useState("");
   const q = nextQuestion(state);
+  const seeded = useRef(false);
+
+  useEffect(() => {
+    if (seeded.current || !state.webEnabled || !state.jurisdiction || state.webNotes.length) return;
+    seeded.current = true;
+    void refreshResearch("official self-help clerk packet forms", "filing");
+  }, [state.webEnabled, state.jurisdiction, state.webNotes.length, refreshResearch]);
 
   return (
     <div className="grid two advise-layout">
@@ -14,12 +23,14 @@ export function Advise() {
         <h2>Guided advisor</h2>
         <p className="muted">
           Answers steer this session only. The engine retrieves checklists and
-          jurisdiction notes. It does not call an external model.
+          jurisdiction notes first. The hosted app may add allowlisted public
+          pages. It does not call an external model.
         </p>
         <div className="chat" aria-live="polite">
           {state.messages.map((m) => (
             <div key={m.id} className={`bubble ${m.role}`}>
               {m.text}
+              <SourceChips sources={m.sources} />
             </div>
           ))}
         </div>
@@ -103,6 +114,17 @@ export function Advise() {
             Safety flag is on for this session. 911 · 1-800-799-7233 · 988
           </p>
         )}
+        <WebSources
+          sources={state.webNotes}
+          status={state.webStatus}
+          message={state.webMessage}
+          enabled={state.webEnabled}
+          onToggle={setWebEnabled}
+          onClear={clearWebNotes}
+          onRefresh={() => {
+            void refreshResearch("official self-help clerk packet forms", "manual");
+          }}
+        />
       </aside>
     </div>
   );

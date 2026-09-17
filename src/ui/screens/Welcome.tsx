@@ -1,4 +1,4 @@
-import { EPHEMERAL_COPY, LEGAL_DISCLAIMER, NO_EXPORT_COPY, PRODUCT } from "../../knowledge/common";
+import { EPHEMERAL_COPY, LEGAL_DISCLAIMER, NO_EXPORT_COPY, PRODUCT, WEB_RESEARCH_COPY } from "../../knowledge/common";
 import { useSession } from "../../session/store";
 import { Button } from "../components/Button";
 import { LambLens } from "../components/LambLens";
@@ -23,18 +23,21 @@ export function Welcome() {
         {LEGAL_DISCLAIMER}
       </div>
       <p>{EPHEMERAL_COPY}</p>
+      <p>{WEB_RESEARCH_COPY}</p>
       <p>{NO_EXPORT_COPY}</p>
       <p className="muted">
         The advisor is a self-contained knowledge base and dialogue machine. It does
         not call OpenAI, Anthropic, Google, xAI, or any other third-party LLM.
+        Synthesis stays in this app.
       </p>
       <p className="muted">
-        Coverage is labeled. Prefer checklists and filing structure over fake
-        precision. Statutes change — verify with the clerk.
+        Coverage is labeled. Prefer checklists, clerk packets, and cited public pages
+        over fake precision. Whitestone does not invent citations and does not claim
+        a complete statute book. Statutes change — verify with the clerk.
       </p>
       <p className="muted">
         Optional: use your browser&apos;s Add to Home Screen for a shortcut. Sessions
-        stay ephemeral — End & erase still wipes chat and uploads.
+        stay ephemeral — End & erase still wipes chat, uploads, and web notes.
       </p>
       <div className="chips sticky-actions">
         <Button kind="primary" onClick={acceptDisclaimer}>

@@ -11,6 +11,10 @@ import {
 import { advise, openingMessage } from "../engine/advisor";
 import { mapEvidence } from "../engine/evidence-map";
 import { learnFromSession } from "../engine/learn";
+import { probeResearch, requestResearch } from "../research/client";
+import { mergeWebNotes } from "../research/format";
+import { shouldFetch } from "../research/should-fetch";
+import type { ResearchReason, ResearchResult } from "../research/types";
 import { emptySession, type AppStep, type MatterType, type SessionState } from "../types";
 import { persistSessionJson, readSessionJson, wipeSessionArtifacts } from "./wipe";
 
@@ -27,6 +31,9 @@ interface SessionApi {
   removeUpload: (id: string) => void;
   remapEvidence: () => void;
   seedAdvisor: () => void;
+  setWebEnabled: (on: boolean) => void;
+  clearWebNotes: () => void;
+  refreshResearch: (query?: string, reason?: ResearchReason) => Promise<void>;
   erase: () => Promise<void>;
 }
 
@@ -37,7 +44,18 @@ function hydrate(): SessionState {
   if (!raw) return emptySession();
   try {
     const parsed = JSON.parse(raw) as SessionState;
-    if (parsed?.version === 1) return parsed;
+    if (parsed?.version === 1) {
+      const base = emptySession();
+      return {
+        ...base,
+        ...parsed,
+        learned: { ...base.learned, ...parsed.learned },
+        webEnabled: parsed.webEnabled !== false,
+        webNotes: Array.isArray(parsed.webNotes) ? parsed.webNotes : [],
+        webStatus: parsed.webStatus ?? "idle",
+        webMessage: parsed.webMessage ?? "",
+      };
+    }
   } catch {
     /* ignore */
   }
@@ -47,6 +65,9 @@ function hydrate(): SessionState {
 export function SessionProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<SessionState>(hydrate);
   const urls = useRef<string[]>([]);
+  const stateRef = useRef(state);
+  stateRef.current = state;
+  const researchReady = useRef<boolean | null>(null);
 
   useEffect(() => {
     const slim: SessionState = {
@@ -69,22 +90,71 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       setMatter: (matter) => setState((s) => ({ ...s, matter, step: "facts" })),
       patch,
       ask: (text) => {
-        setState((s) => {
+        void (async () => {
           const user = {
             id: crypto.randomUUID(),
             role: "user" as const,
             text,
             at: new Date().toISOString(),
           };
-          const { reply, state: next } = advise({ ...s, messages: [...s.messages, user] }, text);
+          const base: SessionState = { ...stateRef.current, messages: [...stateRef.current.messages, user] };
+          const willFetch =
+            base.webEnabled &&
+            shouldFetch({
+              query: text,
+              jurisdiction: base.jurisdiction,
+              matter: base.matter,
+              reason: "ask",
+            });
+          setState({ ...base, webStatus: willFetch ? "loading" : base.webStatus });
+
+          let research: ResearchResult | null = null;
+          if (willFetch) {
+            if (researchReady.current === null) researchReady.current = await probeResearch();
+            research = researchReady.current
+              ? await requestResearch({
+                  jurisdiction: base.jurisdiction,
+                  matter: base.matter,
+                  query: text,
+                  reason: "ask",
+                })
+              : {
+                  ok: false,
+                  capability: "allowlisted-public-pages",
+                  sources: [],
+                  notes: "Live research is not on this copy.",
+                  unavailable: true,
+                  failed: [],
+                  fetched: 0,
+                  cached: 0,
+                };
+          }
+
+          const { reply, state: next } = advise(base, text, research);
+          const webNotes = research?.sources.length ? mergeWebNotes(next.webNotes, research.sources) : next.webNotes;
           const advisor = {
             id: crypto.randomUUID(),
             role: "advisor" as const,
             text: reply,
             at: new Date().toISOString(),
+            sources: research?.sources,
           };
-          return { ...next, messages: [...next.messages, advisor] };
-        });
+          setState({
+            ...next,
+            messages: [...next.messages, advisor],
+            webNotes,
+            webStatus: !willFetch
+              ? next.webStatus
+              : research?.unavailable
+                ? "unavailable"
+                : research?.sources.length
+                  ? "ok"
+                  : research?.failed.length
+                    ? "unavailable"
+                    : next.webStatus,
+            webMessage: research?.notes ?? next.webMessage,
+          });
+        })();
       },
       answerQuestion: (id, value) => {
         setState((s) => {
@@ -125,9 +195,65 @@ export function SessionProvider({ children }: { children: ReactNode }) {
           };
         });
       },
+      setWebEnabled: (on) => {
+        setState((s) => ({
+          ...s,
+          webEnabled: on,
+          webStatus: on ? s.webStatus : "off",
+        }));
+      },
+      clearWebNotes: () => {
+        setState((s) => ({
+          ...s,
+          webNotes: [],
+          webStatus: s.webEnabled ? "idle" : "off",
+          webMessage: "",
+        }));
+      },
+      refreshResearch: async (query?: string, reason: ResearchReason = "manual") => {
+        const snap = stateRef.current;
+        if (!snap.webEnabled) return;
+        const q = (query ?? "official self-help clerk packet forms").trim();
+        if (
+          !shouldFetch({
+            query: q,
+            jurisdiction: snap.jurisdiction,
+            matter: snap.matter,
+            reason,
+          })
+        ) {
+          return;
+        }
+        setState((s) => ({ ...s, webStatus: "loading" }));
+        if (researchReady.current === null) researchReady.current = await probeResearch();
+        const research = researchReady.current
+          ? await requestResearch({
+              jurisdiction: snap.jurisdiction,
+              matter: snap.matter,
+              query: q,
+              reason,
+            })
+          : ({
+              ok: false,
+              capability: "allowlisted-public-pages",
+              sources: [],
+              notes: "Live research is not on this copy.",
+              unavailable: true,
+              failed: [],
+              fetched: 0,
+              cached: 0,
+            } satisfies ResearchResult);
+        setState((s) => ({
+          ...s,
+          webNotes: research.sources.length ? mergeWebNotes(s.webNotes, research.sources) : s.webNotes,
+          webStatus: research.unavailable ? "unavailable" : research.sources.length ? "ok" : "unavailable",
+          webMessage: research.notes,
+        }));
+      },
       erase: async () => {
         await wipeSessionArtifacts({ revokeUrls: urls.current });
         urls.current = [];
+        researchReady.current = null;
         setState(emptySession());
       },
     };

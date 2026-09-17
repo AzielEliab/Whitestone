@@ -34,9 +34,10 @@ Serve it locally (do not expect file:// to run module workers in every browser):
 Then open the printed URL.
 
 Rules:
-- Session memory only. End & erase wipes chat and uploads.
+- Session memory only. End & erase wipes chat, uploads, and any fetched web notes.
 - No export / print / save-as of filings or evidence packages.
 - Not a lawyer. Not legal advice.
+- This offline zip does not include live /api/research. The hosted Worker may fetch allowlisted public court/legal-aid pages; this copy uses the bundled knowledge layer only.
 
 Source: https://github.com/AzielEliab/Whitestone
 `,
