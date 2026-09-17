@@ -7,9 +7,12 @@ export function EraseBar() {
   const [busy, setBusy] = useState(false);
   return (
     <div className="erase-bar">
-      <p className="muted" style={{ margin: 0, fontSize: "0.85rem" }}>
-        Uploads only. No export of case papers. End & erase wipes this session,
-        including any Home Screen shell cache.
+      <p className="muted erase-note">
+        <span className="erase-note-full">
+          Uploads only. No export of case papers. End & erase wipes this session,
+          including any Home Screen shell cache.
+        </span>
+        <span className="erase-note-short">Uploads only · no case export</span>
       </p>
       <Button
         kind="danger"

@@ -312,9 +312,11 @@ img, video { max-width: 100%; height: auto; }
   gap: 12px;
   align-items: center;
   padding: 10px 0 max(12px, var(--safe-bottom));
-  background: linear-gradient(transparent, var(--bg) 30%);
+  background: var(--bg);
+  border-top: 1px solid var(--line);
 }
-.erase-bar p { min-width: 0; }
+.erase-bar p { min-width: 0; margin: 0; }
+.erase-note-short { display: none; }
 
 html[data-surface="hosted"] .download-cta,
 html[data-narrow="true"] .download-cta { display: none; }
@@ -331,16 +333,20 @@ html[data-narrow="true"] .desktop-only { display: none !important; }
     padding:
       max(10px, var(--safe-top))
       max(12px, var(--safe-right))
-      max(108px, calc(88px + var(--safe-bottom)))
+      max(24px, var(--safe-bottom))
       max(12px, var(--safe-left));
   }
   .card { padding: 16px; }
   .top-actions { justify-content: flex-end; }
   .stepper-status { display: block; }
-  .stepper-track { justify-content: space-between; gap: 4px; }
+  .stepper-track {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 4px;
+  }
   .stepper button {
-    flex: 1 1 calc(100% / 7);
-    min-width: 40px;
+    min-width: 0;
+    width: 100%;
     padding: 8px 0;
     border-bottom-width: 0;
   }
@@ -358,14 +364,7 @@ html[data-narrow="true"] .desktop-only { display: none !important; }
   }
   .step-index { display: inline; font-weight: 650; }
   .chat { max-height: min(36dvh, 360px); }
-  .chips.sticky-actions,
-  .sticky-actions {
-    position: sticky;
-    bottom: calc(58px + var(--safe-bottom));
-    background: linear-gradient(transparent, var(--bg-elev) 24%);
-    padding-top: 8px;
-    z-index: 3;
-  }
+  .advise-composer { position: static; padding-bottom: 0; }
   .chips .btn.primary,
   .upload-actions .btn,
   .erase-bar .btn {
@@ -374,7 +373,12 @@ html[data-narrow="true"] .desktop-only { display: none !important; }
   .erase-bar {
     flex-direction: column;
     align-items: stretch;
+    gap: 6px;
+    margin-inline: -12px;
+    padding-inline: 12px;
   }
+  .erase-note-full { display: none; }
+  .erase-note-short { display: inline; }
   .bubble { max-width: 100%; }
 }
 
