@@ -16,8 +16,9 @@ export function Welcome() {
         counsel.
       </p>
       <p>
-        This page is the full product. On a phone, open the live Cloudflare URL and
-        finish a session here — no zip, App Store app, or install.
+        This page is the full product — phone or desktop. Open the live Cloudflare
+        URL in a browser and finish a session here. No zip, App Store app, or
+        install.
       </p>
       <div className="banner" role="note">
         {LEGAL_DISCLAIMER}

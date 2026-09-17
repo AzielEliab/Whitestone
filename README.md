@@ -9,7 +9,7 @@
 
 Lamb Lens: **Service → Clarity → Peace**.
 
-**On a phone: open the live Cloudflare URL. That is the full product — no GitHub zip, App Store app, or install.**
+**Phone or desktop: open the live Cloudflare URL. That is the full product — no GitHub zip, App Store app, or install.**
 
 **https://whitestone.vibelock.workers.dev**
 
@@ -28,15 +28,17 @@ Whitestone walks a person through a **session-only** path:
 7. On-screen filing structure / caption draft
 8. **End & erase**
 
-The advisor is a **self-contained engine**: jurisdiction notes + topic checklists + retrieval + a deterministic dialogue / state machine that adapts from **this chat only**. The hosted Worker is enough; no API keys. A desktop zip exists only as an optional offline copy.
+The advisor is a **self-contained engine**: jurisdiction notes + topic checklists + retrieval + a deterministic dialogue / state machine that adapts from **this chat only**. The hosted Worker is enough; no API keys. A desktop zip exists only as an optional offline backup.
 
-## Use on a phone (no download)
+## Use in a browser (no download)
 
-1. Open **https://whitestone.vibelock.workers.dev** in Safari, Chrome, or Firefox on the phone.
+Phone and desktop use the same live app:
+
+1. Open **https://whitestone.vibelock.workers.dev** in any browser (Safari, Chrome, Firefox, Edge).
 2. Accept the disclaimer and walk the session: jurisdiction → matter → people/facts → evidence (camera, photos, or files) → advisor → filing structure → **End & erase**.
-3. Optional: browser menu → **Add to Home Screen**. That is a shortcut, not an App Store install. Sessions stay ephemeral.
+3. Optional on a phone: browser menu → **Add to Home Screen**. That is a shortcut, not an App Store install. Sessions stay ephemeral.
 
-Do **not** download `whitestone-standalone.zip` to use Whitestone on a phone. The zip is for people who want a portable desktop copy.
+You do **not** need `whitestone-standalone.zip` to use Whitestone. The zip is a backup for people who want a portable offline copy.
 
 ### Matter types
 
@@ -64,13 +66,13 @@ A light Home Screen / PWA shell may cache **static UI only**. It must not keep c
 
 **Uploads only.** You bring files in. You do not take a Whitestone “evidence zip” or “filing package” out. (The GitHub Release zip is the **software**, not your case.)
 
-## Optional desktop zip (not the mobile path)
+## Optional offline zip (never required)
 
 Latest portable **software** build (not your case):
 
 **https://github.com/AzielEliab/Whitestone/releases/latest/download/whitestone-standalone.zip**
 
-On a wide desktop window that is **not** already the Worker host, the UI may show an optional zip link. Phones and the live Worker hide that CTA. **https://whitestone.vibelock.workers.dev/download** still increments the download counter and redirects to the GitHub Release zip.
+The live Worker UI hides download CTAs on both phone and desktop. A local/standalone build may show a quiet “Optional desktop zip” link. **https://whitestone.vibelock.workers.dev/download** still increments the download counter and redirects to the GitHub Release zip.
 
 Unzip and serve the `whitestone/` folder (`npx serve .` or `python3 -m http.server`). Read `RUN.txt`.
 

@@ -33,7 +33,7 @@ describe("software download CTAs", () => {
     ).toBe(false);
   });
 
-  it("keeps the zip for a wide local / standalone desktop window", () => {
+  it("keeps only a quiet optional zip on a wide local / standalone desktop window", () => {
     expect(
       shouldOfferSoftwareDownload({
         hostname: "localhost",

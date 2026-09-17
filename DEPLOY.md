@@ -70,4 +70,4 @@ Open the printed `localhost` URL. `/count/view` and `/v1/software` work there.
 
 This deploy hosts **software**, not user case files. The Worker must not log request bodies or store uploads. Whitestone's UI keeps case state in the browser session only.
 
-The Worker URL is the mobile product. Phones should open `https://whitestone.vibelock.workers.dev` and complete a session in the browser. `manifest.webmanifest` and `sw.js` support Add to Home Screen; the service worker caches the static shell only and is unregistered on End & erase.
+The Worker URL is the product for **phone and desktop**. Open `https://whitestone.vibelock.workers.dev` and complete a session in the browser — no zip required. `manifest.webmanifest` and `sw.js` support Add to Home Screen; the service worker caches the static shell only and is unregistered on End & erase.

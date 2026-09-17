@@ -15,7 +15,7 @@ const SOFTWARE = {
   identity: "Aziel Eliab",
   author_id: "https://www.azieleliab.com/#aziel",
   one_line:
-    "Ephemeral pro se family-law advisor. Open the live Worker URL on a phone — no zip required. Session-only memory; wipe on close. Uploads only, no case exports, no third-party LLM APIs.",
+    "Ephemeral pro se family-law advisor. Open the live Worker URL on a phone or desktop — no zip required. Session-only memory; wipe on close. Uploads only, no case exports, no third-party LLM APIs.",
   kind: "software",
   door: "standalone",
   github: "https://github.com/AzielEliab/Whitestone",
