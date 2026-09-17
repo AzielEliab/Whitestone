@@ -52,7 +52,12 @@ export function extractMainText(
 ): { title: string; text: string } {
   const stripped = stripScriptsAndChrome(html);
   const title = extractTitle(stripped);
-  const text = collapseWhitespace(decodeEntities(stripped.replace(/<[^>]+>/g, " ")));
+  const raw = collapseWhitespace(decodeEntities(stripped.replace(/<[^>]+>/g, " ")));
+  const text = raw
+    .replace(/Skip to main content/gi, " ")
+    .replace(/Please help us improve our site!\s*(?:×|x)?\s*No thank you/gi, " ")
+    .replace(/\s+/g, " ")
+    .trim();
   return { title, text: text.slice(0, maxChars) };
 }
 

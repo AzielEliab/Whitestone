@@ -12,6 +12,12 @@ describe("extract", () => {
     expect(title).toBe("Divorce packets");
     expect(text).toMatch(/Ask the clerk/);
     expect(text).not.toMatch(/alert/);
+    const chrome = extractMainText(
+      `<title>Guide</title>Skip to main content Please help us improve our site! × No thank you Ask the clerk.`,
+    );
+    expect(chrome.text).toMatch(/Ask the clerk/);
+    expect(chrome.text).not.toMatch(/Skip to main content/i);
+    expect(chrome.text).not.toMatch(/No thank you/i);
   });
 
   it("caps excerpt length", () => {
