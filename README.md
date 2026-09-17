@@ -1,7 +1,7 @@
 # Whitestone
 
-[![views](https://whitestone.azieleliab.workers.dev/count/view)](https://whitestone.azieleliab.workers.dev/)
-[![downloads](https://whitestone.azieleliab.workers.dev/count/download)](https://whitestone.azieleliab.workers.dev/download)
+[![views](https://whitestone.vibelock.workers.dev/count/view)](https://whitestone.vibelock.workers.dev/)
+[![downloads](https://whitestone.vibelock.workers.dev/count/download)](https://whitestone.vibelock.workers.dev/download)
 [![release](https://img.shields.io/github/v/release/AzielEliab/Whitestone?label=release)](https://github.com/AzielEliab/Whitestone/releases/latest)
 [![license](https://img.shields.io/badge/license-Apache--2.0-241f1a)](LICENSE)
 
@@ -56,7 +56,7 @@ Latest portable build:
 
 **https://github.com/AzielEliab/Whitestone/releases/latest/download/whitestone-standalone.zip**
 
-On the hosted Worker, **https://whitestone.azieleliab.workers.dev/download** increments the download counter and redirects to that zip.
+On the hosted Worker, **https://whitestone.vibelock.workers.dev/download** increments the download counter and redirects to that zip.
 
 Unzip and serve the `whitestone/` folder (`npx serve .` or `python3 -m http.server`). Read `RUN.txt`.
 
@@ -75,14 +75,14 @@ Open http://127.0.0.1:5173
 
 Project name: **whitestone**.
 
+Live: **https://whitestone.vibelock.workers.dev**
+
 ```bash
 npx wrangler login
 npm run deploy
 ```
 
 Details, counter paths, and sitemap notes: [DEPLOY.md](DEPLOY.md).
-
-After the first deploy, if your `workers.dev` subdomain is not `azieleliab`, update the badge and sitemap URLs in this README, `public/robots.txt`, and `public/sitemap.xml`.
 
 ## Agent catalog
 
