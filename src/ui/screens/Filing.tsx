@@ -1,8 +1,9 @@
 import { buildFilingOutline } from "../../engine/filing";
 import { useSession } from "../../session/store";
+import { Button } from "../components/Button";
 
 export function Filing() {
-  const { state } = useSession();
+  const { state, setStep } = useSession();
   const outline = buildFilingOutline(state);
   return (
     <section className="card grid">
@@ -50,6 +51,9 @@ export function Filing() {
             {s}
           </p>
         ))}
+      </div>
+      <div className="chips sticky-actions">
+        <Button onClick={() => setStep("advise")}>Back to advisor</Button>
       </div>
     </section>
   );

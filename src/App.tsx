@@ -29,7 +29,7 @@ export function App() {
           </span>
         </button>
         <div className="top-actions">
-          <a className="btn" href="./catalog.json">
+          <a className="btn desktop-only" href="./catalog.json">
             Catalog
           </a>
           <SoftwareDownload />

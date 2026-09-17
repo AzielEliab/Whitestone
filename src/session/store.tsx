@@ -56,25 +56,6 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     persistSessionJson(JSON.stringify(slim));
   }, [state]);
 
-  useEffect(() => {
-    const flush = () => {
-      void wipeSessionArtifacts({ revokeUrls: urls.current });
-    };
-    const onHide = () => {
-      if (document.visibilityState === "hidden" && !state.disclaimerAccepted) {
-        return;
-      }
-    };
-    window.addEventListener("pagehide", flush);
-    window.addEventListener("beforeunload", flush);
-    document.addEventListener("visibilitychange", onHide);
-    return () => {
-      window.removeEventListener("pagehide", flush);
-      window.removeEventListener("beforeunload", flush);
-      document.removeEventListener("visibilitychange", onHide);
-    };
-  }, [state.disclaimerAccepted]);
-
   const patch = useCallback((partial: Partial<SessionState>) => {
     setState((s) => ({ ...s, ...partial }));
   }, []);

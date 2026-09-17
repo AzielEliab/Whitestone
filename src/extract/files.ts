@@ -1,19 +1,38 @@
 import type { EvidenceFile } from "../types";
 
-const MAX_BYTES = 12 * 1024 * 1024;
+export const MAX_BYTES = 12 * 1024 * 1024;
+export const LARGE_BYTES = 2 * 1024 * 1024;
 const MAX_TEXT = 40_000;
+
+/** Camera, gallery, and files — including iPhone HEIC. */
+export const FILE_ACCEPT =
+  "image/*,.pdf,.txt,.md,.csv,.docx,.doc,.heic,.heif,application/pdf,text/plain,text/csv,application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+
+export const CAMERA_ACCEPT = "image/*";
 
 function id() {
   return crypto.randomUUID();
 }
 
+export function formatFileSize(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
 export function allowedFile(file: File): string | null {
+  const type = file.type || "";
+  const name = file.name || "";
   const ok =
-    /^(application\/pdf|text\/|image\/|application\/vnd\.openxmlformats-officedocument\.wordprocessingml\.document|application\/msword)/.test(
-      file.type,
-    ) || /\.(pdf|txt|md|csv|docx|png|jpe?g|gif|webp)$/i.test(file.name);
-  if (!ok) return "Use PDF, DOCX, text, or image files.";
-  if (file.size > MAX_BYTES) return "Each file must be 12 MB or smaller.";
+    /^(application\/pdf|text\/|image\/|application\/vnd\.openxmlformats-officedocument\.wordprocessingml\.document|application\/msword)/i.test(
+      type,
+    ) ||
+    /\.(pdf|txt|md|csv|docx|doc|png|jpe?g|gif|webp|heic|heif|bmp)$/i.test(name) ||
+    (!type && /^image\./i.test(name));
+  if (!ok) return "Use PDF, DOCX, text, or image files (camera, photos, or files).";
+  if (file.size > MAX_BYTES) {
+    return `${file.name || "This file"} is ${formatFileSize(file.size)}. Each file must be 12 MB or smaller.`;
+  }
   return null;
 }
 
@@ -34,7 +53,7 @@ export async function extractEvidence(file: File): Promise<EvidenceFile> {
     /\.docx$/i.test(file.name)
   ) {
     text = await extractDocx(file);
-  } else if (mime.startsWith("image/") || /\.(png|jpe?g|gif|webp)$/i.test(file.name)) {
+  } else if (mime.startsWith("image/") || /\.(png|jpe?g|gif|webp|heic|heif|bmp)$/i.test(file.name)) {
     previewUrl = URL.createObjectURL(file);
     text = "";
   } else {
@@ -63,6 +82,10 @@ function guessMime(name: string): string {
   if (/\.txt$/i.test(name)) return "text/plain";
   if (/\.png$/i.test(name)) return "image/png";
   if (/\.jpe?g$/i.test(name)) return "image/jpeg";
+  if (/\.gif$/i.test(name)) return "image/gif";
+  if (/\.webp$/i.test(name)) return "image/webp";
+  if (/\.heic$/i.test(name)) return "image/heic";
+  if (/\.heif$/i.test(name)) return "image/heif";
   return "application/octet-stream";
 }
 

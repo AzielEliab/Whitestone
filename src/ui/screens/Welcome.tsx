@@ -15,6 +15,10 @@ export function Welcome() {
         procedural guidance — not a lawyer, not legal advice, not a replacement for
         counsel.
       </p>
+      <p>
+        This page is the full product. On a phone, open the live Cloudflare URL and
+        finish a session here — no zip, App Store app, or install.
+      </p>
       <div className="banner" role="note">
         {LEGAL_DISCLAIMER}
       </div>
@@ -22,14 +26,17 @@ export function Welcome() {
       <p>{NO_EXPORT_COPY}</p>
       <p className="muted">
         The advisor is a self-contained knowledge base and dialogue machine. It does
-        not call OpenAI, Anthropic, Google, xAI, or any other third-party LLM. A
-        downloaded copy works without API keys.
+        not call OpenAI, Anthropic, Google, xAI, or any other third-party LLM.
       </p>
       <p className="muted">
         Coverage is labeled. Prefer checklists and filing structure over fake
         precision. Statutes change — verify with the clerk.
       </p>
-      <div className="chips">
+      <p className="muted">
+        Optional: use your browser&apos;s Add to Home Screen for a shortcut. Sessions
+        stay ephemeral — End & erase still wipes chat and uploads.
+      </p>
+      <div className="chips sticky-actions">
         <Button kind="primary" onClick={acceptDisclaimer}>
           I understand — begin a session
         </Button>

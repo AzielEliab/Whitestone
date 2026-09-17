@@ -2,7 +2,7 @@ import type { CoverageLevel } from "../types";
 
 export const PRODUCT = {
   name: "Whitestone",
-  version: "1.0.0",
+  version: "1.1.0",
   author: "Aziel Eliab",
   lens: ["Service", "Clarity", "Peace"] as const,
 };

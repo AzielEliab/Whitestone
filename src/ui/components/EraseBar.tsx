@@ -8,7 +8,8 @@ export function EraseBar() {
   return (
     <div className="erase-bar">
       <p className="muted" style={{ margin: 0, fontSize: "0.85rem" }}>
-        Uploads only. No export, download, print, or save-as of case papers.
+        Uploads only. No export of case papers. End & erase wipes this session,
+        including any Home Screen shell cache.
       </p>
       <Button
         kind="danger"

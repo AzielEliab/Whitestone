@@ -10,12 +10,12 @@ const DEFAULT_RELEASE =
 const SOFTWARE = {
   name: "Whitestone",
   slug: "whitestone",
-  version: "1.0.0",
+  version: "1.1.0",
   author: "Aziel Eliab",
   identity: "Aziel Eliab",
   author_id: "https://www.azieleliab.com/#aziel",
   one_line:
-    "Ephemeral pro se family-law advisor. Session-only memory; wipe on close. Uploads only, no case exports, no third-party LLM APIs.",
+    "Ephemeral pro se family-law advisor. Open the live Worker URL on a phone — no zip required. Session-only memory; wipe on close. Uploads only, no case exports, no third-party LLM APIs.",
   kind: "software",
   door: "standalone",
   github: "https://github.com/AzielEliab/Whitestone",
@@ -81,10 +81,27 @@ export default {
             worker_home: url.origin + "/",
             download_url: url.origin + "/download",
             catalog: url.origin + "/catalog.json",
+            download_required: false,
             sha256_tip: "see GitHub Release asset digest when published",
           },
         ],
       });
+    }
+
+    if (path === "/sw.js") {
+      const res = await env.ASSETS.fetch(request);
+      const headers = new Headers(res.headers);
+      headers.set("content-type", "text/javascript; charset=utf-8");
+      headers.set("cache-control", "no-cache");
+      headers.set("service-worker-allowed", "/");
+      return new Response(res.body, { status: res.status, headers });
+    }
+
+    if (path === "/manifest.webmanifest") {
+      const res = await env.ASSETS.fetch(request);
+      const headers = new Headers(res.headers);
+      headers.set("content-type", "application/manifest+json; charset=utf-8");
+      return new Response(res.body, { status: res.status, headers });
     }
 
     if (path === "/robots.txt" || path === "/sitemap.xml" || path === "/catalog.json") {

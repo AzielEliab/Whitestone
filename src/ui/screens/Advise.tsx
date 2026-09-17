@@ -9,8 +9,8 @@ export function Advise() {
   const q = nextQuestion(state);
 
   return (
-    <div className="grid two">
-      <section className="card">
+    <div className="grid two advise-layout">
+      <section className="card advise-card">
         <h2>Guided advisor</h2>
         <p className="muted">
           Answers steer this session only. The engine retrieves checklists and
@@ -24,8 +24,7 @@ export function Advise() {
           ))}
         </div>
         <form
-          className="grid"
-          style={{ marginTop: 12 }}
+          className="grid advise-composer"
           onSubmit={(e) => {
             e.preventDefault();
             const t = draft.trim();
@@ -41,13 +40,15 @@ export function Advise() {
               value={draft}
               onChange={(e) => setDraft(e.target.value)}
               placeholder="Ask about venue, packets, support worksheets, safety…"
+              enterKeyHint="send"
+              autoComplete="off"
             />
           </div>
           <Button kind="primary" type="submit">
             Ask in this session
           </Button>
         </form>
-        <div className="chips" style={{ marginTop: 10 }}>
+        <div className="chips starter-chips">
           {starterPrompts(state.matter).map((p) => (
             <button key={p} type="button" className="chip" onClick={() => ask(p)}>
               {p}
@@ -91,9 +92,12 @@ export function Advise() {
         ) : (
           <p>Structured questions for this matter are complete.</p>
         )}
-        <Button kind="primary" onClick={() => setStep("filing")}>
-          Open filing structure
-        </Button>
+        <div className="chips sticky-actions">
+          <Button kind="primary" onClick={() => setStep("filing")}>
+            Open filing structure
+          </Button>
+          <Button onClick={() => setStep("evidence")}>Back</Button>
+        </div>
         {state.learned.safetyFlag && (
           <p className="warn">
             Safety flag is on for this session. 911 · 1-800-799-7233 · 988
@@ -117,7 +121,13 @@ function QuestionText({ onSubmit }: { onSubmit: (v: string) => void }) {
     >
       <div className="field">
         <label htmlFor="q-free">Your answer</label>
-        <input id="q-free" value={v} onChange={(e) => setV(e.target.value)} />
+        <input
+          id="q-free"
+          value={v}
+          onChange={(e) => setV(e.target.value)}
+          autoComplete="off"
+          enterKeyHint="done"
+        />
       </div>
       <Button type="submit">Save answer</Button>
     </form>

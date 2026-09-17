@@ -28,6 +28,8 @@ export function Jurisdiction() {
           onChange={(e) => setQ(e.target.value)}
           placeholder="e.g. Oregon or OR"
           autoComplete="off"
+          enterKeyHint="search"
+          inputMode="search"
         />
       </div>
       <div className="choice-grid">

@@ -18,6 +18,8 @@ export function Facts() {
           <label htmlFor="p-name">Filing party (petitioner)</label>
           <input
             id="p-name"
+            autoComplete="name"
+            enterKeyHint="next"
             value={p?.name ?? ""}
             onChange={(e) =>
               patch({
@@ -30,6 +32,8 @@ export function Facts() {
           <label htmlFor="r-name">Other party (respondent)</label>
           <input
             id="r-name"
+            autoComplete="name"
+            enterKeyHint="next"
             value={r?.name ?? ""}
             onChange={(e) =>
               patch({
@@ -83,7 +87,7 @@ export function Facts() {
           </div>
         </div>
       ))}
-      <div className="chips">
+      <div className="chips sticky-actions">
         <Button
           onClick={() =>
             patch({ children: [...state.children, { name: "", age: "", livesWith: "" }] })
@@ -94,6 +98,7 @@ export function Facts() {
         <Button kind="primary" onClick={() => setStep("evidence")}>
           Continue to evidence
         </Button>
+        <Button onClick={() => setStep("matter")}>Back</Button>
       </div>
     </section>
   );

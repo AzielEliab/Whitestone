@@ -68,10 +68,21 @@ export async function wipeSessionArtifacts(opts?: { revokeUrls?: string[] }): Pr
     }
   }
 
-  if ("serviceWorker" in navigator) {
+  if (typeof navigator !== "undefined" && "serviceWorker" in navigator) {
     try {
       const regs = await navigator.serviceWorker.getRegistrations();
-      await Promise.all(regs.map((r) => r.unregister()));
+      await Promise.all(
+        regs.map(async (reg) => {
+          try {
+            reg.active?.postMessage("whitestone-wipe");
+            reg.waiting?.postMessage("whitestone-wipe");
+            reg.installing?.postMessage("whitestone-wipe");
+          } catch {
+            /* ignore */
+          }
+          await reg.unregister();
+        }),
+      );
     } catch {
       /* ignore */
     }
