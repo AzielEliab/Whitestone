@@ -79,3 +79,24 @@ The Worker must not log request bodies (query text). Short metrics only (`qlen`,
 This deploy hosts **software**, not user case files. The Worker must not log request bodies or store uploads. Whitestone's UI keeps case state in the browser session only.
 
 The Worker URL is the product for **phone and desktop**. Open `https://whitestone.vibelock.workers.dev` and complete a session in the browser. A software zip is optional (header / Welcome **Download software**, or `GET /download`). `manifest.webmanifest` and `sw.js` support Add to Home Screen; the service worker caches the static shell only and is unregistered on End & erase. After a merge that changes the Worker or UI, redeploy.
+
+## Isolated download tracker
+
+Sibling Worker **`whitestone-download-tracker`** lives under `workers/download-tracker/` and deploys independently of this app Worker. Do not mix its KV with The ARK or any other product.
+
+Live: **https://whitestone-download-tracker.vibelock.workers.dev**
+
+| Path | Behavior |
+| --- | --- |
+| `GET /` | Increment views; homepage shows Views / Downloads |
+| `GET /download` | Increment downloads and **serve** `whitestone-standalone.zip` (HTTP 200, no 302) |
+| `GET /stats` | JSON `{ project: "whitestone", views, downloads, … }` |
+| `GET /count` | Compact `{ project, views, downloads, total }` |
+
+The app Worker `GET /download` may still 302 to GitHub. That path is unchanged. Use the tracker when the count must increment and the zip must be streamed as 200.
+
+```bash
+cd workers/download-tracker
+npx wrangler login
+npx wrangler deploy
+```

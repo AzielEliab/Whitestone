@@ -1,0 +1,12 @@
+{
+  "name": "whitestone-download-tracker",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "verify-mesh": "node scripts/verify-mesh-proxy.mjs",
+    "deploy": "wrangler deploy"
+  },
+  "dependencies": {
+    "wrangler": "^4.127.1"
+  }
+}
