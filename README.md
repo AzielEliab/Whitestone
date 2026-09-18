@@ -16,7 +16,7 @@ Human UI first. A small `GET /v1/software` catalog exists for agent discovery. T
 
 ## What it is
 
-Whitestone is **one software**. After the Welcome disclaimer you choose a practice area:
+Whitestone is **one software**. Welcome puts **Criminal / Civil / Divorce** first; long legal copy sits under **Important notices** (still present, not deleted). Then you choose a practice area:
 
 1. **Criminal** — bail / arraignment, discovery, plea process overview, sentencing basics, expungement overview, rights education. Hard refuse: help committing crimes, destroying evidence, witness intimidation, evading process. Urge counsel or the public defender for serious charges.
 2. **Civil** — small claims, contract-dispute overview, landlord-tenant overview, civil protection orders, name change, debt-collection defense overview. High-level procedural and court self-help research. Not business-formation mill advice.
@@ -34,7 +34,38 @@ Then the session-only path:
 
 Changing practice area requires a clear reset (or End & erase) so sessions do not mix areas.
 
-The advisor is a **self-contained engine**: jurisdiction notes + topic checklists + retrieval + a deterministic dialogue / state machine that adapts from **this chat only**. On the hosted Worker it may also fetch **allowlisted public court, legal-aid, and government pages** and cite them in-session. No API keys. No third-party LLM. A desktop zip is an optional offline backup and **does not include live research**.
+After jurisdiction + matter + minimal facts you may **Skip to advisor** (other steps remain). Each screen has a “what’s next” one-liner. The advisor names your parties and answered facts, offers one-tap follow-ups, and can open **Math** and **Statistics** panels on a phone keyboard.
+
+The advisor is a **self-contained engine**: jurisdiction notes + topic checklists + retrieval + a deterministic dialogue / state machine that adapts from **this chat only**, plus labeled math, cited public statistics, IRAC-style reasoning, and an **AZCoherence-inspired anti-hallucination last pass** (ported logic, not the full Aziel runtime). On the hosted Worker it may also fetch **allowlisted public court, legal-aid, government, and statistical landing pages** and cite them in-session. No API keys. No third-party LLM. Default path works without Workers AI. A desktop zip is an optional offline backup and **does not include live research**.
+
+### Custom answers (no third-party LLM)
+
+`advise()` routes intent (deadlines, forms, venue, evidence, safety, math, stats, process, next steps), builds a session working plan, maps upload notes to issues, and writes Issue → Rule/source → Application to **your** facts → Next step outlines. Templates vary by intent so replies are not the same checklist dump. When research returns pages, it weaves 1–3 takeaways with title, URL, and retrieved date.
+
+### Math (honesty labels)
+
+`src/math/` is pure TypeScript: calendar / business-day offsets (holidays **not** fully modeled — labeled), simple and compound interest, percent / pro-rata / bond cash-%, a child-support estimator, and claim totaling. Natural-language asks such as “what’s 10% of $5000 bail” or “30 days from March 1” parse inside the advisor.
+
+**HEURISTIC / ILLUSTRATIVE** unless a specific public formula is cited with a source URL (Texas Family Code § 154.125 and Wisconsin DCF 150 schedules). Never treat a figure as an official worksheet or an order. Verify dates with the clerk.
+
+### Cited statistics (no invented numbers)
+
+`src/stats/` stores typed records `{ id, area, topic, claim, value, unit, year, geography, sourceTitle, sourceUrl, notes }`. Empty `sourceUrl` is rejected in tests. National vs state is labeled. Methodology limits are stated (pro se counts are often undercounted; Census custodial-parent shares are **household living arrangements**, not litigated custody win-rates; many states do not publish outcomes by parent gender). Ask “what do the numbers say?” or use the Statistics panel.
+
+Sources in the bundle include Census P60-269, CDC/NCHS marriage-divorce rates, BJS large-urban-county felony tables, FBI UCR 2019 clearances, LSC Justice Gap 2022, NCSC / CSP landing pages, CFPB complaint data, and Pew’s 2020 debt-collection court report. If a state figure is missing, Whitestone says so.
+
+### AZCoherence-inspired anti-hallucination (ported logic, not full runtime)
+
+Whitestone stays a standalone SPA + Worker. It does **not** embed FragGate, mesh/QNM, AKM memory, AZPIPE, or the Softwares catalog.
+
+Local modules (Apache-2.0, author Aziel Eliab):
+
+1. **`src/guard/coherence.ts`** — inspired by [AZCoherence](https://github.com/AzielEliab/AZCoherence) (AZC-0.1) `coherence_check` / `neutralize_hallucination`. Motto: **Confidence is not truth. Never invent evidence.** After a primary draft, an alternate safer phrasing is built from session facts + allowlisted excerpts + bundled knowledge + labeled stats/math. Verdict **PASS | FLAG | NEUTRALIZE | REFUSE**. FLAG/NEUTRALIZE strip unsupported claim tokens (invented form numbers, uncited stats, absolute mandates, outcome predictions). Advisor bubbles show a **Grounding** badge and optional evidence list.
+2. **`src/guard/decisiongate.ts`** — DecisionGATE-lite: Definition → Evidence → Impact → Integrity → Responsibility. Evidence fails without a source or session fact. Integrity fails on session contradictions or criminal refuse rules. Responsibility always names that **you + clerk/counsel** own the decision.
+3. **NO-LIE-NO-REWRITE-1.0** (cite only) — claims that still hash to their sources; no rewrite of user facts; never lie to be helpful; prefer refuse/unknown over fabrication.
+4. **Session receipt** — ephemeral `content_sha256` over reply text + source URLs + stat ids. Wiped with End & erase. **Not** durable ChainLock / LOCKSET.
+
+A light R/D/P inconsistency *hint* may appear when answers clash. AZ-CLCE is not vendored.
 
 ## Use in a browser (no download required)
 
@@ -66,6 +97,7 @@ Fetched text is ephemeral: session-only in the browser, plus a short Worker cach
 - **Not help committing crimes**, destroying evidence, intimidating witnesses, or evading arrest or court process.
 - **Not an export tool.** There is no download, print, or save-as of filings, chat, or evidence packages from the app.
 - **Not a third-party LLM client.** No OpenAI, Anthropic, Google Gemini, xAI, Groq, or similar SDKs.
+- **Not the Aziel runtime.** No FragGate door, no mesh enable, no AKM durable memory.
 
 If you are in danger: **911**. National Domestic Violence Hotline: **1-800-799-7233**. Suicide & Crisis Lifeline: **988**.
 

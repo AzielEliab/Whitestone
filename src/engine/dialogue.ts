@@ -47,13 +47,25 @@ export function nextQuestion(state: SessionState): GuidedQuestion | null {
   return null;
 }
 
-export function starterPrompts(matter: MatterType | null): string[] {
+export function starterPrompts(stateOrMatter: SessionState | MatterType | null): string[] {
+  const state = isSession(stateOrMatter) ? stateOrMatter : null;
+  const matter = state ? state.matter : typeof stateOrMatter === "string" ? stateOrMatter : null;
+  const chips: string[] = [];
+  if (state) {
+    const follow = nextQuestion(state);
+    if (follow) chips.push(follow.prompt);
+    if (state.practiceArea === "criminal") chips.push("What do the numbers say about plea rates?");
+    else if (state.practiceArea === "civil") chips.push("What do the numbers say about debt-collection or housing cases?");
+    else chips.push("What do the numbers say about pro se parents?");
+    chips.push("What should I do next?");
+  }
   if (!matter) {
-    return [
+    return uniqueChips([
+      ...chips,
       "What should I gather before I file?",
       "How do I know which court is correct?",
       "What does 'best interests' mean in practice?",
-    ];
+    ]);
   }
   const map: Record<MatterType, string[]> = {
     divorce: [
@@ -150,5 +162,22 @@ export function starterPrompts(matter: MatterType | null): string[] {
       "Should I post about my case on social media?",
     ],
   };
-  return map[matter];
+  return uniqueChips([...chips, ...map[matter]]);
+}
+
+function isSession(value: SessionState | MatterType | null): value is SessionState {
+  return Boolean(value && typeof value === "object" && "step" in value);
+}
+
+function uniqueChips(items: string[]): string[] {
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const item of items) {
+    const key = item.toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push(item);
+    if (out.length >= 6) break;
+  }
+  return out;
 }

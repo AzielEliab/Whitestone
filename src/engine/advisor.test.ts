@@ -4,8 +4,11 @@ import { emptySession } from "../types";
 import { advise, openingMessage } from "./advisor";
 import { nextQuestion } from "./dialogue";
 import { mapEvidence } from "./evidence-map";
+import { sessionSnapshot } from "./facts";
 import { buildFilingOutline } from "./filing";
+import { routeIntent } from "./intent";
 import { learnFromText } from "./learn";
+import { detectContradictions, reasonAbout } from "./reason";
 
 describe("retrieval", () => {
   it("returns jurisdiction and topic hits", () => {
@@ -123,6 +126,65 @@ describe("dialogue and advisor", () => {
     });
     expect(reply).toMatch(/did not complete/i);
     expect(reply).toMatch(/bundled knowledge layer/i);
+  });
+
+  it("routes intents and personalizes replies with party names", () => {
+    const s = emptySession();
+    s.practiceArea = "divorce";
+    s.jurisdiction = "TX";
+    s.matter = "child-support";
+    s.parties[0].name = "Alex Rivera";
+    s.parties[1].name = "Jordan Rivera";
+    s.answers["incomes-known"] = "Only mine";
+    expect(routeIntent("What should I do next?", s)).toBe("next");
+    expect(routeIntent("what do the numbers say about plea rates", s)).toBe("stats");
+    expect(sessionSnapshot(s).filingName).toBe("Alex Rivera");
+    const { reply, followUps, grounding } = advise(s, "What should I do next?");
+    expect(reply).toMatch(/Alex Rivera/);
+    expect(reply).toMatch(/Texas|TX/i);
+    expect(reply).toMatch(/child support/i);
+    expect(followUps.length).toBeGreaterThan(0);
+    expect(grounding.verdict).toMatch(/PASS|FLAG/);
+  });
+
+  it("parses natural-language math inside advise and labels it", () => {
+    const s = emptySession();
+    s.practiceArea = "criminal";
+    s.jurisdiction = "CA";
+    s.matter = "bail-arraignment";
+    const { reply, intent } = advise(s, "what's 10% of $5000 bail");
+    expect(intent).toBe("math");
+    expect(reply).toMatch(/\$500\.00/);
+    expect(reply).toMatch(/HEURISTIC/);
+  });
+
+  it("returns cited statistics without inventing a figure", () => {
+    const s = emptySession();
+    s.practiceArea = "criminal";
+    s.jurisdiction = "CA";
+    s.matter = "plea";
+    const { reply } = advise(s, "what do the numbers say about plea rates");
+    expect(reply).toMatch(/bjs\.ojp\.gov/);
+    expect(reply).toMatch(/not a prediction/i);
+    expect(reply).not.toMatch(/99\.7% of Oregon/);
+  });
+
+  it("builds IRAC-style reasoning from session facts and spots contradictions", () => {
+    const s = emptySession();
+    s.practiceArea = "divorce";
+    s.jurisdiction = "OR";
+    s.matter = "divorce";
+    s.parties[0].name = "Alex Rivera";
+    s.answers.agree = "Mostly agreed";
+    s.answers.kids = "Yes";
+    s.learned.contested = true;
+    const packet = reasonAbout(s, "reason");
+    expect(packet.irac[0]?.application).toMatch(/Alex Rivera/);
+    expect(detectContradictions(s).length).toBeGreaterThan(0);
+    const { reply } = advise(s, "Walk me through the issues using my facts");
+    expect(reply).toMatch(/Issue:/);
+    expect(reply).toMatch(/Application to YOUR facts/);
+    expect(reply).toMatch(/clarify/i);
   });
 });
 

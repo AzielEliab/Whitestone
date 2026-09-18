@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { listJurisdictions } from "../../knowledge";
 import { jurisdictionCopy } from "../../practice/areas";
 import { useSession } from "../../session/store";
+import { WhatsNext } from "../components/WhatsNext";
 
 export function Jurisdiction() {
   const { setJurisdiction, state } = useSession();
@@ -17,6 +18,7 @@ export function Jurisdiction() {
   return (
     <section className="card">
       <h2>{copy.heading}</h2>
+      <WhatsNext />
       <p className="muted">{copy.body}</p>
       <div className="field">
         <label htmlFor="j-search">Search jurisdictions</label>

@@ -1,16 +1,24 @@
 import { useEffect, useRef, useState } from "react";
-import { nextQuestion, starterPrompts } from "../../engine/dialogue";
+import { starterPrompts } from "../../engine/dialogue";
 import { defaultResearchQuery } from "../../practice/areas";
 import { useSession } from "../../session/store";
 import { Button } from "../components/Button";
+import { GroundingBadge } from "../components/GroundingBadge";
+import { MathPanel } from "../components/MathPanel";
+import { StatsPanel } from "../components/StatsPanel";
 import { SourceChips, WebSources } from "../components/WebSources";
+import { WhatsNext } from "../components/WhatsNext";
+import { nextQuestion } from "../../engine/dialogue";
 
 export function Advise() {
   const { state, ask, answerQuestion, setStep, setWebEnabled, clearWebNotes, refreshResearch } =
     useSession();
   const [draft, setDraft] = useState("");
+  const [tool, setTool] = useState<"none" | "math" | "stats">("none");
   const q = nextQuestion(state);
   const seeded = useRef(false);
+  const lastAdvisor = [...state.messages].reverse().find((m) => m.role === "advisor");
+  const followUps = lastAdvisor?.followUps?.length ? lastAdvisor.followUps : starterPrompts(state);
 
   useEffect(() => {
     if (seeded.current || !state.webEnabled || !state.jurisdiction || state.webNotes.length) return;
@@ -18,20 +26,29 @@ export function Advise() {
     void refreshResearch(defaultResearchQuery(state.practiceArea), "filing");
   }, [state.webEnabled, state.jurisdiction, state.practiceArea, state.webNotes.length, refreshResearch]);
 
+  function send(text: string) {
+    const t = text.trim();
+    if (!t) return;
+    ask(t);
+    setDraft("");
+  }
+
   return (
     <div className="grid two advise-layout">
       <section className="card advise-card">
         <h2>Guided advisor</h2>
+        <WhatsNext />
         <p className="muted">
           Answers steer this session only. The engine retrieves checklists and
-          jurisdiction notes first. The hosted app may add allowlisted public
-          pages. It does not call an external model.
+          names your parties and facts. Grounding is an AZCoherence-inspired last
+          pass. It does not call an external model.
         </p>
         <div className="chat" aria-live="polite">
           {state.messages.map((m) => (
             <div key={m.id} className={`bubble ${m.role}`}>
               {m.text}
               <SourceChips sources={m.sources} />
+              <GroundingBadge message={m} />
             </div>
           ))}
         </div>
@@ -39,19 +56,26 @@ export function Advise() {
           className="grid advise-composer"
           onSubmit={(e) => {
             e.preventDefault();
-            const t = draft.trim();
-            if (!t) return;
-            ask(t);
-            setDraft("");
+            send(draft);
           }}
         >
+          <div className="advise-toolbar">
+            <button type="button" className="chip" aria-pressed={tool === "math"} onClick={() => setTool(tool === "math" ? "none" : "math")}>
+              Math
+            </button>
+            <button type="button" className="chip" aria-pressed={tool === "stats"} onClick={() => setTool(tool === "stats" ? "none" : "stats")}>
+              Statistics
+            </button>
+          </div>
+          {tool === "math" && <MathPanel onInsert={send} />}
+          {tool === "stats" && <StatsPanel onInsert={send} />}
           <div className="field">
             <label htmlFor="ask">Your question or facts</label>
             <textarea
               id="ask"
               value={draft}
               onChange={(e) => setDraft(e.target.value)}
-              placeholder="Ask about venue, packets, court process, safety…"
+              placeholder="Ask about venue, packets, deadlines, 10% of bail, what the numbers say…"
               enterKeyHint="send"
               autoComplete="off"
             />
@@ -61,8 +85,8 @@ export function Advise() {
           </Button>
         </form>
         <div className="chips starter-chips">
-          {starterPrompts(state.matter).map((p) => (
-            <button key={p} type="button" className="chip" onClick={() => ask(p)}>
+          {followUps.map((p) => (
+            <button key={p} type="button" className="chip" onClick={() => send(p)}>
               {p}
             </button>
           ))}

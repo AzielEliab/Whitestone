@@ -75,12 +75,31 @@ export interface EvidenceMapping {
 
 export type WebStatus = "idle" | "loading" | "ok" | "unavailable" | "blocked" | "off";
 
+export type GroundingVerdict = "PASS" | "FLAG" | "NEUTRALIZE" | "REFUSE";
+
+export interface GroundingChip {
+  verdict: GroundingVerdict;
+  confidenceCap: number;
+  flags: string[];
+  evidence: { kind: string; label: string; ref?: string }[];
+  motto: string;
+}
+
+export interface SessionReceiptChip {
+  sha256: string;
+  sourceUrls: string[];
+  statIds: string[];
+}
+
 export interface ChatMessage {
   id: string;
   role: "advisor" | "user" | "system";
   text: string;
   at: string;
   sources?: WebSource[];
+  followUps?: string[];
+  grounding?: GroundingChip;
+  receipt?: SessionReceiptChip;
 }
 
 export interface GuidedQuestion {

@@ -14,7 +14,18 @@ export function formatWebNotes(result: Pick<ResearchResult, "sources" | "notes">
       `${i + 1}. ${source.title} (${source.label})\n   “${source.excerpt}”\n   ${source.url} · retrieved ${retrievedDay(source.retrievedAt)}`,
     );
   });
+  const takeaways = webTakeaways(result);
+  if (takeaways) lines.push(takeaways);
   return lines.join("\n\n");
+}
+
+export function webTakeaways(result: Pick<ResearchResult, "sources">): string {
+  if (!result.sources.length) return "";
+  const bits = result.sources.slice(0, 3).map((source, i) => {
+    const excerpt = source.excerpt.replace(/\s+/g, " ").trim().slice(0, 220);
+    return `Takeaway ${i + 1}: ${excerpt} — ${source.title} (${source.url}, retrieved ${retrievedDay(source.retrievedAt)}).`;
+  });
+  return ["Concrete takeaways from those pages (still verify with the clerk):", ...bits].join("\n");
 }
 
 export function mergeWebNotes(existing: WebSource[], incoming: WebSource[]): WebSource[] {

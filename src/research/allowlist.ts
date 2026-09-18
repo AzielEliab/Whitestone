@@ -45,7 +45,14 @@ const JUDICIARY_EXTRA_HOSTS = new Set([
 ]);
 
 const FEDERAL_HOST_RE =
-  /(^|\.)(usa\.gov|justice\.gov|acf\.hhs\.gov|hhs\.gov|childwelfare\.gov|lsc\.gov|congress\.gov|uscourts\.gov|bjs\.gov|ojp\.gov|consumerfinance\.gov|ftc\.gov|hud\.gov)$/;
+  /(^|\.)(usa\.gov|justice\.gov|acf\.hhs\.gov|hhs\.gov|childwelfare\.gov|lsc\.gov|congress\.gov|uscourts\.gov|bjs\.gov|ojp\.gov|consumerfinance\.gov|ftc\.gov|hud\.gov|census\.gov|cdc\.gov|fbi\.gov|cjis\.gov)$/;
+
+const STATS_HOSTS = new Set([
+  "www.ncsc.org",
+  "ncsc.org",
+  "www.courtstatistics.org",
+  "courtstatistics.org",
+]);
 
 let selfHelpHostCache: Set<string> | null = null;
 
@@ -122,6 +129,10 @@ export function classifyHost(host: string): AllowMatch | null {
     return { kind: "state-bar", label: "State bar public education" };
   }
 
+  if (STATS_HOSTS.has(h) || h.endsWith(".ncsc.org")) {
+    return { kind: "statistical", label: "Court statistics / NCSC public report (not a prediction)" };
+  }
+
   if (h.endsWith(".gov")) {
     if (FEDERAL_HOST_RE.test(h)) {
       return { kind: "federal-public", label: "U.S. government public page" };
@@ -161,7 +172,7 @@ export function describeAllowlist(): {
   blockedExamples: string[];
 } {
   return {
-    kinds: ["state-judiciary", "legal-aid", "state-bar", "lii", "justia", "federal-public"],
+    kinds: ["state-judiciary", "legal-aid", "state-bar", "lii", "justia", "federal-public", "statistical"],
     patterns: [
       "https only",
       "state judiciary / self-help hosts from the jurisdiction table",
@@ -169,7 +180,8 @@ export function describeAllowlist(): {
       "*.us court/judiciary hostnames",
       "LawHelp and listed legal-aid hosts",
       "Cornell LII and law.justia.com (labeled unofficial)",
-      "usa.gov / justice.gov / ACF / uscourts.gov / CFPB public pages (family, civil, criminal education)",
+      "usa.gov / justice.gov / ACF / uscourts.gov / CFPB / Census / CDC / BJS public pages",
+      "NCSC / Court Statistics Project landing pages (labeled statistical)",
     ],
     exampleHosts: [
       "selfhelp.courts.ca.gov",
@@ -181,6 +193,9 @@ export function describeAllowlist(): {
       "www.justice.gov",
       "www.uscourts.gov",
       "www.consumerfinance.gov",
+      "bjs.ojp.gov",
+      "www.census.gov",
+      "www.ncsc.org",
     ],
     blockedExamples: ["random blogs", "SEO mills", "lawyer-directory hosts", "www.justia.com", "non-allowlisted hosts"],
   };

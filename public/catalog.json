@@ -1,11 +1,11 @@
 {
   "name": "Whitestone",
   "slug": "whitestone",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "author": "Aziel Eliab",
   "identity": "Aziel Eliab",
   "author_id": "https://www.azieleliab.com/#aziel",
-  "one_line": "One ephemeral pro se advisor with Criminal, Civil, and Divorce practice areas. Open the live Worker URL on a phone or desktop; optional software zip. Session-only memory; wipe on close. Uploads only, no case exports, no third-party LLM APIs. Hosted app may fetch allowlisted public court/legal-aid pages for the session only.",
+  "one_line": "One ephemeral pro se advisor with Criminal, Civil, and Divorce practice areas. Open the live Worker URL on a phone or desktop; optional software zip. Session-only memory; wipe on close. Uploads only, no case exports, no third-party LLM APIs. Labeled math, cited public statistics, AZCoherence-inspired anti-hallucination. Hosted app may fetch allowlisted public court/legal-aid pages for the session only.",
   "kind": "software",
   "door": "standalone",
   "github": "https://github.com/AzielEliab/Whitestone",

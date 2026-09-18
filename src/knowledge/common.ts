@@ -2,7 +2,7 @@ import type { CoverageLevel, PracticeArea } from "../types";
 
 export const PRODUCT = {
   name: "Whitestone",
-  version: "1.3.0",
+  version: "1.4.0",
   author: "Aziel Eliab",
   lens: ["Service", "Clarity", "Peace"] as const,
 };

@@ -142,6 +142,35 @@ const FEDERAL_SEEDS: ExtraSeed[] = [
     keywords: ["expunge", "record", "seal"],
     areas: ["criminal"],
   },
+  {
+    url: "https://bjs.ojp.gov/",
+    title: "Bureau of Justice Statistics",
+    keywords: ["statistic", "numbers", "plea", "pretrial", "caseload"],
+    areas: ["criminal"],
+  },
+  {
+    url: "https://www.census.gov/library/publications/2020/demo/p60-269.html",
+    title: "Census — Custodial mothers and fathers (P60-269)",
+    keywords: ["statistic", "custodial", "pro se", "child support", "numbers"],
+    areas: ["divorce"],
+  },
+  {
+    url: "https://www.ncsc.org/information-and-resources/self-represented-litigants",
+    title: "NCSC — Self-represented litigants",
+    keywords: ["statistic", "pro se", "self-represented", "numbers"],
+  },
+  {
+    url: "https://www.courtstatistics.org/",
+    title: "NCSC Court Statistics Project",
+    keywords: ["statistic", "caseload", "numbers", "housing", "civil"],
+    areas: ["civil"],
+  },
+  {
+    url: "https://www.cdc.gov/nchs/nvss/marriage-divorce.htm",
+    title: "CDC/NCHS — Marriage and divorce rates",
+    keywords: ["statistic", "divorce rate", "numbers"],
+    areas: ["divorce"],
+  },
 ];
 
 function justiaStateSlug(name: string): string {
