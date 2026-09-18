@@ -9,6 +9,7 @@ account_id = "ac575a9b822bea2bed97d0ab73aed238"
 # Pin the live id here after `wrangler kv namespace create DOWNLOADS`.
 [[kv_namespaces]]
 binding = "DOWNLOADS"
+id = "24454c5285d7443f846a70e3d124c877"
 
 [vars]
 AZIEL_RUNTIME_ORIGIN = "https://aziel-runtime.vibelock.workers.dev"
