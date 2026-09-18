@@ -4,6 +4,8 @@ export type { SourceKind, WebSource } from "./research/types";
 
 export type CoverageLevel = "procedural-overview" | "checklist" | "federal-framework";
 
+export type PracticeArea = "criminal" | "civil" | "divorce";
+
 export type MatterType =
   | "divorce"
   | "legal-separation"
@@ -15,7 +17,18 @@ export type MatterType =
   | "guardianship"
   | "protection-order"
   | "adoption"
-  | "name-change";
+  | "name-change"
+  | "small-claims"
+  | "contract-dispute"
+  | "landlord-tenant"
+  | "civil-protection-order"
+  | "debt-collection"
+  | "bail-arraignment"
+  | "discovery"
+  | "plea"
+  | "sentencing"
+  | "expungement"
+  | "rights-education";
 
 export type AppStep =
   | "welcome"
@@ -90,6 +103,7 @@ export interface SessionState {
   version: 1;
   createdAt: string;
   disclaimerAccepted: boolean;
+  practiceArea: PracticeArea | null;
   step: AppStep;
   jurisdiction: string | null;
   matter: MatterType | null;
@@ -120,6 +134,17 @@ export const MATTER_LABELS: Record<MatterType, string> = {
   "protection-order": "Protection / restraining order (family)",
   adoption: "Adoption (overview)",
   "name-change": "Name change",
+  "small-claims": "Small claims",
+  "contract-dispute": "Contract dispute (overview)",
+  "landlord-tenant": "Landlord-tenant (overview)",
+  "civil-protection-order": "Civil protection / harassment order",
+  "debt-collection": "Debt-collection defense (overview)",
+  "bail-arraignment": "Bail / arraignment",
+  discovery: "Discovery (criminal)",
+  plea: "Plea process (overview)",
+  sentencing: "Sentencing basics",
+  expungement: "Expungement / record relief (overview)",
+  "rights-education": "Rights education",
 };
 
 export const STEP_LABELS: Record<AppStep, string> = {
@@ -137,6 +162,7 @@ export function emptySession(): SessionState {
     version: 1,
     createdAt: new Date().toISOString(),
     disclaimerAccepted: false,
+    practiceArea: null,
     step: "welcome",
     jurisdiction: null,
     matter: null,

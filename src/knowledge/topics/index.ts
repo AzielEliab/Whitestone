@@ -1,5 +1,7 @@
 import type { MatterType } from "../../types";
 import type { TopicModule } from "../types";
+import { CIVIL_TOPICS } from "./civil";
+import { CRIMINAL_TOPICS } from "./criminal";
 
 const honestyBase = [
   "This is educational procedural structure, not legal advice.",
@@ -7,7 +9,7 @@ const honestyBase = [
   "Whitestone does not invent case citations or predict outcomes.",
 ];
 
-export const TOPICS: TopicModule[] = [
+export const FAMILY_TOPICS: TopicModule[] = [
   {
     id: "divorce",
     title: "Divorce / dissolution",
@@ -500,6 +502,8 @@ export const TOPICS: TopicModule[] = [
     keywords: ["name change", "former name", "restoration", "publication"],
   },
 ];
+
+export const TOPICS: TopicModule[] = [...FAMILY_TOPICS, ...CIVIL_TOPICS, ...CRIMINAL_TOPICS];
 
 export const TOPIC_BY_ID = Object.fromEntries(TOPICS.map((t) => [t.id, t])) as Record<
   MatterType,

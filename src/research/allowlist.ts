@@ -45,7 +45,7 @@ const JUDICIARY_EXTRA_HOSTS = new Set([
 ]);
 
 const FEDERAL_HOST_RE =
-  /(^|\.)(usa\.gov|justice\.gov|acf\.hhs\.gov|hhs\.gov|childwelfare\.gov|lsc\.gov|congress\.gov)$/;
+  /(^|\.)(usa\.gov|justice\.gov|acf\.hhs\.gov|hhs\.gov|childwelfare\.gov|lsc\.gov|congress\.gov|uscourts\.gov|bjs\.gov|ojp\.gov|consumerfinance\.gov|ftc\.gov|hud\.gov)$/;
 
 let selfHelpHostCache: Set<string> | null = null;
 
@@ -169,7 +169,7 @@ export function describeAllowlist(): {
       "*.us court/judiciary hostnames",
       "LawHelp and listed legal-aid hosts",
       "Cornell LII and law.justia.com (labeled unofficial)",
-      "usa.gov / justice.gov / ACF family-related public pages",
+      "usa.gov / justice.gov / ACF / uscourts.gov / CFPB public pages (family, civil, criminal education)",
     ],
     exampleHosts: [
       "selfhelp.courts.ca.gov",
@@ -179,6 +179,8 @@ export function describeAllowlist(): {
       "law.justia.com",
       "www.usa.gov",
       "www.justice.gov",
+      "www.uscourts.gov",
+      "www.consumerfinance.gov",
     ],
     blockedExamples: ["random blogs", "SEO mills", "lawyer-directory hosts", "www.justia.com", "non-allowlisted hosts"],
   };

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { nextQuestion, starterPrompts } from "../../engine/dialogue";
+import { defaultResearchQuery } from "../../practice/areas";
 import { useSession } from "../../session/store";
 import { Button } from "../components/Button";
 import { SourceChips, WebSources } from "../components/WebSources";
@@ -14,8 +15,8 @@ export function Advise() {
   useEffect(() => {
     if (seeded.current || !state.webEnabled || !state.jurisdiction || state.webNotes.length) return;
     seeded.current = true;
-    void refreshResearch("official self-help clerk packet forms", "filing");
-  }, [state.webEnabled, state.jurisdiction, state.webNotes.length, refreshResearch]);
+    void refreshResearch(defaultResearchQuery(state.practiceArea), "filing");
+  }, [state.webEnabled, state.jurisdiction, state.practiceArea, state.webNotes.length, refreshResearch]);
 
   return (
     <div className="grid two advise-layout">
@@ -50,7 +51,7 @@ export function Advise() {
               id="ask"
               value={draft}
               onChange={(e) => setDraft(e.target.value)}
-              placeholder="Ask about venue, packets, support worksheets, safety…"
+              placeholder="Ask about venue, packets, court process, safety…"
               enterKeyHint="send"
               autoComplete="off"
             />
@@ -122,7 +123,7 @@ export function Advise() {
           onToggle={setWebEnabled}
           onClear={clearWebNotes}
           onRefresh={() => {
-            void refreshResearch("official self-help clerk packet forms", "manual");
+            void refreshResearch(defaultResearchQuery(state.practiceArea), "manual");
           }}
         />
       </aside>

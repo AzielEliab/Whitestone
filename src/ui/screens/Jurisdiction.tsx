@@ -1,10 +1,12 @@
 import { useMemo, useState } from "react";
 import { listJurisdictions } from "../../knowledge";
+import { jurisdictionCopy } from "../../practice/areas";
 import { useSession } from "../../session/store";
 
 export function Jurisdiction() {
   const { setJurisdiction, state } = useSession();
   const [q, setQ] = useState("");
+  const copy = jurisdictionCopy(state.practiceArea);
   const rows = useMemo(() => {
     const needle = q.trim().toLowerCase();
     return listJurisdictions().filter(
@@ -14,12 +16,8 @@ export function Jurisdiction() {
 
   return (
     <section className="card">
-      <h2>Where will the case be heard?</h2>
-      <p className="muted">
-        Pick the state or D.C. of the court you expect to use. This is not a
-        jurisdiction opinion. Child-custody venue often follows the child&apos;s
-        home state (UCCJEA), which may differ from where you live now.
-      </p>
+      <h2>{copy.heading}</h2>
+      <p className="muted">{copy.body}</p>
       <div className="field">
         <label htmlFor="j-search">Search jurisdictions</label>
         <input

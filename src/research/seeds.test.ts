@@ -7,6 +7,7 @@ describe("seed map", () => {
     const seeds = selectSeeds({
       jurisdiction: "CA",
       matter: "divorce",
+      practiceArea: "divorce",
       query: "current divorce packet",
       reason: "ask",
     });
@@ -20,6 +21,7 @@ describe("seed map", () => {
     const seeds = selectSeeds({
       jurisdiction: "TX",
       matter: "child-support",
+      practiceArea: "divorce",
       query: "child support guidelines worksheet",
       reason: "ask",
     });
@@ -30,6 +32,7 @@ describe("seed map", () => {
     const seeds = selectSeeds({
       jurisdiction: "NY",
       matter: "custody",
+      practiceArea: "divorce",
       query: "best divorce lawyer blog reddit avvo",
       reason: "ask",
     });
@@ -40,6 +43,7 @@ describe("seed map", () => {
     const plain = selectSeeds({
       jurisdiction: "OR",
       matter: "divorce",
+      practiceArea: "divorce",
       query: "where do I file",
       reason: "ask",
     });
@@ -47,9 +51,32 @@ describe("seed map", () => {
     const statute = selectSeeds({
       jurisdiction: "OR",
       matter: "divorce",
+      practiceArea: "divorce",
       query: "Oregon statute code for residency",
       reason: "ask",
     });
     expect(statute.some((s) => s.kind === "justia" && /unofficial/i.test(s.label))).toBe(true);
+  });
+
+  it("selects criminal and civil seeds for those practice areas", () => {
+    const criminal = selectSeeds({
+      jurisdiction: "NY",
+      matter: "bail-arraignment",
+      practiceArea: "criminal",
+      query: "what happens at arraignment public defender",
+      reason: "ask",
+    });
+    expect(criminal.some((s) => /criminal|bail|arraignment|counsel|uscourts/i.test(s.url + s.title))).toBe(true);
+    expect(criminal.every((s) => !/divorce|child-custody|child-support/i.test(s.url))).toBe(true);
+
+    const civil = selectSeeds({
+      jurisdiction: "CA",
+      matter: "small-claims",
+      practiceArea: "civil",
+      query: "small claims forms",
+      reason: "ask",
+    });
+    expect(civil.some((s) => /small-claims|small_claims/i.test(s.url))).toBe(true);
+    expect(civil.every((s) => isAllowedUrl(s.url))).toBe(true);
   });
 });

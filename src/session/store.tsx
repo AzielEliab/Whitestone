@@ -15,13 +15,21 @@ import { probeResearch, requestResearch } from "../research/client";
 import { mergeWebNotes } from "../research/format";
 import { shouldFetch } from "../research/should-fetch";
 import type { ResearchReason, ResearchResult } from "../research/types";
-import { emptySession, type AppStep, type MatterType, type SessionState } from "../types";
+import {
+  clearAreaSpecificState,
+  hasAreaSpecificState,
+  isPracticeArea,
+  matterBelongsToArea,
+} from "../practice/areas";
+import { emptySession, type AppStep, type MatterType, type PracticeArea, type SessionState } from "../types";
 import { persistSessionJson, readSessionJson, wipeSessionArtifacts } from "./wipe";
 
 interface SessionApi {
   state: SessionState;
   setStep: (step: AppStep) => void;
   acceptDisclaimer: () => void;
+  beginSession: (area: PracticeArea) => void;
+  resetPracticeArea: () => void;
   setJurisdiction: (code: string) => void;
   setMatter: (matter: MatterType) => void;
   patch: (partial: Partial<SessionState>) => void;
@@ -46,9 +54,17 @@ function hydrate(): SessionState {
     const parsed = JSON.parse(raw) as SessionState;
     if (parsed?.version === 1) {
       const base = emptySession();
+      const practiceArea = isPracticeArea(parsed.practiceArea)
+        ? parsed.practiceArea
+        : parsed.disclaimerAccepted
+          ? "divorce"
+          : null;
+      const matter = parsed.matter && matterBelongsToArea(parsed.matter, practiceArea) ? parsed.matter : null;
       return {
         ...base,
         ...parsed,
+        practiceArea,
+        matter,
         learned: { ...base.learned, ...parsed.learned },
         webEnabled: parsed.webEnabled !== false,
         webNotes: Array.isArray(parsed.webNotes) ? parsed.webNotes : [],
@@ -85,9 +101,44 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     return {
       state,
       setStep: (step) => setState((s) => ({ ...s, step })),
-      acceptDisclaimer: () => setState((s) => ({ ...s, disclaimerAccepted: true, step: "jurisdiction" })),
+      acceptDisclaimer: () => setState((s) => ({ ...s, disclaimerAccepted: true, step: "welcome" })),
+      beginSession: (area) => {
+        setState((s) => {
+          const switching = Boolean(s.practiceArea && s.practiceArea !== area && hasAreaSpecificState(s));
+          if (switching) {
+            for (const file of s.uploads) {
+              if (file.previewUrl) URL.revokeObjectURL(file.previewUrl);
+            }
+          }
+          const next = switching ? clearAreaSpecificState(s) : s;
+          return {
+            ...next,
+            disclaimerAccepted: true,
+            practiceArea: area,
+            step: next.jurisdiction ? "matter" : "jurisdiction",
+          };
+        });
+      },
+      resetPracticeArea: () => {
+        setState((s) => {
+          for (const file of s.uploads) {
+            if (file.previewUrl) URL.revokeObjectURL(file.previewUrl);
+          }
+          return {
+            ...clearAreaSpecificState(s),
+            practiceArea: null,
+            disclaimerAccepted: true,
+            step: "welcome",
+          };
+        });
+      },
       setJurisdiction: (code) => setState((s) => ({ ...s, jurisdiction: code, step: "matter" })),
-      setMatter: (matter) => setState((s) => ({ ...s, matter, step: "facts" })),
+      setMatter: (matter) => {
+        setState((s) => {
+          if (!matterBelongsToArea(matter, s.practiceArea)) return s;
+          return { ...s, matter, step: "facts" };
+        });
+      },
       patch,
       ask: (text) => {
         void (async () => {
@@ -104,6 +155,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
               query: text,
               jurisdiction: base.jurisdiction,
               matter: base.matter,
+              practiceArea: base.practiceArea,
               reason: "ask",
             });
           setState({ ...base, webStatus: willFetch ? "loading" : base.webStatus });
@@ -115,6 +167,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
               ? await requestResearch({
                   jurisdiction: base.jurisdiction,
                   matter: base.matter,
+                  practiceArea: base.practiceArea,
                   query: text,
                   reason: "ask",
                 })
@@ -219,6 +272,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
             query: q,
             jurisdiction: snap.jurisdiction,
             matter: snap.matter,
+            practiceArea: snap.practiceArea,
             reason,
           })
         ) {
@@ -230,6 +284,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
           ? await requestResearch({
               jurisdiction: snap.jurisdiction,
               matter: snap.matter,
+              practiceArea: snap.practiceArea,
               query: q,
               reason,
             })

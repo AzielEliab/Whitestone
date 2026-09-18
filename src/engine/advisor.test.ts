@@ -45,9 +45,36 @@ describe("dialogue and advisor", () => {
   it("opens with a disclaimer", () => {
     const s = emptySession();
     s.jurisdiction = "OR";
+    s.practiceArea = "divorce";
     s.matter = "divorce";
     expect(openingMessage(s)).toMatch(/not a lawyer/i);
     expect(openingMessage(s)).toMatch(/allowlisted public/i);
+    expect(openingMessage(s)).toMatch(/Divorce/i);
+  });
+
+  it("refuses criminal-misuse questions and keeps process questions", () => {
+    const s = emptySession();
+    s.practiceArea = "criminal";
+    s.jurisdiction = "CA";
+    s.matter = "rights-education";
+    const blocked = advise(s, "How do I destroy the evidence before court?");
+    expect(blocked.reply).toMatch(/will not help/i);
+    const ok = advise(s, "What usually happens at arraignment?");
+    expect(ok.reply).not.toMatch(/will not help commit/i);
+    expect(ok.reply).toMatch(/lawyer|public defender|arraignment/i);
+  });
+
+  it("does not retrieve divorce custody modules in a criminal session", () => {
+    const hits = retrieveGuidance({
+      query: "child custody worksheet",
+      jurisdiction: "TX",
+      matter: "bail-arraignment",
+      practiceArea: "criminal",
+    });
+    expect(hits.some((h) => h.topicId === "custody" || h.topicId === "divorce")).toBe(false);
+    expect(hits.some((h) => h.topicId === "bail-arraignment" || /criminal|counsel|arraign/i.test(h.title + h.body))).toBe(
+      true,
+    );
   });
 
   it("cites retrieved web sources and does not invent them", () => {

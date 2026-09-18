@@ -1,8 +1,8 @@
 {
   "name": "whitestone",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "private": true,
-  "description": "Ephemeral pro se family-law advisor. Session-only memory; wipe on close. Live Worker URL on phone or desktop — no download required. No exports, no third-party LLM APIs.",
+  "description": "Ephemeral pro se advisor for Criminal, Civil, and Divorce. Session-only memory; wipe on close. Live Worker URL on phone or desktop; optional software zip. No case exports, no third-party LLM APIs.",
   "license": "Apache-2.0",
   "author": "Aziel Eliab",
   "type": "module",

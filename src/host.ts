@@ -1,9 +1,13 @@
-/** Viewport where download CTAs and desktop chrome get in the way. */
+/** Viewport used for compact chrome — download CTAs stay available either way. */
 export const NARROW_QUERY = "(max-width: 720px)";
 
+export const SOFTWARE_RELEASES_URL = "https://github.com/AzielEliab/Whitestone/releases/latest";
+export const SOFTWARE_ZIP_URL =
+  "https://github.com/AzielEliab/Whitestone/releases/latest/download/whitestone-standalone.zip";
+
 /**
- * The live Cloudflare Worker (or author domain) is the product.
- * Do not send people to a zip from that surface.
+ * The live Cloudflare Worker (or author domain) is the hosted product.
+ * The zip remains an optional download on that surface too.
  */
 export function isHostedWorkerApp(hostname: string): boolean {
   const host = hostname.trim().toLowerCase();
@@ -16,14 +20,20 @@ export function isHostedWorkerApp(hostname: string): boolean {
   );
 }
 
-/** Optional offline-zip footer — never on phones or the hosted Worker. */
-export function shouldOfferSoftwareDownload(opts: {
+/**
+ * Optional software zip — available on hosted and local, desktop and mobile.
+ * The live site still works without installing.
+ */
+export function shouldOfferSoftwareDownload(_opts?: {
   hostname: string;
   narrowViewport: boolean;
 }): boolean {
-  if (opts.narrowViewport) return false;
-  if (isHostedWorkerApp(opts.hostname)) return false;
   return true;
+}
+
+/** Hosted `/download` increments the Worker counter; local builds use the GitHub Release page. */
+export function softwareDownloadHref(hostname: string): string {
+  return isHostedWorkerApp(hostname) ? "/download" : SOFTWARE_RELEASES_URL;
 }
 
 export function applyHostSurface(doc: Document = document, loc: Location = location): void {

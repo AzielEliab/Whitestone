@@ -1,5 +1,7 @@
 import { FEDERAL_FRAMEWORK, getJurisdiction, retrieveGuidance, TOPIC_BY_ID } from "../knowledge";
 import { LEGAL_DISCLAIMER } from "../knowledge/common";
+import { PRACTICE_LABELS } from "../practice/areas";
+import { criminalRefuse } from "../practice/refuse";
 import { fallbackResearchNote, formatWebNotes } from "../research/format";
 import type { ResearchResult } from "../research/types";
 import type { SessionState } from "../types";
@@ -18,6 +20,14 @@ export function openingMessage(state: SessionState): string {
   if (state.webEnabled) {
     bits.push(
       "On the hosted app I may retrieve allowlisted public court, legal-aid, and government pages for currency. Those snippets stay in this session only. Offline copies fall back to the bundled knowledge layer. I still do not invent citations, and I am not a lawyer.",
+    );
+  }
+  if (state.practiceArea) {
+    bits.push(`Practice area for this session: ${PRACTICE_LABELS[state.practiceArea]}. Changing area clears matter-specific notes so sessions do not mix.`);
+  }
+  if (state.practiceArea === "criminal") {
+    bits.push(
+      "Criminal sessions are rights and process education. I will not help commit a crime, destroy evidence, intimidate a witness, or evade arrest or court process. For any charge that could mean jail or a record, talk to a lawyer or the public defender.",
     );
   }
   if (j) {
@@ -51,14 +61,22 @@ export function advise(
     query: userText,
     jurisdiction: state.jurisdiction,
     matter: state.matter,
+    practiceArea: state.practiceArea,
     extra: [...learned.keywords, ...Object.values(state.answers), ...state.uploads.map((u) => u.note)],
   });
 
   const parts: string[] = [];
 
+  const refused = criminalRefuse(userText);
+  if (refused) {
+    parts.push(refused);
+    parts.push("Lamb Lens: Service → Clarity → Peace. Verify with the court. End & erase when you are done.");
+    return { reply: parts.join("\n\n"), state: next };
+  }
+
   if (learned.safetyFlag) {
     parts.push(
-      "Safety first. If you are in danger, call 911. National Domestic Violence Hotline: 1-800-799-7233. A protection-order clerk window is usually faster than a long divorce packet.",
+      "Safety first. If you are in danger, call 911. National Domestic Violence Hotline: 1-800-799-7233. A protection-order clerk window is usually faster than a long packet in another matter.",
     );
   }
 
@@ -82,12 +100,12 @@ export function advise(
 
   if (j) {
     const q = userText.toLowerCase();
-    if (/residenc|how long|wait|separat/.test(q) && state.matter === "divorce") {
+    if (/residenc|how long|wait|separat/.test(q) && state.matter === "divorce" && state.practiceArea !== "criminal") {
       parts.push(
         `${j.name} divorce timing (overview, verify): residency ${j.residencyDivorce}. Waiting / separation: ${j.waitingOrSeparation}.`,
       );
     }
-    if (/child support|guideline|worksheet/.test(q)) {
+    if (/child support|guideline|worksheet/.test(q) && state.practiceArea !== "criminal") {
       parts.push(
         `${j.name} child support (overview): model ${j.childSupportModel.replace(/-/g, " ")}; duration ${j.childSupportEnds}; guidelines referenced as ${j.childSupportGuidelines}; agency ${j.childSupportAgency}. Use the official worksheet — I do not output a dollar figure.`,
       );
@@ -95,12 +113,12 @@ export function advise(
     if (/court|where to file|venue|clerk/.test(q)) {
       parts.push(`Usual court: ${j.courtName}. Venue note: ${j.venueNote} Self-help: ${j.selfHelpUrl}`);
     }
-    if (/community|property|equitable/.test(q)) {
+    if (/community|property|equitable/.test(q) && state.practiceArea === "divorce") {
       parts.push(
         `Property regime (overview): ${j.propertyRegime === "community" ? "community property" : "equitable distribution"}. This is not a valuation of your estate.`,
       );
     }
-    if (/protect|restrain|injunction|pfa/.test(q)) {
+    if (/protect|restrain|injunction|pfa/.test(q) && state.practiceArea !== "criminal") {
       parts.push(`Local family-order name (overview): ${j.protectionOrderName}. Confirm the current petition title with the clerk.`);
     }
     if (/legal separation|separate maintenance/.test(q)) {

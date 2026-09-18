@@ -1,23 +1,27 @@
 import { getJurisdiction } from "../../knowledge";
-import { MATTER_LABELS, type MatterType } from "../../types";
+import { mattersForArea } from "../../practice/areas";
+import { MATTER_LABELS } from "../../types";
 import { useSession } from "../../session/store";
-
-const ORDER = Object.keys(MATTER_LABELS) as MatterType[];
 
 export function Matter() {
   const { state, setMatter } = useSession();
   const j = getJurisdiction(state.jurisdiction);
+  const order = mattersForArea(state.practiceArea);
   return (
     <section className="card grid">
       <h2>What kind of matter is this?</h2>
       {j && (
         <p className="muted">
-          {j.name} · {j.courtName}. Coverage: {j.coverage}. Property regime:{" "}
-          {j.propertyRegime === "community" ? "community property" : "equitable distribution"}.
+          {j.name} · {j.courtName}. Coverage: {j.coverage}.
+          {state.practiceArea === "divorce"
+            ? ` Property regime: ${
+                j.propertyRegime === "community" ? "community property" : "equitable distribution"
+              }.`
+            : " Confirm the clerk for the correct civil or criminal docket."}
         </p>
       )}
       <div className="choice-grid">
-        {ORDER.map((id) => (
+        {order.map((id) => (
           <button key={id} type="button" className="choice" onClick={() => setMatter(id)}>
             <strong>{MATTER_LABELS[id]}</strong>
             <span className="muted">Guided checklist + filing structure</span>

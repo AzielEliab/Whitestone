@@ -1,3 +1,4 @@
+import { PRACTICE_LABELS, PRACTICE_SUBTITLES } from "./practice/areas";
 import { useSession } from "./session/store";
 import { EraseBar } from "./ui/components/EraseBar";
 import { SoftwareDownload } from "./ui/components/SoftwareDownload";
@@ -12,7 +13,11 @@ import { Matter } from "./ui/screens/Matter";
 import { Welcome } from "./ui/screens/Welcome";
 
 export function App() {
-  const { state, setStep } = useSession();
+  const { state, setStep, resetPracticeArea } = useSession();
+  const subtitle = state.practiceArea
+    ? PRACTICE_SUBTITLES[state.practiceArea]
+    : "Ephemeral pro se advisor — web or download";
+
   return (
     <div className="shell">
       <a className="skip" href="#main">
@@ -25,17 +30,35 @@ export function App() {
           </span>
           <span>
             Whitestone
-            <small>Ephemeral pro se family-law advisor</small>
+            <small>{subtitle}</small>
           </span>
         </button>
         <div className="top-actions">
+          {state.practiceArea && state.step !== "welcome" && (
+            <button
+              type="button"
+              className="btn"
+              onClick={() => {
+                const area = state.practiceArea;
+                if (!area) return;
+                const ok = window.confirm(
+                  `Change practice area? This clears ${PRACTICE_LABELS[area]} matter notes, chat, uploads, and web sources so areas do not mix.`,
+                );
+                if (!ok) return;
+                resetPracticeArea();
+              }}
+            >
+              {PRACTICE_LABELS[state.practiceArea]}
+            </button>
+          )}
+          <SoftwareDownload variant="header" />
           <a className="btn desktop-only" href="./catalog.json">
             Catalog
           </a>
           <ThemeToggle />
         </div>
       </header>
-      {state.disclaimerAccepted && <Stepper />}
+      {state.disclaimerAccepted && state.practiceArea && state.step !== "welcome" && <Stepper />}
       <main id="main">
         {state.step === "welcome" && <Welcome />}
         {state.step === "jurisdiction" && <Jurisdiction />}
@@ -46,7 +69,7 @@ export function App() {
         {state.step === "filing" && <Filing />}
       </main>
       {state.disclaimerAccepted && <EraseBar />}
-      <SoftwareDownload />
+      <SoftwareDownload variant="footer" />
     </div>
   );
 }

@@ -44,6 +44,24 @@ const ISSUE_PATTERNS: { issueId: string; label: string; re: RegExp; allegation: 
     re: /\b(order dated|decree|judgment|case no|docket|cause no)\b/i,
     allegation: "The excerpt may show an existing order. Another court usually cannot rewrite it casually.",
   },
+  {
+    issueId: "housing",
+    label: "Lease / housing",
+    re: /\b(lease|rent|evict|landlord|tenant|habitability|security deposit)\b/i,
+    allegation: "The excerpt may relate to a housing fact. Confirm notice dates with the official packet.",
+  },
+  {
+    issueId: "debt",
+    label: "Account / collection",
+    re: /\b(account ending|balance due|collection|validation|garnish|debt buyer)\b/i,
+    allegation: "The excerpt may relate to a claimed debt. Do not admit an amount you have not checked.",
+  },
+  {
+    issueId: "criminal-process",
+    label: "Criminal process paper",
+    re: /\b(citation|complaint|arraignment|bail|bond|discovery|plea|sentence|warrant)\b/i,
+    allegation: "The excerpt may be a charging or court paper. Give originals to your lawyer. Do not destroy anything.",
+  },
 ];
 
 export function mapEvidence(files: EvidenceFile[], matter: MatterType | null): EvidenceMapping[] {
