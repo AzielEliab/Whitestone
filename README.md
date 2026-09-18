@@ -121,6 +121,12 @@ The hosted UI shows a quiet **Download software** action (header, Welcome, and f
 
 Unzip and serve the `whitestone/` folder (`npx serve .` or `python3 -m http.server`). Read `RUN.txt`.
 
+Counted zip (HTTP 200, isolated KV, no 302): **https://whitestone-download-tracker.vibelock.workers.dev/download**
+
+Tracker homepage (Views / Downloads): **https://whitestone-download-tracker.vibelock.workers.dev/**
+
+The live app Worker at `whitestone.vibelock.workers.dev` is unchanged. Its `/download` may still 302 to GitHub. The tracker is the sibling counter — same pattern as `ark-download-tracker.vibelock.workers.dev`.
+
 ## Run locally
 
 ```bash

@@ -23,3 +23,5 @@ jobs:
             echo "Third-party LLM SDK is not allowed"
             exit 1
           fi
+      - name: Verify download-tracker mesh proxy
+        run: node workers/download-tracker/scripts/verify-mesh-proxy.mjs

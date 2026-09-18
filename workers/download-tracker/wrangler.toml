@@ -1,0 +1,32 @@
+name = "whitestone-download-tracker"
+main = "src/index.js"
+compatibility_date = "2026-09-18"
+workers_dev = true
+account_id = "ac575a9b822bea2bed97d0ab73aed238"
+
+# Isolated counter: KV namespace WHITESTONE_DOWNLOADS (created on first deploy).
+# Binding name MUST stay DOWNLOADS (not WHITESTONE_DOWNLOADS — that is the title).
+# Pin the live id here after `wrangler kv namespace create DOWNLOADS`.
+[[kv_namespaces]]
+binding = "DOWNLOADS"
+
+[vars]
+AZIEL_RUNTIME_ORIGIN = "https://aziel-runtime.vibelock.workers.dev"
+
+# Worker→Worker public fetch of aziel-runtime can return HTML/404.
+# Proxy via env.AZIEL_RUNTIME.fetch(new Request("https://aziel-runtime/v1/mesh/…")).
+# Hostname is a placeholder (not DNS). HTTP fallback only when unbound.
+# Mesh paths are never rewritten onto /v1/fraggate.
+[[services]]
+binding = "AZIEL_RUNTIME"
+service = "aziel-runtime"
+
+[assets]
+directory = "./public"
+binding = "ASSETS"
+# /v1/* covers /v1/mesh/* (AZIEL_RUNTIME proxy) and local /v1/{op}.
+run_worker_first = ["/", "/install.sh", "/install.sh/", "/download", "/download/*", "/stats", "/event", "/go", "/count", "/count/", "/v1", "/v1/*", "/openapi.json", "/ai", "/ai/*", "/mcp", "/mcp/", "/robots.txt", "/sitemap.xml", "/cite.json", "/llms.txt"]
+
+[observability]
+enabled = true
+head_sampling_rate = 1
