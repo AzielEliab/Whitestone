@@ -1,4 +1,5 @@
-import type { MatterType } from "../types";
+import { mattersForArea } from "../practice/areas";
+import type { MatterType, PracticeArea } from "../types";
 import { FEDERAL_FRAMEWORK } from "./common";
 import { JURISDICTIONS, JURISDICTION_BY_CODE } from "./jurisdictions";
 import { TOPIC_BY_ID, TOPICS } from "./topics";
@@ -22,16 +23,48 @@ function tokens(text: string): string[] {
     .filter((t) => t.length > 2);
 }
 
+function jurisdictionHit(code: string | null | undefined, area?: PracticeArea | null) {
+  const j = getJurisdiction(code);
+  if (!j) return null;
+  if (area === "criminal") {
+    return {
+      score: 10,
+      source: "jurisdiction" as const,
+      title: `${j.name} — court & criminal process (overview)`,
+      body: `A court name in this table is ${j.courtName}; criminal cases are often in a different division or municipal/superior court. Confirm the clerk. ${j.venueNote} Official starting point: ${j.selfHelpUrl}. Whitestone does not replace a lawyer or public defender.`,
+      jurisdiction: j.code,
+    };
+  }
+  if (area === "civil") {
+    return {
+      score: 10,
+      source: "jurisdiction" as const,
+      title: `${j.name} — court & civil self-help`,
+      body: `A common trial court name: ${j.courtName}. Small-claims and housing may be a different docket. ${j.venueNote} Name-change note: ${j.nameChangeNote} Official starting point: ${j.selfHelpUrl}`,
+      jurisdiction: j.code,
+    };
+  }
+  return {
+    score: 10,
+    source: "jurisdiction" as const,
+    title: `${j.name} — court & divorce timing`,
+    body: `Usual family trial court: ${j.courtName}. ${j.venueNote} Typical divorce residency: ${j.residencyDivorce}. Timing / separation: ${j.waitingOrSeparation}. Property: ${j.propertyRegime === "community" ? "community property" : "equitable distribution"}. Child-support model: ${j.childSupportModel.replace(/-/g, " ")}. Support duration (overview): ${j.childSupportEnds}. Agency: ${j.childSupportAgency}. Protection-order name: ${j.protectionOrderName}. Legal separation: ${j.legalSeparation} Official starting point: ${j.selfHelpUrl}`,
+    jurisdiction: j.code,
+  };
+}
+
 export function retrieveGuidance(opts: {
   query: string;
   jurisdiction?: string | null;
   matter?: MatterType | null;
+  practiceArea?: PracticeArea | null;
   extra?: string[];
 }): RetrievalHit[] {
   const bag = tokens([opts.query, ...(opts.extra ?? [])].join(" "));
   const hits: RetrievalHit[] = [];
+  const allowed = new Set(mattersForArea(opts.practiceArea));
 
-  const matter = opts.matter ? TOPIC_BY_ID[opts.matter] : undefined;
+  const matter = opts.matter && allowed.has(opts.matter) ? TOPIC_BY_ID[opts.matter] : undefined;
   if (matter) {
     hits.push({
       score: 12,
@@ -42,18 +75,11 @@ export function retrieveGuidance(opts: {
     });
   }
 
-  const j = getJurisdiction(opts.jurisdiction);
-  if (j) {
-    hits.push({
-      score: 10,
-      source: "jurisdiction",
-      title: `${j.name} — court & divorce timing`,
-      body: `Usual family trial court: ${j.courtName}. ${j.venueNote} Typical divorce residency: ${j.residencyDivorce}. Timing / separation: ${j.waitingOrSeparation}. Property: ${j.propertyRegime === "community" ? "community property" : "equitable distribution"}. Child-support model: ${j.childSupportModel.replace(/-/g, " ")}. Support duration (overview): ${j.childSupportEnds}. Agency: ${j.childSupportAgency}. Protection-order name: ${j.protectionOrderName}. Legal separation: ${j.legalSeparation} Official starting point: ${j.selfHelpUrl}`,
-      jurisdiction: j.code,
-    });
-  }
+  const jHit = jurisdictionHit(opts.jurisdiction, opts.practiceArea);
+  if (jHit) hits.push(jHit);
 
   for (const topic of TOPICS) {
+    if (opts.practiceArea && !allowed.has(topic.id)) continue;
     let score = 0;
     for (const k of topic.keywords) {
       if (bag.some((t) => k.includes(t) || t.includes(k))) score += 3;
@@ -73,12 +99,13 @@ export function retrieveGuidance(opts: {
   }
 
   for (const fed of FEDERAL_FRAMEWORK) {
+    if (opts.practiceArea && fed.areas && !fed.areas.includes(opts.practiceArea)) continue;
     let score = 0;
     const ft = tokens(fed.title + " " + fed.body);
     for (const t of bag) if (ft.includes(t)) score += 2;
     if (
       bag.some((t) =>
-        ["uccjea", "home", "interstate", "uifsa", "iv-d", "safety", "911", "service", "fee"].includes(t),
+        ["uccjea", "home", "interstate", "uifsa", "iv-d", "safety", "911", "service", "fee", "lawyer", "counsel", "silent", "debt", "eviction"].includes(t),
       )
     ) {
       score += 1;

@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { buildFilingOutline } from "../../engine/filing";
+import { defaultResearchQuery } from "../../practice/areas";
 import { useSession } from "../../session/store";
 import { Button } from "../components/Button";
 import { WebSources } from "../components/WebSources";
@@ -12,8 +13,8 @@ export function Filing() {
   useEffect(() => {
     if (seeded.current || !state.webEnabled || !state.jurisdiction || state.webNotes.length) return;
     seeded.current = true;
-    void refreshResearch("clerk packet official forms filing self-help", "filing");
-  }, [state.webEnabled, state.jurisdiction, state.webNotes.length, refreshResearch]);
+    void refreshResearch(`${defaultResearchQuery(state.practiceArea)} clerk packet official forms`, "filing");
+  }, [state.webEnabled, state.jurisdiction, state.practiceArea, state.webNotes.length, refreshResearch]);
   return (
     <section className="card grid">
       <h2>Filing structure — on screen only</h2>
@@ -69,7 +70,7 @@ export function Filing() {
         onToggle={setWebEnabled}
         onClear={clearWebNotes}
         onRefresh={() => {
-          void refreshResearch("clerk packet official forms filing self-help", "manual");
+          void refreshResearch(`${defaultResearchQuery(state.practiceArea)} clerk packet official forms`, "manual");
         }}
       />
       <div className="chips sticky-actions">

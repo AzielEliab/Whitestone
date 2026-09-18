@@ -1,23 +1,41 @@
 import { EPHEMERAL_COPY, LEGAL_DISCLAIMER, NO_EXPORT_COPY, PRODUCT, WEB_RESEARCH_COPY } from "../../knowledge/common";
+import {
+  hasAreaSpecificState,
+  PRACTICE_AREAS,
+  PRACTICE_BLURBS,
+  PRACTICE_LABELS,
+} from "../../practice/areas";
 import { useSession } from "../../session/store";
-import { Button } from "../components/Button";
+import type { PracticeArea } from "../../types";
+import { SoftwareDownload } from "../components/SoftwareDownload";
 import { LambLens } from "../components/LambLens";
 
 export function Welcome() {
-  const { acceptDisclaimer } = useSession();
+  const { state, beginSession } = useSession();
+
+  function chooseArea(area: PracticeArea) {
+    if (state.practiceArea && state.practiceArea !== area && hasAreaSpecificState(state)) {
+      const ok = window.confirm(
+        "Switch practice area? This clears matter, facts, chat, uploads, and web notes so sessions do not mix areas.",
+      );
+      if (!ok) return;
+    }
+    beginSession(area);
+  }
+
   return (
     <section className="card grid">
       <LambLens />
       <h1>Whitestone</h1>
       <p className="serif muted">
-        An ephemeral pro se family-law advisor for all 50 states and D.C. Educational
-        procedural guidance — not a lawyer, not legal advice, not a replacement for
-        counsel.
+        One ephemeral pro se advisor — three practice areas. Educational procedural
+        guidance for all 50 states and D.C. Not a lawyer, not legal advice, not a
+        replacement for counsel.
       </p>
       <p>
-        This page is the full product — phone or desktop. Open the live Cloudflare
-        URL in a browser and finish a session here. No zip, App Store app, or
-        install.
+        Use it in the browser on a phone or desktop. Open the live Cloudflare URL
+        and finish a session here. A software zip is optional if you want an
+        offline copy — you do not need it to use Whitestone.
       </p>
       <div className="banner" role="note">
         {LEGAL_DISCLAIMER}
@@ -39,11 +57,26 @@ export function Welcome() {
         Optional: use your browser&apos;s Add to Home Screen for a shortcut. Sessions
         stay ephemeral — End & erase still wipes chat, uploads, and web notes.
       </p>
-      <div className="chips sticky-actions">
-        <Button kind="primary" onClick={acceptDisclaimer}>
-          I understand — begin a session
-        </Button>
+      <h2>Choose a practice area</h2>
+      <p className="muted">
+        One software. Pick Criminal, Civil, or Divorce for this session. Change later
+        only with a reset so areas do not mix.
+      </p>
+      <div className="area-grid">
+        {PRACTICE_AREAS.map((id) => (
+          <button
+            key={id}
+            type="button"
+            className="area-choice"
+            aria-pressed={state.practiceArea === id}
+            onClick={() => chooseArea(id)}
+          >
+            <strong>{PRACTICE_LABELS[id]}</strong>
+            <span>{PRACTICE_BLURBS[id]}</span>
+          </button>
+        ))}
       </div>
+      <SoftwareDownload variant="welcome" />
       <p className="muted" style={{ fontSize: "0.82rem" }}>
         {PRODUCT.name} {PRODUCT.version} · Author {PRODUCT.author}
       </p>

@@ -1,4 +1,4 @@
-import type { MatterType } from "../types";
+import type { MatterType, PracticeArea } from "../types";
 
 export type SourceKind =
   | "state-judiciary"
@@ -34,6 +34,7 @@ export interface WebSource {
 export interface ResearchInput {
   jurisdiction: string | null;
   matter: MatterType | null;
+  practiceArea: PracticeArea | null;
   query: string;
   reason: ResearchReason;
 }

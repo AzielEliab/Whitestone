@@ -1,4 +1,4 @@
-import type { CoverageLevel, MatterType } from "../types";
+import type { CoverageLevel, MatterType, PracticeArea } from "../types";
 
 export interface JurisdictionProfile {
   code: string;
@@ -33,6 +33,14 @@ export interface TopicModule {
   filingPathway: string[];
   honesty: string[];
   keywords: string[];
+}
+
+export interface FrameworkNote {
+  id: string;
+  title: string;
+  coverage: CoverageLevel;
+  body: string;
+  areas?: PracticeArea[];
 }
 
 export interface RetrievalHit {

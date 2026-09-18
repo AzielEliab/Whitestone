@@ -4,11 +4,11 @@
 [![release](https://img.shields.io/github/v/release/AzielEliab/Whitestone?label=release)](https://github.com/AzielEliab/Whitestone/releases/latest)
 [![license](https://img.shields.io/badge/license-Apache--2.0-241f1a)](LICENSE)
 
-**Ephemeral pro se family-law advisor** for all 50 U.S. states and the District of Columbia.
+**One ephemeral pro se advisor** with three practice areas — **Criminal**, **Civil**, and **Divorce** — for all 50 U.S. states and the District of Columbia.
 
 Lamb Lens: **Service → Clarity → Peace**.
 
-**Phone or desktop: open the live Cloudflare URL. That is the full product — no GitHub zip, App Store app, or install.**
+**Use it in the browser:** open the live Cloudflare URL on a phone or desktop. That is the full product. **You can also download** an optional GitHub Release zip if you want an offline copy. Neither path is required to the exclusion of the other.
 
 **https://whitestone.vibelock.workers.dev**
 
@@ -16,32 +16,35 @@ Human UI first. A small `GET /v1/software` catalog exists for agent discovery. T
 
 ## What it is
 
-Whitestone walks a person through a **session-only** path:
+Whitestone is **one software**. After the Welcome disclaimer you choose a practice area:
 
-1. Accept a plain-language disclaimer
-2. Choose a jurisdiction
-3. Choose a matter type
-4. Enter people and facts
-5. Upload evidence (PDF, DOCX, text, images) — **in only**
-6. Guided Q&A from a structured knowledge base
-7. On-screen filing structure / caption draft
-8. **End & erase**
+1. **Criminal** — bail / arraignment, discovery, plea process overview, sentencing basics, expungement overview, rights education. Hard refuse: help committing crimes, destroying evidence, witness intimidation, evading process. Urge counsel or the public defender for serious charges.
+2. **Civil** — small claims, contract-dispute overview, landlord-tenant overview, civil protection orders, name change, debt-collection defense overview. High-level procedural and court self-help research. Not business-formation mill advice.
+3. **Divorce** — the existing family / divorce track (custody, support, dissolution, parentage, guardianship, family protection orders, adoption overview, and related filings).
 
-The advisor is a **self-contained engine**: jurisdiction notes + topic checklists + retrieval + a deterministic dialogue / state machine that adapts from **this chat only**. On the hosted Worker it may also fetch **allowlisted public court, legal-aid, and government pages** and cite them in-session. No API keys. No third-party LLM. A desktop zip exists only as an optional offline backup and **does not include live research**.
+Then the session-only path:
 
-## Use in a browser (no download)
+1. Choose a jurisdiction
+2. Choose a matter type for that area
+3. Enter people and facts
+4. Upload evidence (PDF, DOCX, text, images) — **in only**
+5. Guided Q&A from a structured knowledge base
+6. On-screen filing structure / caption draft
+7. **End & erase**
+
+Changing practice area requires a clear reset (or End & erase) so sessions do not mix areas.
+
+The advisor is a **self-contained engine**: jurisdiction notes + topic checklists + retrieval + a deterministic dialogue / state machine that adapts from **this chat only**. On the hosted Worker it may also fetch **allowlisted public court, legal-aid, and government pages** and cite them in-session. No API keys. No third-party LLM. A desktop zip is an optional offline backup and **does not include live research**.
+
+## Use in a browser (no download required)
 
 Phone and desktop use the same live app:
 
 1. Open **https://whitestone.vibelock.workers.dev** in any browser (Safari, Chrome, Firefox, Edge).
-2. Accept the disclaimer and walk the session: jurisdiction → matter → people/facts → evidence (camera, photos, or files) → advisor → filing structure → **End & erase**.
+2. Accept the disclaimer, pick **Criminal / Civil / Divorce**, and walk the session: jurisdiction → matter → people/facts → evidence (camera, photos, or files) → advisor → filing structure → **End & erase**.
 3. Optional on a phone: browser menu → **Add to Home Screen**. That is a shortcut, not an App Store install. Sessions stay ephemeral.
 
-You do **not** need `whitestone-standalone.zip` to use Whitestone. The zip is a backup for people who want a portable offline copy.
-
-### Matter types
-
-Custody, parenting time, child support, spousal support / alimony, divorce / dissolution, legal separation, parentage / paternity, guardianship, family protection / restraining orders, adoption overview, and name change.
+You do **not** need `whitestone-standalone.zip` to use Whitestone. The zip is there for people who want a portable offline copy.
 
 ### Coverage honesty
 
@@ -49,17 +52,18 @@ The knowledge layer is a **procedural overview and checklist**, not an annotated
 
 ### Live public-page research (hosted app)
 
-The live Worker (`POST /api/research`) selects a short allowlist — state judiciary / self-help portals, LawHelp and listed legal-aid sites, Cornell LII, Justia statute browsers (labeled unofficial), and USA.gov / justice.gov family-related public pages. Random blogs and SEO mills are blocked.
+The live Worker (`POST /api/research`) selects a short allowlist — state judiciary / self-help portals, LawHelp and listed legal-aid sites, Cornell LII, Justia statute browsers (labeled unofficial), and USA.gov / justice.gov / uscourts.gov / CFPB public pages — **seeded by the session’s practice area**. Random blogs and SEO mills are blocked.
 
 Fetched text is ephemeral: session-only in the browser, plus a short Worker cache of the **same public URL** (not your case). End & erase wipes web notes with the rest of the session. Offline zip / `vite` without the Worker fall back to the bundled knowledge layer.
 
-**After merge, redeploy the Worker** so `/api/research` is live. `npm run dev` can proxy to `wrangler dev` on port 8787.
+**After merge, redeploy the Worker** so `/api/research` and the three-area UI are live. `npm run dev` can proxy to `wrangler dev` on port 8787.
 
 ## What it is not
 
 - **Not a lawyer. Not a law firm. Not legal advice.**
-- **Not a replacement for an attorney**, court clerk, or judge.
-- **Not a predictor** of custody, support, or property outcomes.
+- **Not a replacement for an attorney**, public defender, court clerk, or judge.
+- **Not a predictor** of custody, support, civil outcomes, or criminal sentences.
+- **Not help committing crimes**, destroying evidence, intimidating witnesses, or evading arrest or court process.
 - **Not an export tool.** There is no download, print, or save-as of filings, chat, or evidence packages from the app.
 - **Not a third-party LLM client.** No OpenAI, Anthropic, Google Gemini, xAI, Groq, or similar SDKs.
 
@@ -73,13 +77,15 @@ A light Home Screen / PWA shell may cache **static UI only**. It must not keep c
 
 **Uploads only.** You bring files in. You do not take a Whitestone “evidence zip” or “filing package” out. (The GitHub Release zip is the **software**, not your case.)
 
-## Optional offline zip (never required)
+## Optional software download (never required)
 
 Latest portable **software** build (not your case):
 
 **https://github.com/AzielEliab/Whitestone/releases/latest/download/whitestone-standalone.zip**
 
-The live Worker UI has no download button. A local/standalone build may show a quiet footer link. The counted redirect **https://whitestone.vibelock.workers.dev/download** and [![downloads](https://whitestone.vibelock.workers.dev/count/download)](https://whitestone.vibelock.workers.dev/download) stay here for people who want an offline copy.
+The hosted UI shows a quiet **Download software** action (header, Welcome, and footer) on desktop and mobile. It points at the counted redirect **https://whitestone.vibelock.workers.dev/download**. The live site still works without installing.
+
+[![downloads](https://whitestone.vibelock.workers.dev/count/download)](https://whitestone.vibelock.workers.dev/download)
 
 Unzip and serve the `whitestone/` folder (`npx serve .` or `python3 -m http.server`). Read `RUN.txt`.
 

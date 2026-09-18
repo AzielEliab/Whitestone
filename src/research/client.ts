@@ -35,6 +35,7 @@ export async function requestResearch(input: ResearchInput): Promise<ResearchRes
       body: JSON.stringify({
         jurisdiction: input.jurisdiction,
         matter: input.matter,
+        practiceArea: input.practiceArea,
         query: input.query,
         reason: input.reason,
       }),

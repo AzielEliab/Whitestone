@@ -28,6 +28,10 @@ describe("allowlist", () => {
     expect(classifyUrl("https://www.usa.gov/child-support")?.kind).toBe("federal-public");
     expect(classifyUrl("https://www.justice.gov/ovw")?.kind).toBe("federal-public");
     expect(classifyUrl("https://www.acf.hhs.gov/css")?.kind).toBe("federal-public");
+    expect(classifyUrl("https://www.uscourts.gov/about-federal-courts/types-cases/criminal-cases")?.kind).toBe(
+      "federal-public",
+    );
+    expect(classifyUrl("https://www.consumerfinance.gov/")?.kind).toBe("federal-public");
   });
 
   it("blocks blogs, SEO mills, lawyer directories, and private hosts", () => {

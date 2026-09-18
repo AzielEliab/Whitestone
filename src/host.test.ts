@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { isHostedWorkerApp, shouldOfferSoftwareDownload } from "./host";
+import { isHostedWorkerApp, shouldOfferSoftwareDownload, softwareDownloadHref } from "./host";
 
 describe("hosted worker detection", () => {
   it("treats the live Cloudflare URL as the product host", () => {
@@ -15,30 +15,41 @@ describe("hosted worker detection", () => {
 });
 
 describe("software download CTAs", () => {
-  it("hides the zip on the Worker host even on a wide desktop", () => {
+  it("offers the zip on the Worker host on a wide desktop", () => {
     expect(
       shouldOfferSoftwareDownload({
         hostname: "whitestone.vibelock.workers.dev",
         narrowViewport: false,
       }),
-    ).toBe(false);
+    ).toBe(true);
   });
 
-  it("hides the zip on a phone even when served locally", () => {
+  it("offers the zip on a phone, hosted or local", () => {
+    expect(
+      shouldOfferSoftwareDownload({
+        hostname: "whitestone.vibelock.workers.dev",
+        narrowViewport: true,
+      }),
+    ).toBe(true);
     expect(
       shouldOfferSoftwareDownload({
         hostname: "localhost",
         narrowViewport: true,
       }),
-    ).toBe(false);
+    ).toBe(true);
   });
 
-  it("keeps only a quiet optional zip on a wide local / standalone desktop window", () => {
+  it("keeps the zip on a wide local / standalone desktop window", () => {
     expect(
       shouldOfferSoftwareDownload({
         hostname: "localhost",
         narrowViewport: false,
       }),
     ).toBe(true);
+  });
+
+  it("uses the counted /download path on the hosted Worker", () => {
+    expect(softwareDownloadHref("whitestone.vibelock.workers.dev")).toBe("/download");
+    expect(softwareDownloadHref("localhost")).toContain("github.com/AzielEliab/Whitestone/releases");
   });
 });

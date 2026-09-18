@@ -78,4 +78,4 @@ The Worker must not log request bodies (query text). Short metrics only (`qlen`,
 
 This deploy hosts **software**, not user case files. The Worker must not log request bodies or store uploads. Whitestone's UI keeps case state in the browser session only.
 
-The Worker URL is the product for **phone and desktop**. Open `https://whitestone.vibelock.workers.dev` and complete a session in the browser — no zip required. `manifest.webmanifest` and `sw.js` support Add to Home Screen; the service worker caches the static shell only and is unregistered on End & erase.
+The Worker URL is the product for **phone and desktop**. Open `https://whitestone.vibelock.workers.dev` and complete a session in the browser. A software zip is optional (header / Welcome **Download software**, or `GET /download`). `manifest.webmanifest` and `sw.js` support Add to Home Screen; the service worker caches the static shell only and is unregistered on End & erase. After a merge that changes the Worker or UI, redeploy.

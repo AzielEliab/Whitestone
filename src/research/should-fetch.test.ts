@@ -41,6 +41,8 @@ describe("should-fetch rules", () => {
     expect(parseResearchInput({ jurisdiction: "ca", matter: "divorce", query: "forms" }).ok).toBe(true);
     expect(parseResearchInput({ jurisdiction: "California" }).ok).toBe(false);
     expect(parseResearchInput({ matter: "tax-audit" }).ok).toBe(false);
+    expect(parseResearchInput({ practiceArea: "criminal", matter: "plea", query: "arraignment" }).ok).toBe(true);
+    expect(parseResearchInput({ practiceArea: "tax" }).ok).toBe(false);
     expect(parseResearchInput("nope").ok).toBe(false);
     const long = parseResearchInput({ query: "x".repeat(800) });
     expect(long.ok).toBe(true);

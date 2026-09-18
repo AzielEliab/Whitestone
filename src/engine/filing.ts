@@ -1,5 +1,6 @@
 import { getJurisdiction, TOPIC_BY_ID } from "../knowledge";
-import type { MatterType, SessionState } from "../types";
+import { PARTY_LABELS } from "../practice/areas";
+import type { MatterType, PracticeArea, SessionState } from "../types";
 import { MATTER_LABELS } from "../types";
 
 export interface FilingOutline {
@@ -19,10 +20,16 @@ export function buildFilingOutline(state: SessionState): FilingOutline {
   const j = getJurisdiction(state.jurisdiction);
   const matter = state.matter;
   const topic = matter ? TOPIC_BY_ID[matter] : undefined;
+  const area: PracticeArea = state.practiceArea ?? "divorce";
+  const party = PARTY_LABELS[area];
   const petitioner = state.parties.find((p) => p.role === "petitioner");
   const respondent = state.parties.find((p) => p.role === "respondent");
-  const pName = petitioner?.name.trim() || "[Petitioner full legal name]";
-  const rName = respondent?.name.trim() || "[Respondent full legal name]";
+  const pName =
+    petitioner?.name.trim() ||
+    (area === "criminal" ? "[Defendant full legal name]" : `[${party.filingRole} full legal name]`);
+  const rName =
+    respondent?.name.trim() ||
+    (area === "criminal" ? `[The State / People of ${j?.name ?? "this jurisdiction"}]` : `[${party.otherRole} full legal name]`);
   const court = j?.courtName ?? "[Court name — confirm with the clerk]";
   const place = !j
     ? "[State / District]"
@@ -30,22 +37,39 @@ export function buildFilingOutline(state: SessionState): FilingOutline {
       ? "DISTRICT OF COLUMBIA"
       : `STATE OF ${j.name.toUpperCase()}`;
 
-  const caseTitle = titleFor(matter, pName, rName);
-  const caption = [
-    `IN THE ${court.toUpperCase()}`,
-    `FOR THE ${place.toUpperCase()}`,
-    ``,
-    `${pName},`,
-    `    Petitioner,`,
-    ``,
-    `v.`,
-    ``,
-    `${rName},`,
-    `    Respondent.`,
-    ``,
-    caseTitle,
-    `Case No. ______________`,
-  ].join("\n");
+  const caseTitle = titleFor(matter, pName, rName, area);
+  const caption =
+    area === "criminal"
+      ? [
+          `IN THE ${court.toUpperCase()}`,
+          `FOR THE ${place.toUpperCase()}`,
+          ``,
+          `${rName.toUpperCase()}`,
+          `    Prosecution (teaching label only),`,
+          ``,
+          `v.`,
+          ``,
+          `${pName},`,
+          `    Defendant.`,
+          ``,
+          caseTitle,
+          `Case No. ______________`,
+        ].join("\n")
+      : [
+          `IN THE ${court.toUpperCase()}`,
+          `FOR THE ${place.toUpperCase()}`,
+          ``,
+          `${pName},`,
+          `    ${party.filingRole},`,
+          ``,
+          `v.`,
+          ``,
+          `${rName},`,
+          `    ${party.otherRole}.`,
+          ``,
+          caseTitle,
+          `Case No. ______________`,
+        ].join("\n");
 
   const allegations: string[] = [];
   if (j && matter === "divorce") {
@@ -83,7 +107,7 @@ export function buildFilingOutline(state: SessionState): FilingOutline {
   return {
     courtLine: `${court} — ${place}`,
     caption,
-    partiesBlock: `Petitioner: ${pName}\nRespondent: ${rName}`,
+    partiesBlock: `${party.filingRole}: ${pName}\n${party.otherRole}: ${rName}`,
     caseTitle,
     pathway: topic?.filingPathway ?? ["Select a matter type to see a filing pathway."],
     documents: topic?.documentChecklist ?? [],
@@ -95,7 +119,7 @@ export function buildFilingOutline(state: SessionState): FilingOutline {
   };
 }
 
-function titleFor(matter: MatterType | null, p: string, r: string): string {
+function titleFor(matter: MatterType | null, p: string, r: string, area: PracticeArea): string {
   const vs = `${p} / ${r}`;
   switch (matter) {
     case "divorce":
@@ -119,8 +143,34 @@ function titleFor(matter: MatterType | null, p: string, r: string): string {
       return `[PROPOSED TITLE] Petition for Adoption (overview only)`;
     case "name-change":
       return `[PROPOSED TITLE] Petition for Change of Name`;
+    case "small-claims":
+      return `[PROPOSED TITLE] Small-claims claim — ${vs}`;
+    case "contract-dispute":
+      return `[PROPOSED TITLE] Civil complaint (contract overview) — ${vs}`;
+    case "landlord-tenant":
+      return `[PROPOSED TITLE] Housing / unlawful-detainer papers — ${vs}`;
+    case "civil-protection-order":
+      return `[PROPOSED TITLE] Petition for Civil Protection / Harassment Order — ${vs}`;
+    case "debt-collection":
+      return `[PROPOSED TITLE] Answer / appearance in a collection case — ${vs}`;
+    case "bail-arraignment":
+      return `[INFORMATIONAL] Arraignment / release — not a petition you file to start a prosecution`;
+    case "discovery":
+      return `[INFORMATIONAL] Discovery request structure — confirm the local criminal rule`;
+    case "plea":
+      return `[INFORMATIONAL] Plea overview — not a plea form`;
+    case "sentencing":
+      return `[INFORMATIONAL] Sentencing checklist — not a judgment`;
+    case "expungement":
+      return `[PROPOSED TITLE] Petition for expungement / sealing / set-aside`;
+    case "rights-education":
+      return `[INFORMATIONAL] Rights education — no caption to file`;
     default:
-      return `[PROPOSED TITLE] Family-law petition — ${vs}`;
+      return area === "criminal"
+        ? `[INFORMATIONAL] Criminal process outline — ${vs}`
+        : area === "civil"
+          ? `[PROPOSED TITLE] Civil filing — ${vs}`
+          : `[PROPOSED TITLE] Family-law petition — ${vs}`;
   }
 }
 

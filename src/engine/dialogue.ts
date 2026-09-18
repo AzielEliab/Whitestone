@@ -103,6 +103,52 @@ export function starterPrompts(matter: MatterType | null): string[] {
       "Can I restore a former name in the divorce?",
       "What notice is needed to change a child's name?",
     ],
+    "small-claims": [
+      "What is the usual small-claims dollar limit question I should ask the clerk?",
+      "How do I name a business as the defendant?",
+      "What happens after a small-claims judgment?",
+    ],
+    "contract-dispute": [
+      "Is this better as small claims or a general civil filing?",
+      "What documents show there was an agreement?",
+    ],
+    "landlord-tenant": [
+      "What should I do the day I get an eviction summons?",
+      "Is a lockout without a court order allowed?",
+    ],
+    "civil-protection-order": [
+      "What should the incident affidavit include?",
+      "How do I know if this is a family packet or a civil harassment packet?",
+    ],
+    "debt-collection": [
+      "What is the first thing to do if I was served?",
+      "What is an exemption claim in a collection case?",
+    ],
+    "bail-arraignment": [
+      "What usually happens at arraignment?",
+      "How do I ask for a public defender?",
+      "What if I might miss the court date?",
+    ],
+    discovery: [
+      "What is criminal discovery in plain language?",
+      "Should I contact a witness myself?",
+    ],
+    plea: [
+      "What should I ask a lawyer before I plead?",
+      "What is a plea colloquy?",
+    ],
+    sentencing: [
+      "What is a pre-sentence report?",
+      "What should I calendar the day I am sentenced?",
+    ],
+    expungement: [
+      "What papers do I get from the clerk before I ask about sealing?",
+      "Does expungement always hide a record from everyone?",
+    ],
+    "rights-education": [
+      "What does it mean to ask for a lawyer and remain silent?",
+      "Should I post about my case on social media?",
+    ],
   };
   return map[matter];
 }
