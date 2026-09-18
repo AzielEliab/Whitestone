@@ -2,6 +2,7 @@ import { getJurisdiction } from "../../knowledge";
 import { mattersForArea } from "../../practice/areas";
 import { MATTER_LABELS } from "../../types";
 import { useSession } from "../../session/store";
+import { WhatsNext } from "../components/WhatsNext";
 
 export function Matter() {
   const { state, setMatter } = useSession();
@@ -10,6 +11,7 @@ export function Matter() {
   return (
     <section className="card grid">
       <h2>What kind of matter is this?</h2>
+      <WhatsNext />
       {j && (
         <p className="muted">
           {j.name} · {j.courtName}. Coverage: {j.coverage}.

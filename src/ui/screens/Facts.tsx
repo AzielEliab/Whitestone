@@ -1,9 +1,11 @@
+import { canSkipToAdvisor } from "../../engine/facts";
 import { PARTY_LABELS } from "../../practice/areas";
 import { useSession } from "../../session/store";
 import { Button } from "../components/Button";
+import { WhatsNext } from "../components/WhatsNext";
 
 export function Facts() {
-  const { state, patch, setStep } = useSession();
+  const { state, patch, setStep, seedAdvisor } = useSession();
   const p = state.parties[0];
   const r = state.parties[1];
   const area = state.practiceArea ?? "divorce";
@@ -21,6 +23,7 @@ export function Facts() {
   return (
     <section className="card">
       <h2>People and facts</h2>
+      <WhatsNext />
       <p className="muted">
         Names stay in this session only. Use legal names as they should appear on a
         caption — you will still retype them on the clerk&apos;s form.
@@ -119,6 +122,15 @@ export function Facts() {
         <Button kind="primary" onClick={() => setStep("evidence")}>
           Continue to evidence
         </Button>
+        {canSkipToAdvisor(state) && (
+          <Button
+            onClick={() => {
+              seedAdvisor();
+            }}
+          >
+            Skip to advisor
+          </Button>
+        )}
         <Button onClick={() => setStep("matter")}>Back</Button>
       </div>
     </section>

@@ -3,10 +3,12 @@ import { buildFilingOutline } from "../../engine/filing";
 import { defaultResearchQuery } from "../../practice/areas";
 import { useSession } from "../../session/store";
 import { Button } from "../components/Button";
+import { MathPanel } from "../components/MathPanel";
 import { WebSources } from "../components/WebSources";
+import { WhatsNext } from "../components/WhatsNext";
 
 export function Filing() {
-  const { state, setStep, setWebEnabled, clearWebNotes, refreshResearch } = useSession();
+  const { state, setStep, setWebEnabled, clearWebNotes, refreshResearch, ask } = useSession();
   const outline = buildFilingOutline(state);
   const seeded = useRef(false);
 
@@ -18,6 +20,7 @@ export function Filing() {
   return (
     <section className="card grid">
       <h2>Filing structure — on screen only</h2>
+      <WhatsNext />
       <p className="warn">{outline.disclaimer}</p>
       <p className="muted">{outline.courtLine}</p>
       <div className="caption" aria-label="Caption draft, not selectable for export">
@@ -71,6 +74,12 @@ export function Filing() {
         onClear={clearWebNotes}
         onRefresh={() => {
           void refreshResearch(`${defaultResearchQuery(state.practiceArea)} clerk packet official forms`, "manual");
+        }}
+      />
+      <MathPanel
+        onInsert={(text) => {
+          ask(text);
+          setStep("advise");
         }}
       />
       <div className="chips sticky-actions">

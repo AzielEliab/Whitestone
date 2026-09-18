@@ -59,15 +59,21 @@ export function retrieveGuidance(opts: {
   matter?: MatterType | null;
   practiceArea?: PracticeArea | null;
   extra?: string[];
+  answers?: Record<string, string>;
 }): RetrievalHit[] {
-  const bag = tokens([opts.query, ...(opts.extra ?? [])].join(" "));
+  const answerText = opts.answers ? Object.values(opts.answers).join(" ") : "";
+  const bag = tokens([opts.query, answerText, ...(opts.extra ?? [])].join(" "));
   const hits: RetrievalHit[] = [];
   const allowed = new Set(mattersForArea(opts.practiceArea));
 
   const matter = opts.matter && allowed.has(opts.matter) ? TOPIC_BY_ID[opts.matter] : undefined;
   if (matter) {
+    let matterScore = 16;
+    for (const k of matter.keywords) {
+      if (bag.some((t) => k.includes(t) || t.includes(k))) matterScore += 2;
+    }
     hits.push({
-      score: 12,
+      score: matterScore,
       source: "topic",
       title: matter.title,
       body: matter.summary,
@@ -86,7 +92,13 @@ export function retrieveGuidance(opts: {
     }
     const titleTok = tokens(topic.title + " " + topic.summary);
     for (const t of bag) if (titleTok.includes(t)) score += 1;
-    if (opts.matter === topic.id) score += 4;
+    if (opts.matter === topic.id) score += 8;
+    if (opts.answers) {
+      for (const value of Object.values(opts.answers)) {
+        const vt = tokens(value);
+        if (vt.some((t) => titleTok.includes(t))) score += 2;
+      }
+    }
     if (score > 0) {
       hits.push({
         score,

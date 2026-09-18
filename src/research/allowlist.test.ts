@@ -32,6 +32,13 @@ describe("allowlist", () => {
       "federal-public",
     );
     expect(classifyUrl("https://www.consumerfinance.gov/")?.kind).toBe("federal-public");
+    expect(classifyUrl("https://www.census.gov/library/publications/2020/demo/p60-269.html")?.kind).toBe(
+      "federal-public",
+    );
+    expect(classifyUrl("https://bjs.ojp.gov/content/pub/pdf/fdluc09.pdf")?.kind).toBe("federal-public");
+    expect(classifyUrl("https://www.ncsc.org/information-and-resources/self-represented-litigants")?.kind).toBe(
+      "statistical",
+    );
   });
 
   it("blocks blogs, SEO mills, lawyer directories, and private hosts", () => {

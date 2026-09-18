@@ -6,7 +6,8 @@ export type SourceKind =
   | "state-bar"
   | "lii"
   | "justia"
-  | "federal-public";
+  | "federal-public"
+  | "statistical";
 
 export type ResearchReason = "ask" | "filing" | "manual";
 

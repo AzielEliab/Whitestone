@@ -183,7 +183,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
                 };
           }
 
-          const { reply, state: next } = advise(base, text, research);
+          const { reply, state: next, followUps, grounding, receipt } = advise(base, text, research);
           const webNotes = research?.sources.length ? mergeWebNotes(next.webNotes, research.sources) : next.webNotes;
           const advisor = {
             id: crypto.randomUUID(),
@@ -191,6 +191,15 @@ export function SessionProvider({ children }: { children: ReactNode }) {
             text: reply,
             at: new Date().toISOString(),
             sources: research?.sources,
+            followUps,
+            grounding: {
+              verdict: grounding.verdict,
+              confidenceCap: grounding.confidenceCap,
+              flags: grounding.flags,
+              evidence: grounding.evidence,
+              motto: grounding.motto,
+            },
+            receipt: { sha256: receipt.sha256, sourceUrls: receipt.sourceUrls, statIds: receipt.statIds },
           };
           setState({
             ...next,

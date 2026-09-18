@@ -259,7 +259,7 @@ export const FAMILY_TOPICS: TopicModule[] = [
     ],
     honesty: [
       ...honestyBase,
-      "Whitestone does not calculate a dollar amount. Use the official state worksheet or agency calculator, then verify.",
+      "Any dollar figure is HEURISTIC / ILLUSTRATIVE unless it cites a public formula with a source URL. Use the official state worksheet or agency calculator — never treat Whitestone as the worksheet.",
     ],
     keywords: ["child support", "guideline", "worksheet", "arrears", "iv-d", "uifsa", "imputed income", "medical support"],
   },

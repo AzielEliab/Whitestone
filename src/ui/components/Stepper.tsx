@@ -1,3 +1,4 @@
+import { whatsNextLine } from "../../engine/facts";
 import { STEP_LABELS, type AppStep } from "../../types";
 import { useSession } from "../../session/store";
 
@@ -19,6 +20,7 @@ export function Stepper() {
       <p className="stepper-status">
         Step {Math.max(idx, 0) + 1} of {ORDER.length}
         <strong>{STEP_LABELS[state.step]}</strong>
+        <span className="stepper-next">{whatsNextLine(state)}</span>
       </p>
       <div className="stepper-track">
         {ORDER.map((step, i) => {
@@ -41,6 +43,7 @@ export function Stepper() {
           );
         })}
       </div>
+      <p className="whats-next stepper-whats">{whatsNextLine(state)}</p>
     </nav>
   );
 }

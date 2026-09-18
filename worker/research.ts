@@ -16,7 +16,7 @@ const CACHE_TTL_MS = 15 * 60 * 1000;
 const RATE_WINDOW_MS = 60_000;
 const RATE_MAX = 8;
 const UA =
-  "WhitestoneResearch/1.3 (+https://github.com/AzielEliab/Whitestone; allowlisted public court/legal-aid pages)";
+  "WhitestoneResearch/1.4 (+https://github.com/AzielEliab/Whitestone; allowlisted public court/legal-aid pages)";
 
 const rateHits = new Map<string, number[]>();
 const memoryCache = new Map<string, { at: number; source: WebSource }>();
@@ -53,7 +53,7 @@ function capability(): ResearchResult & {
     failed: [],
     fetched: 0,
     cached: 0,
-    version: "1.3.0",
+    version: "1.4.0",
     ephemeral: true,
     third_party_llm: false,
     allowlist: describeAllowlist(),

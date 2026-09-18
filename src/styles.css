@@ -295,6 +295,47 @@ img, video { max-width: 100%; height: auto; }
   padding-top: 8px;
   padding-bottom: max(4px, var(--safe-bottom));
 }
+.advise-toolbar { display: flex; flex-wrap: wrap; gap: 8px; }
+.tool-panel {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px;
+  background: var(--bg);
+  min-width: 0;
+}
+.whats-next {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--accent) 10%, var(--bg));
+  font-size: 0.92rem;
+}
+.whats-next .muted { display: block; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em; }
+.stepper-whats { margin-top: 10px; }
+.stepper-next { display: block; font-weight: 400; color: var(--muted); font-size: 0.82rem; }
+.notices {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 8px 12px;
+}
+.notices summary {
+  cursor: pointer;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  font-weight: 650;
+}
+.notices .banner { margin-top: 10px; }
+.grounding {
+  margin-top: 10px;
+  font-size: 0.82rem;
+  border-top: 1px dashed var(--line);
+  padding-top: 8px;
+}
+.grounding summary { cursor: pointer; font-weight: 650; }
+.grounding-pass summary { color: var(--accent); }
+.grounding-flag summary, .grounding-neutralize summary { color: var(--warn); }
+.grounding-refuse summary { color: var(--warn); }
 
 .caption {
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
@@ -432,8 +473,12 @@ html[data-narrow="true"] .desktop-only { display: none !important; }
     clip: rect(0, 0, 0, 0);
   }
   .step-index { display: inline; font-weight: 650; }
-  .chat { max-height: min(36dvh, 360px); }
-  .advise-composer { position: static; padding-bottom: 0; }
+  .chat { max-height: min(32dvh, 320px); }
+  .advise-composer {
+    position: sticky;
+    bottom: 0;
+    padding-bottom: max(8px, var(--safe-bottom));
+  }
   .chips .btn.primary,
   .upload-actions .btn,
   .erase-bar .btn {
