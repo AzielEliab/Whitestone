@@ -163,10 +163,12 @@ export function SessionProvider({ children }: { children: ReactNode }) {
             at: new Date().toISOString(),
           };
           const base: SessionState = { ...stateRef.current, messages: [...stateRef.current.messages, user] };
-          const historicalLocal = looksLikeHistoricalAsk(text, base);
+          setState(base);
+          try {
+          const localEval = looksLikeLocalEvalAsk(text, base);
           const willFetch =
             base.webEnabled &&
-            !historicalLocal &&
+            !localEval &&
             shouldFetch({
               query: text,
               jurisdiction: base.jurisdiction,
@@ -199,7 +201,6 @@ export function SessionProvider({ children }: { children: ReactNode }) {
                 };
           }
 
-          try {
             const { reply, state: next, followUps, grounding, receipt } = advise(base, text, research);
             const webNotes = research?.sources.length ? mergeWebNotes(next.webNotes, research.sources) : next.webNotes;
             const advisor = {
@@ -379,7 +380,8 @@ export function useSession() {
   return ctx;
 }
 
-function looksLikeHistoricalAsk(text: string, state: SessionState): boolean {
-  if (looksHistorical(text) || routeIntent(text, state) === "historical") return true;
+function looksLikeLocalEvalAsk(text: string, state: SessionState): boolean {
+  const intent = routeIntent(text, state);
+  if (looksHistorical(text) || intent === "historical" || intent === "honesty") return true;
   return Boolean(state.historicalMode && asOfFromSession(state.asOfYear, state.asOfMonth));
 }

@@ -25,6 +25,9 @@ export function shouldFetch(opts: {
     return Boolean(opts.jurisdiction || opts.matter);
   }
   if (!query) return false;
+  if (/\b(honesty|truth_buried|truth_overcame|anti-corruption|zionpattern|triadscore|hashchain lattice)\b/i.test(query)) {
+    return false;
+  }
   if (FETCH_HINTS.test(query)) return true;
   if (opts.jurisdiction && opts.matter && query.length >= 12) return true;
   return false;

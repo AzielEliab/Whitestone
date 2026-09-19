@@ -44,6 +44,23 @@ describe("should-fetch rules", () => {
     expect(shouldFetch({ query: "hi", jurisdiction: null, matter: null })).toBe(false);
   });
 
+  it("does not fetch honesty / anti-corruption scoring (session-local)", () => {
+    expect(
+      shouldFetch({
+        query: "Score honesty of the stated outcome against my uploads.",
+        jurisdiction: "CA",
+        matter: "rights-education",
+      }),
+    ).toBe(false);
+    expect(
+      shouldFetch({
+        query: "truth_buried and honesty_overall for this case",
+        jurisdiction: "CA",
+        matter: "rights-education",
+      }),
+    ).toBe(false);
+  });
+
   it("parses and rejects unsafe research input", () => {
     expect(parseResearchInput({ jurisdiction: "ca", matter: "divorce", query: "forms" }).ok).toBe(true);
     expect(parseResearchInput({ jurisdiction: "California" }).ok).toBe(false);
