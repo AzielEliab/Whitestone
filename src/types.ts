@@ -1,4 +1,5 @@
 import type { SpectralLockLive } from "./casemode/spectrallock";
+import type { TrajectoryLive } from "./casemode/trajectory";
 import type { WebSource } from "./research/types";
 
 export type { SourceKind, WebSource } from "./research/types";
@@ -210,6 +211,7 @@ export interface SessionState {
   asOfMonth: number | null;
   caseMode: boolean;
   spectralLive: SpectralLockLive | null;
+  trajectoryLive: TrajectoryLive | null;
 }
 
 export const MATTER_LABELS: Record<MatterType, string> = {
@@ -283,5 +285,6 @@ export function emptySession(): SessionState {
     asOfMonth: null,
     caseMode: false,
     spectralLive: null,
+    trajectoryLive: null,
   };
 }

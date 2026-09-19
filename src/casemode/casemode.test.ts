@@ -129,12 +129,36 @@ describe("TrajectoryLock lite", () => {
     expect(empty.solves_shooter).toBe(false);
     expect(empty.asserts_guilt).toBe(false);
     expect(empty.line_fit).toBeNull();
+    expect(empty.triangle.complete).toBe(false);
     const labeled = scoreTrajectory(
       "The victim wound entry was anterior; impact direction through the window; firing position above the building on video frame notes.",
     );
     expect(labeled.status).toBe("LABELED");
     expect(labeled.line_fit ?? 1).toBeLessThanOrEqual(0.75);
     expect(labeled.shooter_location.named_shooter).toBe(false);
+    expect(labeled.triangle.layers).toBe(3);
+    expect(labeled.media.video).toBe(true);
+  });
+
+  it("counts video / stereo audio / document uploads without inventing a line of fire", () => {
+    const videoOnly = scoreTrajectory("notes only", {
+      uploads: [
+        {
+          id: "v",
+          name: "clip.mp4",
+          mime: "video/mp4",
+          size: 12,
+          addedAt: "2026-09-19T00:00:00.000Z",
+          text: "Video in session only.",
+          note: "",
+          kind: "video",
+          sourceDate: null,
+        },
+      ],
+    });
+    expect(videoOnly.media.video).toBe(true);
+    expect(videoOnly.line_fit).toBeNull();
+    expect(videoOnly.solves_shooter).toBe(false);
   });
 });
 

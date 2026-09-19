@@ -10,7 +10,7 @@ import type { EvidenceFile, SessionState } from "../types";
 import { capConfidence, labeledOrUnknown } from "./cap";
 import { extractFiveW, type FiveW } from "./fivew";
 import { citeSpectralLock, type SpectralLockCite, type SpectralLockLive } from "./spectrallock";
-import { scoreTrajectory, type TrajectoryReport } from "./trajectory";
+import { scoreTrajectory, type TrajectoryLive, type TrajectoryReport } from "./trajectory";
 import { scoreVibeLock, type VibeLockReport } from "./vibelock";
 
 export const CASEMODE_SPEC = "whitestone.casemode.v1";
@@ -54,6 +54,7 @@ export function evaluateCaseMode(input: {
   webNotes?: { title: string; url: string; excerpt: string; retrievedAt?: string }[];
   historicalSources?: { title: string; url: string; date?: string }[];
   spectralLive?: SpectralLockLive | null;
+  trajectoryLive?: TrajectoryLive | null;
 }): CaseModeEvaluation {
   const honesty = evaluateHonesty(input);
   const blob = join([
@@ -69,7 +70,7 @@ export function evaluateCaseMode(input: {
     uploadsText: join(input.uploads.map((u) => join([u.text, u.note, u.name]))),
     asOfIso: input.asOfIso,
   });
-  const trajectory = scoreTrajectory(blob);
+  const trajectory = scoreTrajectory(blob, { uploads: input.uploads, live: input.trajectoryLive });
   const audioPresent = input.uploads.some((u) => u.kind === "audio" || u.kind === "phone_call" || /^audio\//.test(u.mime));
   const mediaPresent = input.uploads.some(
     (u) =>
@@ -167,11 +168,11 @@ export function evaluateCaseMode(input: {
   };
 }
 
-const TRAJECTORY_CITE = "https://github.com/AzielEliab/TrajectoryLock";
+const TRAJECTORY_CITE = "https://github.com/AzielEliab/trajectorylock";
 const VIBE_CITE = "https://github.com/AzielEliab/VibeLock";
 const SPECTRAL_CITE = "https://github.com/AzielEliab/SpectralLock";
 
-export function caseModeFromSession(state: Pick<SessionState, "facts" | "uploads" | "asOfYear" | "asOfMonth" | "webNotes" | "spectralLive"> & {
+export function caseModeFromSession(state: Pick<SessionState, "facts" | "uploads" | "asOfYear" | "asOfMonth" | "webNotes" | "spectralLive" | "trajectoryLive"> & {
   historicalSources?: { title: string; url: string; date?: string }[];
 }): CaseModeEvaluation {
   const asOfIso =
@@ -185,5 +186,6 @@ export function caseModeFromSession(state: Pick<SessionState, "facts" | "uploads
     webNotes: state.webNotes,
     historicalSources: state.historicalSources,
     spectralLive: state.spectralLive,
+    trajectoryLive: state.trajectoryLive,
   });
 }

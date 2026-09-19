@@ -11,7 +11,7 @@ function scoreText(status: "LABELED" | "UNKNOWN", value: number | null): string 
 }
 
 export function CaseModePanel({ onInsert }: { onInsert: (text: string) => void }) {
-  const { state, refreshResearch, refreshSpectralLock } = useSession();
+  const { state, refreshResearch, refreshSpectralLock, refreshTrajectoryLock } = useSession();
   const historicalSources = useMemo(() => {
     if (!state.asOfYear || !state.asOfMonth) return [];
     return standingAsOf({
@@ -73,14 +73,18 @@ export function CaseModePanel({ onInsert }: { onInsert: (text: string) => void }
         {actor.role === "UNKNOWN" ? "UNKNOWN" : `${actor.name ?? "unnamed"} (${actor.role}${actor.behalfOf ? ` / ${actor.behalfOf}` : ""})`}
       </p>
       <p className="muted">
-        TrajectoryLock {evaln.trajectory.status}
-        {evaln.trajectory.line_fit != null ? ` line_fit ${evaln.trajectory.line_fit.toFixed(2)}` : ""} · VibeLock{" "}
-        {evaln.vibelock.status} · SpectralLock {evaln.spectrallock.status}
+        TrajectoryLock {evaln.trajectory.status} victim×impact×location {evaln.trajectory.triangle.layers}/3
+        {evaln.trajectory.line_fit != null ? ` line_fit ${evaln.trajectory.line_fit.toFixed(2)}` : ""}
+        {evaln.trajectory.live_probe?.live ? " LIVE GET" : ""} · VibeLock {evaln.vibelock.status} · SpectralLock{" "}
+        {evaln.spectrallock.status}
         {evaln.spectrallock.live ? " LIVE GET" : ""} · lattice{" "}
         {evaln.honesty.engines.lattice.nodes.length} node(s)
       </p>
       <Button type="button" onClick={() => void refreshSpectralLock()}>
         Call SpectralLock (allowlisted GET)
+      </Button>
+      <Button type="button" onClick={() => void refreshTrajectoryLock()}>
+        Call TrajectoryLock (allowlisted GET)
       </Button>
       <Button type="button" onClick={() => onInsert("Run Case Mode on the stated outcome against my uploads.")}>
         Ask advisor for Case Mode

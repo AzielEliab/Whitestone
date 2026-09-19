@@ -9,6 +9,7 @@ import {
   type ReactNode,
 } from "react";
 import { probeSpectralLockLive } from "../casemode/spectrallock";
+import { probeTrajectoryLockLive } from "../casemode/trajectory";
 import { advise, openingMessage } from "../engine/advisor";
 import { routeIntent } from "../engine/intent";
 import { mapEvidence } from "../engine/evidence-map";
@@ -49,6 +50,7 @@ interface SessionApi {
   clearWebNotes: () => void;
   refreshResearch: (query?: string, reason?: ResearchReason) => Promise<void>;
   refreshSpectralLock: () => Promise<void>;
+  refreshTrajectoryLock: () => Promise<void>;
   erase: () => Promise<void>;
 }
 
@@ -80,6 +82,10 @@ function hydrate(): SessionState {
         historicalMode: parsed.historicalMode === true,
         caseMode: parsed.caseMode === true,
         spectralLive: parsed.spectralLive && parsed.spectralLive.lab_claim === false ? parsed.spectralLive : null,
+        trajectoryLive:
+          parsed.trajectoryLive && parsed.trajectoryLive.certified_instrument === false
+            ? parsed.trajectoryLive
+            : null,
         asOfYear: typeof parsed.asOfYear === "number" ? parsed.asOfYear : null,
         asOfMonth: typeof parsed.asOfMonth === "number" ? parsed.asOfMonth : null,
         uploads: Array.isArray(parsed.uploads)
@@ -195,14 +201,16 @@ export function SessionProvider({ children }: { children: ReactNode }) {
 
           let research: ResearchResult | null = null;
           let spectralLive = base.spectralLive;
+          let trajectoryLive = base.trajectoryLive;
           if ((intent === "casemode" || base.caseMode) && base.webEnabled) {
-            try {
-              spectralLive = await probeSpectralLockLive();
-            } catch {
-              spectralLive = base.spectralLive;
-            }
+            const [sl, tl] = await Promise.all([
+              probeSpectralLockLive().catch(() => base.spectralLive),
+              probeTrajectoryLockLive().catch(() => base.trajectoryLive),
+            ]);
+            spectralLive = sl;
+            trajectoryLive = tl;
           }
-          const evalBase: SessionState = { ...base, spectralLive };
+          const evalBase: SessionState = { ...base, spectralLive, trajectoryLive };
           if (willFetch) {
             if (researchReady.current === null) researchReady.current = await probeResearch();
             research = researchReady.current
@@ -359,6 +367,16 @@ export function SessionProvider({ children }: { children: ReactNode }) {
           setState((s) => ({ ...s, spectralLive }));
         } catch {
           /* Case Mode continues; no invented lab claim. */
+        }
+      },
+      refreshTrajectoryLock: async () => {
+        const snap = stateRef.current;
+        if (!snap.webEnabled) return;
+        try {
+          const trajectoryLive = await probeTrajectoryLockLive();
+          setState((s) => ({ ...s, trajectoryLive }));
+        } catch {
+          /* Case Mode continues; no invented shooter. */
         }
       },
       refreshResearch: async (query?: string, reason: ResearchReason = "manual") => {
