@@ -22,7 +22,7 @@ product UI. This hostname is the counted zip + Views/Downloads page.
 
 No secrets belong in this directory.
 
-Not a lawyer. Not legal advice. Ephemeral pro se framing only.
+One ephemeral pro se advisor for Criminal, Civil, and Divorce.
 Author: **Aziel Eliab** only.
 
 This worker is Whitestone only. It is not mixed with The ARK, AZ-OS,
@@ -83,11 +83,10 @@ CORS `*`. `GET /v1/health`, `GET /v1/skill`, `GET /openapi.json`
 `/v1/mesh/*` PROXY to aziel-runtime suite mesh (`AZIEL_RUNTIME`).
 Default OFF. QNM-BUILD-1.0 live|locked|isolated. QNS-CD-1.0 hub cite /
 Worker mesh cross-map only. No public qnsd proxy. No Node Gate. No
-auto-heal. Not anonymity.
+auto-heal.
 
-Whitestone is a **catalog placement**, not a FragGate engine. This
-Worker does **not** invent door ops. Routes under `/v1` **do not**
-increment download KV.
+Whitestone is a **catalog placement**. Do not invent door ops. Routes
+under `/v1` do not increment download KV.
 
 Works with ChatGPT (GPT Actions / OpenAI), Grok (xAI), Venice, Claude
 (Anthropic), Cursor (MCP), Glama (MCP), Perplexity, Microsoft Copilot /

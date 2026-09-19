@@ -24,12 +24,6 @@ const SOFTWARE = {
   download_url: DEFAULT_RELEASE,
   license: "Apache-2.0",
   coverage: "procedural-overview + checklists for 50 states and D.C.",
-  not: [
-    "not a lawyer",
-    "not legal advice",
-    "not a third-party LLM client",
-    "not an export tool for filings",
-  ],
   lens: ["Service", "Clarity", "Peace"],
 };
 

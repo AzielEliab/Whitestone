@@ -28,7 +28,7 @@ jobs:
           if [[ "$TAG" != v* ]]; then TAG="v1.0.0-dev.${GITHUB_SHA::7}"; fi
           NOTES="Whitestone standalone UI zip.
 
-          Ephemeral session memory. No case exports. Not legal advice.
+          Ephemeral session memory. Uploads only.
 
           SHA256:
           $(cat release/SHA256SUMS.txt)

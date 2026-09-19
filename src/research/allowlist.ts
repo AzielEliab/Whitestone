@@ -169,7 +169,6 @@ export function describeAllowlist(): {
   kinds: string[];
   patterns: string[];
   exampleHosts: string[];
-  blockedExamples: string[];
 } {
   return {
     kinds: ["state-judiciary", "legal-aid", "state-bar", "lii", "justia", "federal-public", "statistical"],
@@ -199,6 +198,5 @@ export function describeAllowlist(): {
       "www.archives.gov",
       "constitution.congress.gov",
     ],
-    blockedExamples: ["random blogs", "SEO mills", "lawyer-directory hosts", "www.justia.com", "non-allowlisted hosts"],
   };
 }

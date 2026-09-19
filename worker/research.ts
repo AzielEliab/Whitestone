@@ -57,7 +57,7 @@ function capability(): ResearchResult & {
     ephemeral: true,
     third_party_llm: false,
     allowlist: describeAllowlist(),
-    coverage: "Not a complete statute book. Prefer the clerk packet.",
+    coverage: "High-level procedural overview. Prefer the clerk packet.",
   };
 }
 

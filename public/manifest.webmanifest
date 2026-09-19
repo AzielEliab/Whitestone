@@ -2,7 +2,7 @@
   "id": "/",
   "name": "Whitestone",
   "short_name": "Whitestone",
-  "description": "One ephemeral pro se advisor — Criminal, Civil, Divorce. Session-only memory. Uploads in, no case exports. Not a lawyer, not legal advice.",
+  "description": "One ephemeral pro se advisor — Criminal, Civil, Divorce. Session-only memory. Uploads in, no case exports.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

@@ -19,7 +19,7 @@ Human UI first. A small `GET /v1/software` catalog exists for agent discovery. T
 Whitestone is **one software**. Welcome puts **Criminal / Civil / Divorce** first; long legal copy sits under **Important notices** (still present, not deleted). Then you choose a practice area:
 
 1. **Criminal** — bail / arraignment, discovery, plea process overview, sentencing basics, expungement overview, rights education. Hard refuse: help committing crimes, destroying evidence, witness intimidation, evading process. Urge counsel or the public defender for serious charges.
-2. **Civil** — small claims, contract-dispute overview, landlord-tenant overview, civil protection orders, name change, debt-collection defense overview. High-level procedural and court self-help research. Not business-formation mill advice.
+2. **Civil** — small claims, contract-dispute overview, landlord-tenant overview, civil protection orders, name change, debt-collection defense overview. High-level procedural and court self-help research.
 3. **Divorce** — the existing family / divorce track (custody, support, dissolution, parentage, guardianship, family protection orders, adoption overview, and related filings).
 
 Then the session-only path:
@@ -90,25 +90,17 @@ Whitestone does **not** claim a complete digitized corpus of every U.S. law sinc
 3. Jurisdiction hooks that return **UNKNOWN** when no dated record exists for that state or locality. Federal coverage is labeled **PARTIAL**.
 4. The same allowlisted public primary-source fetches Whitestone already uses for research (including National Archives and Constitution Annotated hosts).
 
-Every law record has: jurisdiction, civil|criminal, citation, title, effective_from, effective_to, event_type, sourceTitle, sourceUrl, notes. The engine will **REFUSE** invented form numbers and uncitable “the law said X in 1850” claims that lack a dated record. It does not invent holdings. Session-only; End & erase wipes as-of dates and archival notes with the rest of the session. Still **not a lawyer / not legal advice**. No third-party LLM.
+Every law record has: jurisdiction, civil|criminal, citation, title, effective_from, effective_to, event_type, sourceTitle, sourceUrl, notes. The engine will **REFUSE** invented form numbers and uncitable “the law said X in 1850” claims that lack a dated record. It does not invent holdings. Session-only; End & erase wipes as-of dates and archival notes with the rest of the session. No third-party LLM.
 
 ### Live public-page research (hosted app)
 
-The live Worker (`POST /api/research`) selects a short allowlist — state judiciary / self-help portals, LawHelp and listed legal-aid sites, Cornell LII, Justia statute browsers (labeled unofficial), and USA.gov / justice.gov / uscourts.gov / CFPB public pages — **seeded by the session’s practice area**. Random blogs and SEO mills are blocked.
+The live Worker (`POST /api/research`) selects a short allowlist — state judiciary / self-help portals, LawHelp and listed legal-aid sites, Cornell LII, Justia statute browsers (labeled unofficial), and USA.gov / justice.gov / uscourts.gov / CFPB public pages — **seeded by the session’s practice area**.
 
 Fetched text is ephemeral: session-only in the browser, plus a short Worker cache of the **same public URL** (not your case). End & erase wipes web notes with the rest of the session. Offline zip / `vite` without the Worker fall back to the bundled knowledge layer.
 
 **After merge, redeploy the Worker** so `/api/research` and the three-area UI are live. `npm run dev` can proxy to `wrangler dev` on port 8787.
 
-## What it is not
-
-- **Not a lawyer. Not a law firm. Not legal advice.**
-- **Not a replacement for an attorney**, public defender, court clerk, or judge.
-- **Not a predictor** of custody, support, civil outcomes, or criminal sentences.
-- **Not help committing crimes**, destroying evidence, intimidating witnesses, or evading arrest or court process.
-- **Not an export tool.** There is no download, print, or save-as of filings, chat, or evidence packages from the app.
-- **Not a third-party LLM client.** No OpenAI, Anthropic, Google Gemini, xAI, Groq, or similar SDKs.
-- **Not the Aziel runtime.** No FragGate door, no mesh enable, no AKM durable memory.
+## Safety
 
 If you are in danger: **911**. National Domestic Violence Hotline: **1-800-799-7233**. Suicide & Crisis Lifeline: **988**.
 

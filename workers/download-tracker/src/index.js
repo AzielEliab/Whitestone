@@ -14,21 +14,19 @@ import {
 } from "./stats-shape.js";
 
 const EXAMPLE_PAYLOAD = {
-  text: "session-only educational procedural overview — not legal advice",
+  text: "session-only educational procedural overview",
 };
 
 const SKILL_MARKDOWN = `---
 name: Whitestone
-description: Use when calling the Whitestone download tracker /v1 or installing the optional software zip. Dual surface: Worker /v1 + GET /mcp. Whitestone is a catalog placement, not a FragGate engine — do not invent door ops. This Worker /v1/mesh/* PROXY to aziel-runtime via AZIEL_RUNTIME. Suite mesh default OFF. QNM-BUILD-1.0 live|locked|isolated. QNS-CD-1.0 photon QNS1 packet transfer (hub cite / Worker mesh cross-map only; no public qnsd proxy). No Node Gate. No auto-heal. Not anonymity. Author Aziel Eliab.
+description: Use when calling the Whitestone download tracker /v1 or installing the optional software zip. Dual surface: Worker /v1 + GET /mcp. Whitestone is a catalog placement. Do not invent door ops. This Worker /v1/mesh/* PROXY to aziel-runtime via AZIEL_RUNTIME. Suite mesh default OFF. QNM-BUILD-1.0 live|locked|isolated. QNS-CD-1.0 photon QNS1 packet transfer (hub cite / Worker mesh cross-map only; no public qnsd proxy). No Node Gate. No auto-heal. Author Aziel Eliab.
 ---
 
 # Whitestone
 
 One ephemeral pro se advisor with Criminal, Civil, and Divorce practice areas. Live Worker URL on phone or desktop — zip optional. Session-only memory; wipe on close. Uploads only, no case exports, no third-party LLM APIs. Author: Aziel Eliab.
 
-**THIS IS:** educational procedural software. Not a lawyer. Not legal advice.
-
-**THIS IS NOT:** a law firm, a case-file host, a FragGate engine, or an export tool for filings.
+**THIS IS:** one ephemeral pro se advisor — educational procedural software for Criminal, Civil, and Divorce.
 
 Author: **Aziel Eliab**. Forks are welcome and always allowed. Apache-2.0.
 
@@ -54,7 +52,7 @@ Ops (do **not** increment downloads or views):
 | GET | \`/v1/mesh/nodes\` | PROXY Live Nodes roster (5-minute presence). |
 | POST | \`/v1/mesh/{enable,disable,join,heartbeat,leave,broadcast}\` | PROXY. Bearer required to enable. No auto-heal. Anon-broadcast is not a publish path. |
 
-Works with ChatGPT (GPT Actions / OpenAI), Grok (xAI), Venice, Claude (Anthropic), Cursor (MCP), Glama (MCP), Perplexity, Microsoft Copilot / Bing, Google Gemini / Vertex, Mistral, Meta AI, Apple Intelligence surfaces, Amazon Q tooling, DuckAssist, You.com, Cohere, and other MCP/OpenAPI-capable assistants. Import OpenAPI as a custom tool or GPT Action, or connect MCP. This Worker \`/v1/mesh/*\` PROXY to aziel-runtime via AZIEL_RUNTIME. Catalog MCP \`mesh_*\` + FragGate \`slug=mesh\`. Suite mesh default OFF. QNM-BUILD-1.0 live|locked|isolated. QNS-CD-1.0 photon QNS1 packet transfer (hub cite / Worker mesh cross-map only; local qnsd in qnm-node; no public proxy). No Node Gate. No auto-heal. Not anonymity.
+Works with ChatGPT (GPT Actions / OpenAI), Grok (xAI), Venice, Claude (Anthropic), Cursor (MCP), Glama (MCP), Perplexity, Microsoft Copilot / Bing, Google Gemini / Vertex, Mistral, Meta AI, Apple Intelligence surfaces, Amazon Q tooling, DuckAssist, You.com, Cohere, and other MCP/OpenAPI-capable assistants. Import OpenAPI as a custom tool or GPT Action, or connect MCP. This Worker \`/v1/mesh/*\` PROXY to aziel-runtime via AZIEL_RUNTIME. Catalog MCP \`mesh_*\` + FragGate \`slug=mesh\`. Suite mesh default OFF. QNM-BUILD-1.0 live|locked|isolated. QNS-CD-1.0 photon QNS1 packet transfer (hub cite / Worker mesh cross-map only; local qnsd in qnm-node; no public proxy). No Node Gate. No auto-heal.
 
 ## Example
 
@@ -70,7 +68,7 @@ Live app: https://whitestone.vibelock.workers.dev/
 
 ## Catalog + local UI
 
-Author: **Aziel Eliab**. Honest scope: educational procedural overview. Not a lawyer. Hosted never stores case files.
+Author: **Aziel Eliab**. Honest scope: educational procedural overview. Hosted never stores case files.
 
 - Catalog: https://aziel-runtime.vibelock.workers.dev/
 - Catalog OpenAPI: https://aziel-runtime.vibelock.workers.dev/openapi.json
@@ -79,7 +77,7 @@ Author: **Aziel Eliab**. Honest scope: educational procedural overview. Not a la
 - This Worker OpenAPI: https://whitestone-download-tracker.vibelock.workers.dev/openapi.json
 - Sample payload: \`GET https://whitestone-download-tracker.vibelock.workers.dev/v1/example\`
 
-Worker homepage Live Nodes strip polls \`GET /v1/mesh\` (default OFF). QNS-CD-1.0 is a hub cite / Worker mesh cross-map only — not a Softwares-tab product.
+Worker homepage Live Nodes strip polls \`GET /v1/mesh\` (default OFF). QNS-CD-1.0 is a hub cite / Worker mesh cross-map only.
 
 Works with ChatGPT (GPT Actions / OpenAI), Grok (xAI), Venice, Claude (Anthropic), Cursor (MCP), Glama (MCP), Perplexity, Microsoft Copilot / Bing, Google Gemini / Vertex, Mistral, Meta AI, Apple Intelligence surfaces, Amazon Q tooling, DuckAssist, You.com, Cohere, and other MCP/OpenAPI-capable assistants.
 `;
@@ -367,7 +365,7 @@ echo
 echo "Unzipped Whitestone (optional offline copy)."
 echo "Serve this folder:  npx --yes serve .   or   python3 -m http.server 4173"
 echo "The live product is ${APP_WORKER}"
-echo "Not a lawyer. Not legal advice. Author: Aziel Eliab."
+echo "Author: Aziel Eliab."
 `;
 }
 
@@ -421,12 +419,12 @@ async function indexHtml(env) {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Whitestone — Aziel Eliab</title>
-<meta name="description" content="Whitestone by Aziel Eliab is one ephemeral pro se advisor for Criminal, Civil, and Divorce. Educational procedural guidance only — not a lawyer, not legal advice. Optional software zip.">
+<meta name="description" content="Whitestone by Aziel Eliab is one ephemeral pro se advisor for Criminal, Civil, and Divorce. Educational procedural guidance. Optional software zip.">
 <meta name="author" content="Aziel Eliab">
 <link rel="canonical" href="${HOST}/">
 <link rel="icon" href="/sigil.png" type="image/png">
 <meta property="og:title" content="Whitestone — Aziel Eliab">
-<meta property="og:description" content="Ephemeral pro se advisor by Aziel Eliab. Not a lawyer. Not legal advice. Optional software zip.">
+<meta property="og:description" content="One ephemeral pro se advisor by Aziel Eliab for Criminal, Civil, and Divorce. Optional software zip.">
 <meta property="og:url" content="${HOST}/">
 <meta property="og:image" content="${HOST}/sigil.png">
 <meta property="og:image:alt" content="Aziel Eliab rose-star brand mark. Author Aziel Eliab.">
@@ -443,7 +441,7 @@ async function indexHtml(env) {
   "downloadUrl": "${HOST}/download",
   "license": "https://www.apache.org/licenses/LICENSE-2.0",
   "url": "${HOST}/",
-  "description": "Ephemeral pro se advisor by Aziel Eliab. Not a lawyer. Not legal advice."
+  "description": "One ephemeral pro se advisor by Aziel Eliab for Criminal, Civil, and Divorce."
 }
 </script>
 <style>
@@ -488,7 +486,7 @@ async function indexHtml(env) {
   <div class="brandrow"><img class="brandmark" src="/sigil.png" width="40" height="40" alt="" decoding="async"></div>
   <h1>Whitestone</h1>
   <p class="motto">Ephemeral pro se advisor. Criminal, Civil, Divorce. Author Aziel Eliab.</p>
-  <p class="banner">Not a lawyer. Not legal advice. Educational procedural software only. Session-only memory. No case exports. The live app is the product — this page counts the optional zip.</p>
+  <p class="banner">One ephemeral pro se advisor for Criminal, Civil, and Divorce. Educational procedural software. Session-only memory. Uploads only. The live app is the product — this page counts the optional zip.</p>
   <aside id="meshStrip" aria-label="Live Nodes">
     <span class="live"><b id="meshLiveCount">0</b> Live Nodes</span>
     <span id="meshLine">Suite mesh: off (default). QNM-BUILD-1.0. QNS-CD-1.0. Not an anonymity network.</span>
@@ -684,8 +682,8 @@ function openapiSpec(request) {
     info: {
       title: "Whitestone runtime",
       version: "1.5.0",
-      summary: "Ephemeral pro se advisor download tracker. Hosted API is advisory only. Not a lawyer.",
-      description: engine.LIMITATION + " Suite mesh /v1/mesh/* PROXY to aziel-runtime (AZIEL_RUNTIME). Default OFF. QNM-BUILD-1.0 live|locked|isolated. No Node Gate. No auto-heal. Not anonymity. Aziel Eliab only.",
+      summary: "Ephemeral pro se advisor download tracker. Hosted API is educational procedural software.",
+      description: engine.LIMITATION + " Suite mesh /v1/mesh/* PROXY to aziel-runtime (AZIEL_RUNTIME). Default OFF. QNM-BUILD-1.0 live|locked|isolated. No Node Gate. No auto-heal. Aziel Eliab only.",
     },
     servers: [{ url: origin }],
     paths: {
@@ -726,7 +724,7 @@ function aiHelpPage(request) {
 curl ${origin}/v1/skill
 curl ${origin}/v1/mesh
 </pre>
-<p>Suite mesh: GET <a href="${origin}/v1/mesh">${origin}/v1/mesh</a> PROXY to aziel-runtime. Default OFF. QNM-BUILD-1.0 live|locked|isolated. QNS-CD-1.0 photon QNS1 packet transfer (hub cite / Worker mesh cross-map only; no public qnsd proxy). No Node Gate. No auto-heal. Not anonymity. Catalog MCP mesh_* + FragGate slug=mesh. Author: Aziel Eliab only.</p>
+<p>Suite mesh: GET <a href="${origin}/v1/mesh">${origin}/v1/mesh</a> PROXY to aziel-runtime. Default OFF. QNM-BUILD-1.0 live|locked|isolated. QNS-CD-1.0 photon QNS1 packet transfer (hub cite / Worker mesh cross-map only; no public qnsd proxy). No Node Gate. No auto-heal. Catalog MCP mesh_* + FragGate slug=mesh. Author: Aziel Eliab only.</p>
 <p>GET/POST under <code>/v1</code> never increment the download counter. There is no case-file store and no FragGate engine on this Worker.</p>
 <p><a href="/">Downloads</a></p>
 </body></html>`;
@@ -784,7 +782,7 @@ export async function handleRuntime(request, url, env) {
       mesh: meshPointer(),
       mesh_body: { slug: "mesh", op: "status", payload: {} },
       kv_increment: false,
-      note: "Dual surface: human Worker UI and this MCP pointer. Whitestone is a catalog placement, not a FragGate engine — do not invent door ops. Canonical agent path is the catalog MCP on aziel-runtime. Catalog MCP mesh_* + FragGate slug=mesh. This Worker /v1/mesh/* PROXY to aziel-runtime via AZIEL_RUNTIME. Suite mesh default OFF. QNM rollup live|locked|isolated. QNS-CD-1.0 photon QNS1 packet transfer (hub cite / Worker mesh cross-map only; no public qnsd proxy). No Node Gate. No auto-heal. Not anonymity.",
+      note: "Dual surface: human Worker UI and this MCP pointer. Whitestone is a catalog placement. Do not invent door ops. Canonical agent path is the catalog MCP on aziel-runtime. Catalog MCP mesh_* + FragGate slug=mesh. This Worker /v1/mesh/* PROXY to aziel-runtime via AZIEL_RUNTIME. Suite mesh default OFF. QNM rollup live|locked|isolated. QNS-CD-1.0 photon QNS1 packet transfer (hub cite / Worker mesh cross-map only; no public qnsd proxy). No Node Gate. No auto-heal.",
     };
     if (request.method === "HEAD") return new Response(null, { status: 200, headers: corsHeaders() });
     return json(body);
@@ -922,14 +920,14 @@ export default {
     if ((url.pathname === "/llms.txt" || url.pathname === "/llms.txt/") && request.method === "GET") {
       const body = [
         "Whitestone — Aziel Eliab",
-        "Not a lawyer. Not legal advice.",
+        "One ephemeral pro se advisor for Criminal, Civil, and Divorce.",
         "Live app: " + APP_WORKER + "/",
         "Counted zip: " + HOST + "/download",
         "Stats: " + HOST + "/stats",
         "Count: " + HOST + "/count",
         "OpenAPI: " + HOST + "/openapi.json",
         "Mesh PROXY: " + HOST + "/v1/mesh (default OFF)",
-        "Catalog placement, not a FragGate engine.",
+        "Catalog placement. Standalone software.",
         "",
       ].join("\n");
       return new Response(body, {
