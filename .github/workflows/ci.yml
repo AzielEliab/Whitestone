@@ -25,3 +25,5 @@ jobs:
           fi
       - name: Verify download-tracker mesh proxy
         run: node workers/download-tracker/scripts/verify-mesh-proxy.mjs
+      - name: Verify download-tracker human/bot counters
+        run: node workers/download-tracker/scripts/verify-human-bot.mjs
