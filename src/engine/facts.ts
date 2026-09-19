@@ -70,6 +70,16 @@ export function snapshotLine(state: SessionState): string {
   if (s.childrenLine) bits.push(`Children noted: ${s.childrenLine}.`);
   if (s.note) bits.push(`Case note: ${s.note}.`);
   if (s.goal) bits.push(`Stated goal: ${s.goal}.`);
+  if (state.historicalMode || state.asOfYear) {
+    const asOf =
+      state.asOfYear && state.asOfMonth
+        ? `${state.asOfYear}-${String(state.asOfMonth).padStart(2, "0")}`
+        : "year/month not set";
+    bits.push(`Historical as-of mode is on (${asOf}). Seeded federal timeline only — not a complete U.S. law book.`);
+  }
+  if (state.facts.archival?.trim()) {
+    bits.push(`Archival case/ruling facts: ${state.facts.archival.trim().slice(0, 240)}.`);
+  }
   if (s.answered.length) {
     bits.push(
       `Answered facts: ${s.answered
@@ -90,19 +100,24 @@ export function canSkipToAdvisor(state: SessionState): boolean {
 export function whatsNextLine(state: SessionState): string {
   switch (state.step) {
     case "welcome":
-      return "Pick Criminal, Civil, or Divorce. Notices stay under Important notices.";
+      return "Pick Criminal, Civil, or Divorce. Optional: turn on historical as-of evaluation. Notices stay under Important notices.";
     case "jurisdiction":
       return "Choose the state or D.C. of the court you expect to use.";
     case "matter":
       return "Choose the specific matter type for this practice area.";
     case "facts":
+      if (state.historicalMode && (state.asOfYear == null || state.asOfMonth == null)) {
+        return "Set the as-of year and month, then add archival case or ruling facts to compare against the seeded corpus.";
+      }
       return canSkipToAdvisor(state)
         ? "Add names and what you want the court to do — or skip to the advisor."
         : "Name the parties and a short goal so the advisor can speak to this session.";
     case "evidence":
       return "Uploads are optional and never exported. Continue when ready.";
     case "advise":
-      return "Ask a question, tap a follow-up, or open Math / Statistics. Composer stays usable on a phone keyboard.";
+      return state.historicalMode
+        ? "Ask a question, tap a follow-up, or open Math / Statistics / Historical as-of. Composer stays usable on a phone keyboard."
+        : "Ask a question, tap a follow-up, or open Math / Statistics. Composer stays usable on a phone keyboard.";
     case "filing":
       return "Review the on-screen structure only. Recreate papers on the clerk's form. Nothing is exported.";
     default:

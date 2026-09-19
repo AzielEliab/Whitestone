@@ -20,6 +20,13 @@ export function Jurisdiction() {
       <h2>{copy.heading}</h2>
       <WhatsNext />
       <p className="muted">{copy.body}</p>
+      {state.historicalMode && (
+        <p className="banner" role="note">
+          Historical as-of mode is on. State historical statutes for the place you pick are UNKNOWN unless
+          a dated record with a source URL exists. Federal seeded milestones may still overlay. This is
+          not a complete law book.
+        </p>
+      )}
       <div className="field">
         <label htmlFor="j-search">Search jurisdictions</label>
         <input

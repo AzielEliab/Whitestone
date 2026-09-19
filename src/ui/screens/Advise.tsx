@@ -4,6 +4,7 @@ import { defaultResearchQuery } from "../../practice/areas";
 import { useSession } from "../../session/store";
 import { Button } from "../components/Button";
 import { GroundingBadge } from "../components/GroundingBadge";
+import { HistoryPanel } from "../components/HistoryPanel";
 import { MathPanel } from "../components/MathPanel";
 import { StatsPanel } from "../components/StatsPanel";
 import { SourceChips, WebSources } from "../components/WebSources";
@@ -14,7 +15,7 @@ export function Advise() {
   const { state, ask, answerQuestion, setStep, setWebEnabled, clearWebNotes, refreshResearch } =
     useSession();
   const [draft, setDraft] = useState("");
-  const [tool, setTool] = useState<"none" | "math" | "stats">("none");
+  const [tool, setTool] = useState<"none" | "math" | "stats" | "history">("none");
   const q = nextQuestion(state);
   const seeded = useRef(false);
   const lastAdvisor = [...state.messages].reverse().find((m) => m.role === "advisor");
@@ -66,16 +67,20 @@ export function Advise() {
             <button type="button" className="chip" aria-pressed={tool === "stats"} onClick={() => setTool(tool === "stats" ? "none" : "stats")}>
               Statistics
             </button>
+            <button type="button" className="chip" aria-pressed={tool === "history"} onClick={() => setTool(tool === "history" ? "none" : "history")}>
+              Historical as-of
+            </button>
           </div>
           {tool === "math" && <MathPanel onInsert={send} />}
           {tool === "stats" && <StatsPanel onInsert={send} />}
+          {tool === "history" && <HistoryPanel onInsert={send} />}
           <div className="field">
             <label htmlFor="ask">Your question or facts</label>
             <textarea
               id="ask"
               value={draft}
               onChange={(e) => setDraft(e.target.value)}
-              placeholder="Ask about venue, packets, deadlines, 10% of bail, what the numbers say…"
+              placeholder="Ask about venue, packets, as-of 1925-06, 10% of bail, what the numbers say…"
               enterKeyHint="send"
               autoComplete="off"
             />

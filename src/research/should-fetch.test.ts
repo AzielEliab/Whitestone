@@ -24,6 +24,13 @@ describe("should-fetch rules", () => {
         matter: "custody",
       }),
     ).toBe(true);
+    expect(
+      shouldFetch({
+        query: "Was the 18th Amendment in force as of 1925-06?",
+        jurisdiction: "CA",
+        matter: "rights-education",
+      }),
+    ).toBe(true);
   });
 
   it("fetches when building filing guidance or on a manual refresh", () => {

@@ -34,6 +34,14 @@ export function App() {
           </span>
         </button>
         <div className="top-actions">
+          {state.historicalMode && (
+            <span className="chip asof-chip">
+              As-of{" "}
+              {state.asOfYear && state.asOfMonth
+                ? `${state.asOfYear}-${String(state.asOfMonth).padStart(2, "0")}`
+                : "year/month"}
+            </span>
+          )}
           {state.practiceArea && state.step !== "welcome" && (
             <button
               type="button"

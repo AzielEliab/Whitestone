@@ -422,6 +422,16 @@ img, video { max-width: 100%; height: auto; }
 .area-choice span { font-size: 0.92rem; opacity: 0.92; }
 .area-choice:hover, .area-choice:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
 .area-choice[aria-pressed="true"] { box-shadow: inset 0 0 0 3px color-mix(in srgb, var(--accent-ink) 55%, transparent); }
+.history-option {
+  border: 1px dashed var(--line);
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+.asof-picker { margin-top: 8px; }
+.asof-chip {
+  pointer-events: none;
+  font-size: 0.82rem;
+}
 @media (min-width: 720px) {
   .area-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }

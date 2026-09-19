@@ -12,7 +12,7 @@ import { LambLens } from "../components/LambLens";
 import { WhatsNext } from "../components/WhatsNext";
 
 export function Welcome() {
-  const { state, beginSession } = useSession();
+  const { state, beginSession, setHistoricalMode } = useSession();
 
   function chooseArea(area: PracticeArea) {
     if (state.practiceArea && state.practiceArea !== area && hasAreaSpecificState(state)) {
@@ -52,6 +52,21 @@ export function Welcome() {
           </button>
         ))}
       </div>
+      <div className="history-option">
+        <label className="web-toggle">
+          <input
+            type="checkbox"
+            checked={state.historicalMode}
+            onChange={(e) => setHistoricalMode(e.target.checked)}
+          />
+          <span>
+            <strong>Historical as-of evaluation</strong> — optional mode, not a fourth practice area.
+            Compare archival case or ruling facts to standing law as of a year and month. Seeded federal
+            constitutional and major-statute milestones only. Not a complete U.S. law book since 1776.
+            State historical coverage is UNKNOWN unless a dated record exists.
+          </span>
+        </label>
+      </div>
       <details className="notices">
         <summary>Important notices — not a lawyer, session-only, no case exports</summary>
         <div className="banner" role="note">
@@ -69,7 +84,9 @@ export function Welcome() {
         <p className="muted">
           Coverage is labeled. Prefer checklists, clerk packets, and cited public pages
           over fake precision. Whitestone does not invent citations or statistics and does
-          not claim a complete statute book. Statutes change — verify with the clerk.
+          not claim a complete statute book or a complete digitized corpus of every U.S. law
+          since 1776. Historical as-of mode says UNKNOWN when a dated record is missing.
+          Statutes change — verify with the clerk.
         </p>
         <p className="muted">
           Optional: use your browser&apos;s Add to Home Screen for a shortcut. Sessions

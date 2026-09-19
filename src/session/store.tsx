@@ -40,6 +40,8 @@ interface SessionApi {
   remapEvidence: () => void;
   seedAdvisor: () => void;
   setWebEnabled: (on: boolean) => void;
+  setHistoricalMode: (on: boolean) => void;
+  setAsOf: (year: number | null, month: number | null) => void;
   clearWebNotes: () => void;
   refreshResearch: (query?: string, reason?: ResearchReason) => Promise<void>;
   erase: () => Promise<void>;
@@ -70,6 +72,9 @@ function hydrate(): SessionState {
         webNotes: Array.isArray(parsed.webNotes) ? parsed.webNotes : [],
         webStatus: parsed.webStatus ?? "idle",
         webMessage: parsed.webMessage ?? "",
+        historicalMode: parsed.historicalMode === true,
+        asOfYear: typeof parsed.asOfYear === "number" ? parsed.asOfYear : null,
+        asOfMonth: typeof parsed.asOfMonth === "number" ? parsed.asOfMonth : null,
       };
     }
   } catch {
@@ -262,6 +267,22 @@ export function SessionProvider({ children }: { children: ReactNode }) {
           ...s,
           webEnabled: on,
           webStatus: on ? s.webStatus : "off",
+        }));
+      },
+      setHistoricalMode: (on) => {
+        setState((s) => ({
+          ...s,
+          historicalMode: on,
+          asOfYear: on ? s.asOfYear : null,
+          asOfMonth: on ? s.asOfMonth : null,
+        }));
+      },
+      setAsOf: (year, month) => {
+        setState((s) => ({
+          ...s,
+          historicalMode: year != null && month != null ? true : s.historicalMode,
+          asOfYear: year,
+          asOfMonth: month,
         }));
       },
       clearWebNotes: () => {

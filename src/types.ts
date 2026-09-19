@@ -139,6 +139,9 @@ export interface SessionState {
   webNotes: WebSource[];
   webStatus: WebStatus;
   webMessage: string;
+  historicalMode: boolean;
+  asOfYear: number | null;
+  asOfMonth: number | null;
 }
 
 export const MATTER_LABELS: Record<MatterType, string> = {
@@ -207,5 +210,8 @@ export function emptySession(): SessionState {
     webNotes: [],
     webStatus: "idle",
     webMessage: "",
+    historicalMode: false,
+    asOfYear: null,
+    asOfMonth: null,
   };
 }

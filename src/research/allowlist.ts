@@ -45,7 +45,7 @@ const JUDICIARY_EXTRA_HOSTS = new Set([
 ]);
 
 const FEDERAL_HOST_RE =
-  /(^|\.)(usa\.gov|justice\.gov|acf\.hhs\.gov|hhs\.gov|childwelfare\.gov|lsc\.gov|congress\.gov|uscourts\.gov|bjs\.gov|ojp\.gov|consumerfinance\.gov|ftc\.gov|hud\.gov|census\.gov|cdc\.gov|fbi\.gov|cjis\.gov)$/;
+  /(^|\.)(usa\.gov|justice\.gov|acf\.hhs\.gov|hhs\.gov|childwelfare\.gov|lsc\.gov|congress\.gov|uscourts\.gov|bjs\.gov|ojp\.gov|consumerfinance\.gov|ftc\.gov|hud\.gov|census\.gov|cdc\.gov|fbi\.gov|cjis\.gov|archives\.gov|govinfo\.gov|ada\.gov)$/;
 
 const STATS_HOSTS = new Set([
   "www.ncsc.org",
@@ -180,7 +180,7 @@ export function describeAllowlist(): {
       "*.us court/judiciary hostnames",
       "LawHelp and listed legal-aid hosts",
       "Cornell LII and law.justia.com (labeled unofficial)",
-      "usa.gov / justice.gov / ACF / uscourts.gov / CFPB / Census / CDC / BJS public pages",
+      "usa.gov / justice.gov / ACF / uscourts.gov / CFPB / Census / CDC / BJS / archives.gov / constitution.congress.gov public pages",
       "NCSC / Court Statistics Project landing pages (labeled statistical)",
     ],
     exampleHosts: [
@@ -196,6 +196,8 @@ export function describeAllowlist(): {
       "bjs.ojp.gov",
       "www.census.gov",
       "www.ncsc.org",
+      "www.archives.gov",
+      "constitution.congress.gov",
     ],
     blockedExamples: ["random blogs", "SEO mills", "lawyer-directory hosts", "www.justia.com", "non-allowlisted hosts"],
   };
