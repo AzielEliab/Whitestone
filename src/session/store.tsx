@@ -8,6 +8,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { probeSpectralLockLive } from "../casemode/spectrallock";
 import { advise, openingMessage } from "../engine/advisor";
 import { routeIntent } from "../engine/intent";
 import { mapEvidence } from "../engine/evidence-map";
@@ -47,6 +48,7 @@ interface SessionApi {
   setAsOf: (year: number | null, month: number | null) => void;
   clearWebNotes: () => void;
   refreshResearch: (query?: string, reason?: ResearchReason) => Promise<void>;
+  refreshSpectralLock: () => Promise<void>;
   erase: () => Promise<void>;
 }
 
@@ -77,6 +79,7 @@ function hydrate(): SessionState {
         webMessage: parsed.webMessage ?? "",
         historicalMode: parsed.historicalMode === true,
         caseMode: parsed.caseMode === true,
+        spectralLive: parsed.spectralLive && parsed.spectralLive.lab_claim === false ? parsed.spectralLive : null,
         asOfYear: typeof parsed.asOfYear === "number" ? parsed.asOfYear : null,
         asOfMonth: typeof parsed.asOfMonth === "number" ? parsed.asOfMonth : null,
         uploads: Array.isArray(parsed.uploads)
@@ -191,6 +194,15 @@ export function SessionProvider({ children }: { children: ReactNode }) {
           setState({ ...base, webStatus: willFetch ? "loading" : base.webStatus });
 
           let research: ResearchResult | null = null;
+          let spectralLive = base.spectralLive;
+          if ((intent === "casemode" || base.caseMode) && base.webEnabled) {
+            try {
+              spectralLive = await probeSpectralLockLive();
+            } catch {
+              spectralLive = base.spectralLive;
+            }
+          }
+          const evalBase: SessionState = { ...base, spectralLive };
           if (willFetch) {
             if (researchReady.current === null) researchReady.current = await probeResearch();
             research = researchReady.current
@@ -213,7 +225,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
                 };
           }
 
-            const { reply, state: next, followUps, grounding, receipt } = advise(base, text, research);
+            const { reply, state: next, followUps, grounding, receipt } = advise(evalBase, text, research);
             const webNotes = research?.sources.length ? mergeWebNotes(next.webNotes, research.sources) : next.webNotes;
             const advisor = {
               id: crypto.randomUUID(),
@@ -338,6 +350,16 @@ export function SessionProvider({ children }: { children: ReactNode }) {
           webStatus: s.webEnabled ? "idle" : "off",
           webMessage: "",
         }));
+      },
+      refreshSpectralLock: async () => {
+        const snap = stateRef.current;
+        if (!snap.webEnabled) return;
+        try {
+          const spectralLive = await probeSpectralLockLive();
+          setState((s) => ({ ...s, spectralLive }));
+        } catch {
+          /* Case Mode continues; no invented lab claim. */
+        }
       },
       refreshResearch: async (query?: string, reason: ResearchReason = "manual") => {
         const snap = stateRef.current;

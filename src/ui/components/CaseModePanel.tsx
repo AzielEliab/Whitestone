@@ -11,7 +11,7 @@ function scoreText(status: "LABELED" | "UNKNOWN", value: number | null): string 
 }
 
 export function CaseModePanel({ onInsert }: { onInsert: (text: string) => void }) {
-  const { state, refreshResearch } = useSession();
+  const { state, refreshResearch, refreshSpectralLock } = useSession();
   const historicalSources = useMemo(() => {
     if (!state.asOfYear || !state.asOfMonth) return [];
     return standingAsOf({
@@ -75,9 +75,13 @@ export function CaseModePanel({ onInsert }: { onInsert: (text: string) => void }
       <p className="muted">
         TrajectoryLock {evaln.trajectory.status}
         {evaln.trajectory.line_fit != null ? ` line_fit ${evaln.trajectory.line_fit.toFixed(2)}` : ""} · VibeLock{" "}
-        {evaln.vibelock.status} · SpectralLock {evaln.spectrallock.status} · lattice{" "}
+        {evaln.vibelock.status} · SpectralLock {evaln.spectrallock.status}
+        {evaln.spectrallock.live ? " LIVE GET" : ""} · lattice{" "}
         {evaln.honesty.engines.lattice.nodes.length} node(s)
       </p>
+      <Button type="button" onClick={() => void refreshSpectralLock()}>
+        Call SpectralLock (allowlisted GET)
+      </Button>
       <Button type="button" onClick={() => onInsert("Run Case Mode on the stated outcome against my uploads.")}>
         Ask advisor for Case Mode
       </Button>

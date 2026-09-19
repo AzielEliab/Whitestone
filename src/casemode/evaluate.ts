@@ -9,7 +9,7 @@ import { join } from "../honesty/tokens";
 import type { EvidenceFile, SessionState } from "../types";
 import { capConfidence, labeledOrUnknown } from "./cap";
 import { extractFiveW, type FiveW } from "./fivew";
-import { citeSpectralLock, type SpectralLockCite } from "./spectrallock";
+import { citeSpectralLock, type SpectralLockCite, type SpectralLockLive } from "./spectrallock";
 import { scoreTrajectory, type TrajectoryReport } from "./trajectory";
 import { scoreVibeLock, type VibeLockReport } from "./vibelock";
 
@@ -53,6 +53,7 @@ export function evaluateCaseMode(input: {
   uploads: EvidenceFile[];
   webNotes?: { title: string; url: string; excerpt: string; retrievedAt?: string }[];
   historicalSources?: { title: string; url: string; date?: string }[];
+  spectralLive?: SpectralLockLive | null;
 }): CaseModeEvaluation {
   const honesty = evaluateHonesty(input);
   const blob = join([
@@ -80,7 +81,7 @@ export function evaluateCaseMode(input: {
       u.mime.includes("pdf"),
   );
   const vibelock = scoreVibeLock({ audioPresent, notes: blob });
-  const spectrallock = citeSpectralLock(mediaPresent);
+  const spectrallock = citeSpectralLock(mediaPresent, input.spectralLive);
   const webCites = (input.webNotes ?? [])
     .filter((w) => /^https:\/\//.test(w.url))
     .map((w) => ({ title: w.title, url: w.url, retrievedAt: w.retrievedAt }));
@@ -170,7 +171,7 @@ const TRAJECTORY_CITE = "https://github.com/AzielEliab/TrajectoryLock";
 const VIBE_CITE = "https://github.com/AzielEliab/VibeLock";
 const SPECTRAL_CITE = "https://github.com/AzielEliab/SpectralLock";
 
-export function caseModeFromSession(state: Pick<SessionState, "facts" | "uploads" | "asOfYear" | "asOfMonth" | "webNotes"> & {
+export function caseModeFromSession(state: Pick<SessionState, "facts" | "uploads" | "asOfYear" | "asOfMonth" | "webNotes" | "spectralLive"> & {
   historicalSources?: { title: string; url: string; date?: string }[];
 }): CaseModeEvaluation {
   const asOfIso =
@@ -183,5 +184,6 @@ export function caseModeFromSession(state: Pick<SessionState, "facts" | "uploads
     uploads: state.uploads,
     webNotes: state.webNotes,
     historicalSources: state.historicalSources,
+    spectralLive: state.spectralLive,
   });
 }

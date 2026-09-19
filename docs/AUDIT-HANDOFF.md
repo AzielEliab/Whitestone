@@ -80,7 +80,7 @@ Evaluation: `evaluateCaseMode()` in `src/casemode/evaluate.ts`. Confidence hard-
 
 Also emit **why / who / what / how / when** and independent vs on-behalf-of (named only when evidenced).
 
-TrajectoryLock / VibeLock / SpectralLock: labeled or SLOT. SpectralLock product Worker: `https://spectrallock-download-tracker.vibelock.workers.dev` `/v1/unredact` `/v1/recover` `/v1/handwriting` — leftover-bytes / heuristics, not a lab.
+TrajectoryLock / VibeLock / SpectralLock: labeled, LIVE GET, SLOT, or UNAVAILABLE. SpectralLock product Worker: `https://spectrallock-download-tracker.vibelock.workers.dev` GET `/v1/unredact` (revision graph) `/v1/recover` (universal NO-LIE) `/v1/handwriting` (heuristics, not lab). Whitestone does not POST session files and does not invent leftover bytes. Cap 0.75.
 
 **Export (Case Mode only):** hash chain + score card JSON. Educational / archival. End & erase still wipes the live session.
 

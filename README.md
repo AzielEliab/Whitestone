@@ -103,7 +103,7 @@ Case Mode ingest adds certificates, findings, articles, police reports, phone, i
 
 **Export** (Case Mode only): a hash-chain score card JSON for educational / archival use. End & erase still wipes the live session.
 
-Ported or cited slots: TrajectoryLock (victim × impact direction × location; does not name a shooter), VibeLock, SpectralLock allowlist (`https://spectrallock-download-tracker.vibelock.workers.dev` `/v1/unredact` `/v1/recover` `/v1/handwriting` — leftover-bytes / heuristics). Online verify uses the same allowlisted public-page fetches. Confidence is not truth.
+Ported or cited slots: TrajectoryLock (victim × impact direction × location; does not name a shooter), VibeLock, SpectralLock allowlist GET (`https://spectrallock-download-tracker.vibelock.workers.dev` `/v1/unredact` revision graph, `/v1/recover` universal recover, `/v1/handwriting` heuristics — leftover-bytes, not a lab; session files stay in-browser). Online verify uses the same allowlisted public-page fetches. Confidence is not truth.
 
 Audit handoff of historical law dates + honesty + Case Mode scores: [docs/AUDIT-HANDOFF.md](docs/AUDIT-HANDOFF.md).
 

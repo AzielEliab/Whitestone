@@ -33,7 +33,7 @@ export function formatCaseModeBlock(evaln: CaseModeEvaluation): string {
       evaln.trajectory.line_fit == null ? "UNKNOWN" : evaln.trajectory.line_fit.toFixed(3)
     }. Does not name a shooter. ${evaln.trajectory.limitation}`,
     `VibeLock (${evaln.vibelock.spec}): ${evaln.vibelock.status}. ${evaln.vibelock.note}`,
-    `SpectralLock (${evaln.spectrallock.spec}): ${evaln.spectrallock.status} · ${evaln.spectrallock.paths.join(", ")}. ${evaln.spectrallock.note}`,
+    `SpectralLock (${evaln.spectrallock.spec}): ${evaln.spectrallock.status} · ${evaln.spectrallock.paths.join(", ")}. lab_claim=${evaln.spectrallock.lab_claim} posted_user_bytes=${evaln.spectrallock.posted_user_bytes}. ${evaln.spectrallock.note}`,
     `Online verify: ${evaln.online_verify.note}${
       evaln.online_verify.cites.length
         ? ` Cites: ${evaln.online_verify.cites

@@ -1,3 +1,4 @@
+import type { SpectralLockLive } from "./casemode/spectrallock";
 import type { WebSource } from "./research/types";
 
 export type { SourceKind, WebSource } from "./research/types";
@@ -208,6 +209,7 @@ export interface SessionState {
   asOfYear: number | null;
   asOfMonth: number | null;
   caseMode: boolean;
+  spectralLive: SpectralLockLive | null;
 }
 
 export const MATTER_LABELS: Record<MatterType, string> = {
@@ -280,5 +282,6 @@ export function emptySession(): SessionState {
     asOfYear: null,
     asOfMonth: null,
     caseMode: false,
+    spectralLive: null,
   };
 }

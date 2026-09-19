@@ -6,4 +6,10 @@ export { buildCaseExport, exportFilename } from "./export";
 export type { CaseModeExport } from "./export";
 export { scoreTrajectory, TRAJECTORY_SPEC } from "./trajectory";
 export { scoreVibeLock, VIBELOCK_SPEC } from "./vibelock";
-export { citeSpectralLock, spectrallockUrls, SPECTRALLOCK_WORKER, SPECTRALLOCK_PATHS } from "./spectrallock";
+export {
+  citeSpectralLock,
+  probeSpectralLockLive,
+  spectrallockUrls,
+  SPECTRALLOCK_WORKER,
+  SPECTRALLOCK_PATHS,
+} from "./spectrallock";
