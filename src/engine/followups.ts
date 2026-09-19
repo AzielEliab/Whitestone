@@ -7,9 +7,10 @@ export function followUpPrompts(state: SessionState, intent: AdvisorIntent): str
   const q = nextQuestion(state);
   if (q) chips.push(q.prompt);
 
-  if (state.historicalMode || intent === "historical" || intent === "honesty") {
+  if (state.historicalMode || intent === "historical" || intent === "honesty" || intent === "casemode" || state.caseMode) {
     chips.push("Was the 18th Amendment in force as of 1925-06?");
     chips.push("Score honesty of the stated outcome against my uploads.");
+    chips.push("Run Case Mode on the stated outcome against my uploads.");
   }
 
   if (intent === "math") {

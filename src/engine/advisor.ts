@@ -16,6 +16,7 @@ import {
   standingAsOf,
 } from "../history";
 import { formatHonestyBlock, honestyFromSession } from "../honesty";
+import { caseModeFromSession, formatCaseModeBlock } from "../casemode";
 import type { SessionState } from "../types";
 import { MATTER_LABELS } from "../types";
 import { nextQuestion } from "./dialogue";
@@ -41,7 +42,9 @@ export function openingMessage(state: SessionState): string {
   const bits = [
     "I am Whitestone's session advisor — a structured knowledge guide, not a lawyer and not an online model calling an outside company.",
     LEGAL_DISCLAIMER,
-    "This chat exists only in your current session. There is no export of filings, chat, or evidence.",
+    state.caseMode
+      ? "This chat is session-only. Case Mode allows an educational/archival export of the hash chain + score card — not court-ready papers."
+      : "This chat exists only in your current session. There is no export of filings, chat, or evidence.",
   ];
   if (state.webEnabled) {
     bits.push(
@@ -58,6 +61,11 @@ export function openingMessage(state: SessionState): string {
         : "year and month not set yet";
     bits.push(
       `Historical as-of evaluation is on (${asOf}). The engine compares your archival facts to a seeded federal constitutional and major-statute timeline with source URLs — not a complete digitized corpus of every U.S. law since 1776. State historical statutes are UNKNOWN unless a dated record exists. I will not invent holdings, form numbers, or uncitable “the law said X in 1850” claims. Upload case filings, evidence, historical reports, and news clippings on the historical path — in only. Honesty scores (truth_buried / truth_overcame_lie / honesty_overall) stay UNKNOWN without dated sources. Confidence is not truth.`,
+    );
+  }
+  if (state.caseMode) {
+    bits.push(
+      "Case Mode is on. Labeled scores: truth_upheld, narrative_suppression, systemic_suppression, personal_professional_suppression (plus honesty axes). Confidence is hard-capped at 75%. why/who/what/how/when plus independent vs on-behalf-of stay UNKNOWN unless evidenced. TrajectoryLock / VibeLock / SpectralLock are cited or SLOT — no invented shooter, lab mark, or voice-ID. Export is the hash chain + score card only.",
     );
   }
   if (state.practiceArea === "criminal") {
@@ -201,7 +209,23 @@ export function advise(
     );
   }
 
-  if (honesty) {
+  const caseOn = intent === "casemode" || state.caseMode;
+  const caseEval = caseOn
+    ? caseModeFromSession({
+        ...next,
+        historicalSources: historical
+          ? [...historical.matched, ...historical.standing].slice(0, 6).map((r) => ({
+              title: `${r.citation} ${r.title}`,
+              url: r.sourceUrl,
+              date: r.effective_from,
+            }))
+          : [],
+      })
+    : null;
+  if (caseEval) {
+    parts.push(formatCaseModeBlock(caseEval));
+    knowledgeBits.push(caseEval.limitation, caseEval.nolie, ...caseEval.cites);
+  } else if (honesty) {
     parts.push(formatHonestyBlock(honesty));
     knowledgeBits.push(honesty.limitation, honesty.nolie, ...honesty.cites);
   }
@@ -242,7 +266,7 @@ export function advise(
     }
   }
 
-  if (intent === "historical" || intent === "honesty") {
+  if (intent === "historical" || intent === "honesty" || intent === "casemode") {
     /* Dated corpus / honesty block already appended. Do not dump today's checklist as if it were 1850 law. */
   } else if (intent === "forms" && topic) {
     parts.push(
@@ -272,7 +296,7 @@ export function advise(
     }
   }
 
-  if (intent !== "forms" && intent !== "stats" && intent !== "math" && intent !== "historical" && intent !== "honesty") {
+  if (intent !== "forms" && intent !== "stats" && intent !== "math" && intent !== "historical" && intent !== "honesty" && intent !== "casemode") {
     for (const hit of hits.slice(0, intent === "general" ? 2 : 3)) {
       parts.push(`${hit.title}: ${hit.body}`);
       knowledgeBits.push(hit.body);

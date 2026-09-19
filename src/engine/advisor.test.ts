@@ -197,6 +197,25 @@ describe("dialogue and advisor", () => {
     expect(reply).toMatch(/not a lawyer/i);
   });
 
+  it("keeps Case Mode scores UNKNOWN without dated independent uploads", () => {
+    const s = emptySession();
+    s.practiceArea = "criminal";
+    s.jurisdiction = "CA";
+    s.matter = "rights-education";
+    s.caseMode = true;
+    s.historicalMode = true;
+    s.asOfYear = 1925;
+    s.asOfMonth = 6;
+    s.facts.stated_outcome = "Official report: the matter is closed.";
+    const { reply, intent } = advise(s, "Run Case Mode on the stated outcome against my uploads.");
+    expect(intent).toBe("casemode");
+    expect(reply).toMatch(/truth_upheld/);
+    expect(reply).toMatch(/narrative_suppression/);
+    expect(reply).toMatch(/UNKNOWN/);
+    expect(reply).toMatch(/will not invent/);
+    expect(reply).toMatch(/0\.75|cap 75/i);
+  });
+
   it("returns cited statistics without inventing a figure", () => {
     const s = emptySession();
     s.practiceArea = "criminal";

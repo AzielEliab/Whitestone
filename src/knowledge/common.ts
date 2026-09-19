@@ -129,7 +129,7 @@ export const FEDERAL_FRAMEWORK: {
 ];
 
 export const NO_EXPORT_COPY =
-  "Whitestone never downloads, exports, prints, or packages your filings, chat, or evidence. You may upload files into this session. Captions and outlines stay on screen only. When you close the window or choose End & erase, the session is wiped.";
+  "Whitestone never packages court-ready filings. You may upload files into this session. Captions and outlines stay on screen. Case Mode may export an educational hash-chain + score card you choose to save. End & erase still wipes the live session.";
 
 export const WEB_RESEARCH_COPY =
   "The live app may fetch allowlisted public court, legal-aid, and government pages so answers can cite current clerk/self-help material, including National Archives and Constitution Annotated pages used by historical as-of evaluation. Fetched snippets live only in this session (or a short Worker cache of the same public URL). Offline zip copies do not include live research. This is still not legal advice and not a complete statute book.";

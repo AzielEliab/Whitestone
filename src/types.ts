@@ -53,14 +53,68 @@ export interface Child {
   livesWith: string;
 }
 
-export type UploadKind = "filing" | "evidence" | "historical_report" | "news_clipping";
+export type UploadKind =
+  | "filing"
+  | "evidence"
+  | "historical_report"
+  | "news_clipping"
+  | "death_certificate"
+  | "birth_certificate"
+  | "certificate"
+  | "finding"
+  | "article"
+  | "newspaper"
+  | "report"
+  | "police_report"
+  | "phone_call"
+  | "image"
+  | "painting"
+  | "document"
+  | "video"
+  | "audio";
 
 export const UPLOAD_KIND_LABELS: Record<UploadKind, string> = {
   filing: "Case filing",
   evidence: "Evidence",
   historical_report: "Historical report",
   news_clipping: "News clipping",
+  death_certificate: "Death certificate",
+  birth_certificate: "Birth certificate",
+  certificate: "Certificate",
+  finding: "Finding",
+  article: "Article",
+  newspaper: "Newspaper",
+  report: "Report",
+  police_report: "Police report",
+  phone_call: "Phone call",
+  image: "Image",
+  painting: "Painting",
+  document: "Document",
+  video: "Video",
+  audio: "Audio / stereo",
 };
+
+export const HISTORICAL_UPLOAD_KINDS: UploadKind[] = ["filing", "evidence", "historical_report", "news_clipping"];
+export const CASE_MODE_UPLOAD_KINDS: UploadKind[] = [
+  "filing",
+  "evidence",
+  "historical_report",
+  "news_clipping",
+  "death_certificate",
+  "birth_certificate",
+  "certificate",
+  "finding",
+  "article",
+  "newspaper",
+  "report",
+  "police_report",
+  "phone_call",
+  "image",
+  "painting",
+  "document",
+  "video",
+  "audio",
+];
 
 export interface EvidenceFile {
   id: string;
@@ -153,6 +207,7 @@ export interface SessionState {
   historicalMode: boolean;
   asOfYear: number | null;
   asOfMonth: number | null;
+  caseMode: boolean;
 }
 
 export const MATTER_LABELS: Record<MatterType, string> = {
@@ -224,5 +279,6 @@ export function emptySession(): SessionState {
     historicalMode: false,
     asOfYear: null,
     asOfMonth: null,
+    caseMode: false,
   };
 }

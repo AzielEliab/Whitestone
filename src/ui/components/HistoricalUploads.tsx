@@ -7,13 +7,14 @@ import {
   LARGE_BYTES,
 } from "../../extract/files";
 import { useSession } from "../../session/store";
-import { UPLOAD_KIND_LABELS, type UploadKind } from "../../types";
+import { CASE_MODE_UPLOAD_KINDS, HISTORICAL_UPLOAD_KINDS, UPLOAD_KIND_LABELS, type UploadKind } from "../../types";
 import { Button } from "./Button";
 
-const KINDS: UploadKind[] = ["filing", "evidence", "historical_report", "news_clipping"];
+const HIST_KINDS: UploadKind[] = HISTORICAL_UPLOAD_KINDS;
 
 export function HistoricalUploads({ compact = false }: { compact?: boolean }) {
   const { state, addUpload, removeUpload, patch } = useSession();
+  const KINDS = state.caseMode ? CASE_MODE_UPLOAD_KINDS : HIST_KINDS;
   const [kind, setKind] = useState<UploadKind>("filing");
   const [sourceDate, setSourceDate] = useState("");
   const [err, setErr] = useState<string | null>(null);

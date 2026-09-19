@@ -126,7 +126,7 @@ export function whatsNextLine(state: SessionState): string {
         : "Uploads are optional and never exported. Continue when ready.";
     case "advise":
       return state.historicalMode
-        ? "Ask a question, tap a follow-up, or open Math / Statistics / Historical as-of / Honesty eval. Composer stays usable on a phone keyboard."
+        ? "Ask a question, tap a follow-up, or open Math / Statistics / Historical as-of / Honesty eval / Case Mode. Composer stays usable on a phone keyboard."
         : "Ask a question, tap a follow-up, or open Math / Statistics. Composer stays usable on a phone keyboard.";
     case "filing":
       return "Review the on-screen structure only. Recreate papers on the clerk's form. Nothing is exported.";

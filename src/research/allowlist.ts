@@ -54,6 +54,14 @@ const STATS_HOSTS = new Set([
   "courtstatistics.org",
 ]);
 
+/** Aziel Eliab Softwares product Workers — cite/fetch leftover-bytes / recover / handwriting, not lab claims. */
+const SOFTWARE_HOSTS = new Set([
+  "spectrallock-download-tracker.vibelock.workers.dev",
+  "vibelock-download-tracker.vibelock.workers.dev",
+  "trajectorylock-download-tracker.vibelock.workers.dev",
+  "azclce-download-tracker.vibelock.workers.dev",
+]);
+
 let selfHelpHostCache: Set<string> | null = null;
 
 export function selfHelpHosts(): Set<string> {
@@ -133,6 +141,10 @@ export function classifyHost(host: string): AllowMatch | null {
     return { kind: "statistical", label: "Court statistics / NCSC public report (not a prediction)" };
   }
 
+  if (SOFTWARE_HOSTS.has(h) || (h.endsWith(".vibelock.workers.dev") && /-(download-tracker)$/.test(h.split(".")[0] ?? ""))) {
+    return { kind: "software-public", label: "Aziel Eliab Softwares Worker (cite / leftover-bytes — not a lab)" };
+  }
+
   if (h.endsWith(".gov")) {
     if (FEDERAL_HOST_RE.test(h)) {
       return { kind: "federal-public", label: "U.S. government public page" };
@@ -171,7 +183,7 @@ export function describeAllowlist(): {
   exampleHosts: string[];
 } {
   return {
-    kinds: ["state-judiciary", "legal-aid", "state-bar", "lii", "justia", "federal-public", "statistical"],
+    kinds: ["state-judiciary", "legal-aid", "state-bar", "lii", "justia", "federal-public", "statistical", "software-public"],
     patterns: [
       "https only",
       "state judiciary / self-help hosts from the jurisdiction table",

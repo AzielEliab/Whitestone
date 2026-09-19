@@ -67,6 +67,23 @@ Engine cites (ported, not invented):
 - ZionPattern — https://github.com/AzielEliab/zion-pattern-solver (75% cap)
 - Lattice — ChainLock CL-WP-0.4 cite only; ephemeral session hashes; wipe with End & erase
 
+## Case Mode
+
+Evaluation: `evaluateCaseMode()` in `src/casemode/evaluate.ts`. Confidence hard-capped at **0.75**.
+
+| Score | When UNKNOWN |
+| --- | --- |
+| `truth_upheld` | No dated independent sources |
+| `narrative_suppression` | No dated independent contradiction |
+| `systemic_suppression` | No evidenced institutional layer + contradiction |
+| `personal_professional_suppression` | No evidenced personal/professional layer |
+
+Also emit **why / who / what / how / when** and independent vs on-behalf-of (named only when evidenced).
+
+TrajectoryLock / VibeLock / SpectralLock: labeled or SLOT. SpectralLock product Worker: `https://spectrallock-download-tracker.vibelock.workers.dev` `/v1/unredact` `/v1/recover` `/v1/handwriting` — leftover-bytes / heuristics, not a lab.
+
+**Export (Case Mode only):** hash chain + score card JSON. Educational / archival. End & erase still wipes the live session.
+
 ## Suggested auditor table
 
 ```text

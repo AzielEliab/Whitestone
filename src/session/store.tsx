@@ -43,6 +43,7 @@ interface SessionApi {
   seedAdvisor: () => void;
   setWebEnabled: (on: boolean) => void;
   setHistoricalMode: (on: boolean) => void;
+  setCaseMode: (on: boolean) => void;
   setAsOf: (year: number | null, month: number | null) => void;
   clearWebNotes: () => void;
   refreshResearch: (query?: string, reason?: ResearchReason) => Promise<void>;
@@ -75,12 +76,13 @@ function hydrate(): SessionState {
         webStatus: parsed.webStatus ?? "idle",
         webMessage: parsed.webMessage ?? "",
         historicalMode: parsed.historicalMode === true,
+        caseMode: parsed.caseMode === true,
         asOfYear: typeof parsed.asOfYear === "number" ? parsed.asOfYear : null,
         asOfMonth: typeof parsed.asOfMonth === "number" ? parsed.asOfMonth : null,
         uploads: Array.isArray(parsed.uploads)
           ? parsed.uploads.map((u) => ({
               ...u,
-              kind: u.kind === "filing" || u.kind === "historical_report" || u.kind === "news_clipping" || u.kind === "evidence" ? u.kind : "evidence",
+              kind: u.kind ?? "evidence",
               sourceDate: typeof u.sourceDate === "string" && u.sourceDate.trim() ? u.sourceDate : null,
             }))
           : [],
@@ -304,6 +306,13 @@ export function SessionProvider({ children }: { children: ReactNode }) {
           asOfMonth: on ? s.asOfMonth : null,
         }));
       },
+      setCaseMode: (on) => {
+        setState((s) => ({
+          ...s,
+          caseMode: on,
+          historicalMode: on ? true : s.historicalMode,
+        }));
+      },
       setAsOf: (year, month) => {
         setState((s) => ({
           ...s,
@@ -382,6 +391,6 @@ export function useSession() {
 
 function looksLikeLocalEvalAsk(text: string, state: SessionState): boolean {
   const intent = routeIntent(text, state);
-  if (looksHistorical(text) || intent === "historical" || intent === "honesty") return true;
+  if (looksHistorical(text) || intent === "historical" || intent === "honesty" || intent === "casemode") return true;
   return Boolean(state.historicalMode && asOfFromSession(state.asOfYear, state.asOfMonth));
 }

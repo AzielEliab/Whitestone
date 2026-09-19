@@ -59,6 +59,13 @@ describe("should-fetch rules", () => {
         matter: "rights-education",
       }),
     ).toBe(false);
+    expect(
+      shouldFetch({
+        query: "Run Case Mode on the stated outcome against my uploads.",
+        jurisdiction: "CA",
+        matter: "rights-education",
+      }),
+    ).toBe(false);
   });
 
   it("parses and rejects unsafe research input", () => {

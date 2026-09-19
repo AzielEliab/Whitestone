@@ -7,7 +7,7 @@ import { HistoricalUploads } from "../components/HistoricalUploads";
 import { WhatsNext } from "../components/WhatsNext";
 
 export function Facts() {
-  const { state, patch, setStep, seedAdvisor, setHistoricalMode } = useSession();
+  const { state, patch, setStep, seedAdvisor, setHistoricalMode, setCaseMode } = useSession();
   const p = state.parties[0];
   const r = state.parties[1];
   const area = state.practiceArea ?? "divorce";
@@ -80,6 +80,10 @@ export function Facts() {
             onChange={(e) => setHistoricalMode(e.target.checked)}
           />
           Historical as-of evaluation (year + month). Seeded federal timeline — not every law since 1776.
+        </label>
+        <label className="web-toggle">
+          <input type="checkbox" checked={state.caseMode} onChange={(e) => setCaseMode(e.target.checked)} />
+          Case Mode — labeled case evaluation + optional score-card export (educational / archival).
         </label>
         {state.historicalMode && (
           <>

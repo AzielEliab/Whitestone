@@ -17,12 +17,20 @@ export type AdvisorIntent =
   | "reason"
   | "historical"
   | "honesty"
+  | "casemode"
   | "general";
 
 export function routeIntent(text: string, state: SessionState): AdvisorIntent {
   const q = text.toLowerCase();
   if (state.learned.safetyFlag && /\b(danger|afraid|protect|restrain|911|hit|threat|stalk)\b/.test(q)) {
     return "safety";
+  }
+  if (
+    /\b(case mode|casemode|truth_upheld|narrative_suppression|systemic_suppression|personal_professional_suppression|trajectorylock|on behalf of|whistleblower export)\b/.test(
+      q,
+    )
+  ) {
+    return "casemode";
   }
   if (
     /\b(honesty|anti-corruption|truth buried|truth_buried|overcame (the )?lie|stated outcome|hashchain|lattice|zionpattern|spre score|physling|triadscore)\b/.test(

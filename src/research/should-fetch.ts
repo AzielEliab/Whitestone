@@ -25,7 +25,11 @@ export function shouldFetch(opts: {
     return Boolean(opts.jurisdiction || opts.matter);
   }
   if (!query) return false;
-  if (/\b(honesty|truth_buried|truth_overcame|anti-corruption|zionpattern|triadscore|hashchain lattice)\b/i.test(query)) {
+  if (
+    /\b(honesty|truth_buried|truth_overcame|anti-corruption|zionpattern|triadscore|hashchain lattice|case mode|casemode|truth_upheld|narrative_suppression|trajectorylock)\b/i.test(
+      query,
+    )
+  ) {
     return false;
   }
   if (FETCH_HINTS.test(query)) return true;

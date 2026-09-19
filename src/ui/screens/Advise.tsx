@@ -5,6 +5,7 @@ import { useSession } from "../../session/store";
 import { Button } from "../components/Button";
 import { GroundingBadge } from "../components/GroundingBadge";
 import { HistoryPanel } from "../components/HistoryPanel";
+import { CaseModePanel } from "../components/CaseModePanel";
 import { HonestyPanel } from "../components/HonestyPanel";
 import { MathPanel } from "../components/MathPanel";
 import { StatsPanel } from "../components/StatsPanel";
@@ -16,7 +17,7 @@ export function Advise() {
   const { state, ask, answerQuestion, setStep, setWebEnabled, clearWebNotes, refreshResearch, seedAdvisor } =
     useSession();
   const [draft, setDraft] = useState("");
-  const [tool, setTool] = useState<"none" | "math" | "stats" | "history" | "honesty">("none");
+  const [tool, setTool] = useState<"none" | "math" | "stats" | "history" | "honesty" | "casemode">("none");
   const q = nextQuestion(state);
   const seeded = useRef(false);
   const opened = useRef(false);
@@ -81,11 +82,15 @@ export function Advise() {
             <button type="button" className="chip" aria-pressed={tool === "honesty"} onClick={() => setTool(tool === "honesty" ? "none" : "honesty")}>
               Honesty eval
             </button>
+            <button type="button" className="chip" aria-pressed={tool === "casemode"} onClick={() => setTool(tool === "casemode" ? "none" : "casemode")}>
+              Case Mode
+            </button>
           </div>
           {tool === "math" && <MathPanel onInsert={send} />}
           {tool === "stats" && <StatsPanel onInsert={send} />}
           {tool === "history" && <HistoryPanel onInsert={send} />}
           {tool === "honesty" && <HonestyPanel onInsert={send} />}
+          {tool === "casemode" && <CaseModePanel onInsert={send} />}
           <div className="field">
             <label htmlFor="ask">Your question or facts</label>
             <textarea
