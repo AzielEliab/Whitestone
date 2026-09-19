@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { buildCaseExport, caseModeFromSession, exportFilename, formatCaseModeBlock } from "../../casemode";
 import { standingAsOf } from "../../history";
+import { caseModeVerifyQuery } from "../../research/should-fetch";
 import { useSession } from "../../session/store";
 import { Button } from "./Button";
 
@@ -10,7 +11,7 @@ function scoreText(status: "LABELED" | "UNKNOWN", value: number | null): string 
 }
 
 export function CaseModePanel({ onInsert }: { onInsert: (text: string) => void }) {
-  const { state } = useSession();
+  const { state, refreshResearch } = useSession();
   const historicalSources = useMemo(() => {
     if (!state.asOfYear || !state.asOfMonth) return [];
     return standingAsOf({
@@ -79,6 +80,22 @@ export function CaseModePanel({ onInsert }: { onInsert: (text: string) => void }
       </p>
       <Button type="button" onClick={() => onInsert("Run Case Mode on the stated outcome against my uploads.")}>
         Ask advisor for Case Mode
+      </Button>
+      <Button
+        type="button"
+        onClick={() =>
+          void refreshResearch(
+            caseModeVerifyQuery({
+              stated: state.facts.stated_outcome,
+              official: state.facts.official_narrative,
+              archival: state.facts.archival,
+              jurisdiction: state.jurisdiction,
+            }),
+            "manual",
+          )
+        }
+      >
+        Verify online (allowlisted pages)
       </Button>
       <Button type="button" onClick={() => onInsert(formatCaseModeBlock(evaln))}>
         Insert Case Mode block

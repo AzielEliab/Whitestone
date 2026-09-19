@@ -35,7 +35,11 @@ export function formatCaseModeBlock(evaln: CaseModeEvaluation): string {
     `VibeLock (${evaln.vibelock.spec}): ${evaln.vibelock.status}. ${evaln.vibelock.note}`,
     `SpectralLock (${evaln.spectrallock.spec}): ${evaln.spectrallock.status} · ${evaln.spectrallock.paths.join(", ")}. ${evaln.spectrallock.note}`,
     `Online verify: ${evaln.online_verify.note}${
-      evaln.online_verify.urls.length ? ` URLs: ${evaln.online_verify.urls.join(" · ")}` : ""
+      evaln.online_verify.cites.length
+        ? ` Cites: ${evaln.online_verify.cites
+            .map((c) => `${c.title} (${c.url}${c.retrievedAt ? `, retrieved ${c.retrievedAt}` : c.date ? `, date ${c.date}` : ""})`)
+            .join(" · ")}`
+        : ""
     }`,
     formatHonestyBlock(evaln.honesty),
   ];

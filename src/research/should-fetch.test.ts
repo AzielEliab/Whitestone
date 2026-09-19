@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseResearchInput, shouldFetch } from "./should-fetch";
+import { caseModeVerifyQuery, parseResearchInput, shouldFetch } from "./should-fetch";
 
 describe("should-fetch rules", () => {
   it("fetches procedural / currency questions", () => {
@@ -66,6 +66,19 @@ describe("should-fetch rules", () => {
         matter: "rights-education",
       }),
     ).toBe(false);
+    const verify = caseModeVerifyQuery({
+      stated: "Official result: water safe, complaint denied.",
+      jurisdiction: "MI",
+    });
+    expect(verify).toMatch(/official court/);
+    expect(verify).not.toMatch(/case mode|truth_upheld|honesty/i);
+    expect(
+      shouldFetch({
+        query: verify,
+        jurisdiction: "MI",
+        matter: "rights-education",
+      }),
+    ).toBe(true);
   });
 
   it("parses and rejects unsafe research input", () => {

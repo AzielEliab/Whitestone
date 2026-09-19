@@ -15,7 +15,7 @@ import { asOfFromSession, looksHistorical } from "../history";
 import { learnFromSession } from "../engine/learn";
 import { probeResearch, requestResearch } from "../research/client";
 import { mergeWebNotes } from "../research/format";
-import { shouldFetch } from "../research/should-fetch";
+import { caseModeVerifyQuery, shouldFetch } from "../research/should-fetch";
 import type { ResearchReason, ResearchResult } from "../research/types";
 import {
   clearAreaSpecificState,
@@ -168,11 +168,21 @@ export function SessionProvider({ children }: { children: ReactNode }) {
           setState(base);
           try {
           const localEval = looksLikeLocalEvalAsk(text, base);
+          const intent = routeIntent(text, base);
+          const researchQuery =
+            intent === "casemode"
+              ? caseModeVerifyQuery({
+                  stated: base.facts.stated_outcome,
+                  official: base.facts.official_narrative,
+                  archival: base.facts.archival,
+                  jurisdiction: base.jurisdiction,
+                })
+              : text;
           const willFetch =
             base.webEnabled &&
-            !localEval &&
+            !(localEval && intent !== "casemode") &&
             shouldFetch({
-              query: text,
+              query: researchQuery,
               jurisdiction: base.jurisdiction,
               matter: base.matter,
               practiceArea: base.practiceArea,
@@ -188,7 +198,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
                   jurisdiction: base.jurisdiction,
                   matter: base.matter,
                   practiceArea: base.practiceArea,
-                  query: text,
+                  query: researchQuery,
                   reason: "ask",
                 })
               : {

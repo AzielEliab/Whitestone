@@ -30,7 +30,12 @@ export interface CaseModeEvaluation {
   trajectory: TrajectoryReport;
   vibelock: VibeLockReport;
   spectrallock: SpectralLockCite;
-  online_verify: { cited: number; urls: string[]; note: string };
+  online_verify: {
+    cited: number;
+    urls: string[];
+    cites: { title: string; url: string; retrievedAt?: string; date?: string }[];
+    note: string;
+  };
   cites: string[];
   limitation: string;
   nolie: string;
@@ -76,8 +81,15 @@ export function evaluateCaseMode(input: {
   );
   const vibelock = scoreVibeLock({ audioPresent, notes: blob });
   const spectrallock = citeSpectralLock(mediaPresent);
-  const webUrls = (input.webNotes ?? []).map((w) => w.url).filter((u) => /^https:\/\//.test(u));
-  const histUrls = (input.historicalSources ?? []).map((h) => h.url).filter((u) => /^https:\/\//.test(u));
+  const webCites = (input.webNotes ?? [])
+    .filter((w) => /^https:\/\//.test(w.url))
+    .map((w) => ({ title: w.title, url: w.url, retrievedAt: w.retrievedAt }));
+  const histCites = (input.historicalSources ?? [])
+    .filter((h) => /^https:\/\//.test(h.url))
+    .map((h) => ({ title: h.title, url: h.url, date: h.date }));
+  const cites = [...webCites, ...histCites].slice(0, 8);
+  const webUrls = webCites.map((c) => c.url);
+  const histUrls = histCites.map((c) => c.url);
 
   const buried = honesty.truth_buried.status === "LABELED" ? honesty.truth_buried.value ?? 0 : null;
   const overcame = honesty.truth_overcame_lie.status === "LABELED" ? honesty.truth_overcame_lie.value ?? 0 : null;
@@ -134,10 +146,11 @@ export function evaluateCaseMode(input: {
     vibelock,
     spectrallock,
     online_verify: {
-      cited: webUrls.length + histUrls.length,
+      cited: cites.length,
       urls: [...webUrls, ...histUrls].slice(0, 8),
+      cites,
       note:
-        webUrls.length + histUrls.length
+        cites.length
           ? "Allowlisted public pages / seeded law URLs cited with retrieved or effective dates. Not a complete web."
           : "UNKNOWN online verify — no allowlisted page or seeded law URL in this session yet.",
     },

@@ -63,6 +63,31 @@ describe("Case Mode", () => {
     expect(ev.narrative_suppression.value ?? 1).toBeLessThanOrEqual(0.75);
     expect(ev.truth_upheld.value ?? 1).toBeLessThanOrEqual(0.75);
     expect(ev.honesty.truth_buried.status).toBe("LABELED");
+    const withWeb = evaluateCaseMode({
+      official: ev.honesty.evidence.length ? "The city office says the water is safe." : "Closed.",
+      statedOutcome: "Official result: water safe.",
+      archival: "Residents reported rashes in 2015.",
+      asOfIso: "2015-06",
+      uploads: [
+        upload(
+          "clip2",
+          "news_clipping",
+          "September 2015 independent university water tests found lead far above the official safety claim.",
+          "2015-09-12",
+        ),
+      ],
+      webNotes: [
+        {
+          title: "EPA lead rule overview",
+          url: "https://www.epa.gov/ground-water-and-drinking-water",
+          excerpt: "Lead and copper rule public page.",
+          retrievedAt: "2026-09-19T00:00:00.000Z",
+        },
+      ],
+    });
+    expect(withWeb.online_verify.cited).toBeGreaterThan(0);
+    expect(withWeb.online_verify.cites[0]?.retrievedAt).toBe("2026-09-19T00:00:00.000Z");
+    expect(formatCaseModeBlock(withWeb)).toMatch(/retrieved 2026-09-19/);
     const card = buildCaseExport(ev);
     expect(card.receipt.sha256).toMatch(/^[0-9a-f]{64}$/);
     expect(card.lattice.durable_worker_memory).toBe(false);
