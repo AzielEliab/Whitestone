@@ -158,6 +158,27 @@ describe("dialogue and advisor", () => {
     expect(reply).toMatch(/HEURISTIC/);
   });
 
+  it("evaluates historical as-of questions against dated records and refuses uncitable 1850 claims", () => {
+    const s = emptySession();
+    s.practiceArea = "criminal";
+    s.jurisdiction = "CA";
+    s.matter = "rights-education";
+    s.historicalMode = true;
+    s.asOfYear = 1925;
+    s.asOfMonth = 6;
+    const ok = advise(s, "Was the 18th Amendment in force as of 1925-06?");
+    expect(ok.intent).toBe("historical");
+    expect(ok.reply).toMatch(/18th|XVIII/i);
+    expect(ok.reply).toContain("https://www.archives.gov/milestone-documents/18th-amendment");
+    expect(ok.reply).toMatch(/does not ship a complete digitized corpus/i);
+    expect(ok.reply).toMatch(/UNKNOWN/);
+    expect(ok.reply).toMatch(/not legal advice/i);
+
+    const bad = advise(s, "The law said California required Form CR-999 in 1850.");
+    expect(bad.reply).toMatch(/will not|REFUSE|dated record/i);
+    expect(bad.reply).not.toMatch(/Form CR-999 is required/i);
+  });
+
   it("returns cited statistics without inventing a figure", () => {
     const s = emptySession();
     s.practiceArea = "criminal";

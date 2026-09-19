@@ -104,7 +104,9 @@ export function hasAreaSpecificState(state: SessionState): boolean {
       state.children.length ||
       Object.keys(state.answers).length ||
       Object.keys(state.facts).some((k) => Boolean(state.facts[k]?.trim())) ||
-      state.parties.some((p) => p.name.trim()),
+      state.parties.some((p) => p.name.trim()) ||
+      state.asOfYear != null ||
+      state.asOfMonth != null,
   );
 }
 
@@ -125,6 +127,8 @@ export function clearAreaSpecificState(state: SessionState): SessionState {
     webNotes: [],
     webStatus: state.webEnabled ? "idle" : "off",
     webMessage: "",
+    asOfYear: null,
+    asOfMonth: null,
   };
 }
 

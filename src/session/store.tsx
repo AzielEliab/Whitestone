@@ -9,7 +9,9 @@ import {
   type ReactNode,
 } from "react";
 import { advise, openingMessage } from "../engine/advisor";
+import { routeIntent } from "../engine/intent";
 import { mapEvidence } from "../engine/evidence-map";
+import { asOfFromSession, looksHistorical } from "../history";
 import { learnFromSession } from "../engine/learn";
 import { probeResearch, requestResearch } from "../research/client";
 import { mergeWebNotes } from "../research/format";
@@ -40,6 +42,8 @@ interface SessionApi {
   remapEvidence: () => void;
   seedAdvisor: () => void;
   setWebEnabled: (on: boolean) => void;
+  setHistoricalMode: (on: boolean) => void;
+  setAsOf: (year: number | null, month: number | null) => void;
   clearWebNotes: () => void;
   refreshResearch: (query?: string, reason?: ResearchReason) => Promise<void>;
   erase: () => Promise<void>;
@@ -70,6 +74,9 @@ function hydrate(): SessionState {
         webNotes: Array.isArray(parsed.webNotes) ? parsed.webNotes : [],
         webStatus: parsed.webStatus ?? "idle",
         webMessage: parsed.webMessage ?? "",
+        historicalMode: parsed.historicalMode === true,
+        asOfYear: typeof parsed.asOfYear === "number" ? parsed.asOfYear : null,
+        asOfMonth: typeof parsed.asOfMonth === "number" ? parsed.asOfMonth : null,
       };
     }
   } catch {
@@ -149,8 +156,10 @@ export function SessionProvider({ children }: { children: ReactNode }) {
             at: new Date().toISOString(),
           };
           const base: SessionState = { ...stateRef.current, messages: [...stateRef.current.messages, user] };
+          const historicalLocal = looksLikeHistoricalAsk(text, base);
           const willFetch =
             base.webEnabled &&
+            !historicalLocal &&
             shouldFetch({
               query: text,
               jurisdiction: base.jurisdiction,
@@ -183,39 +192,54 @@ export function SessionProvider({ children }: { children: ReactNode }) {
                 };
           }
 
-          const { reply, state: next, followUps, grounding, receipt } = advise(base, text, research);
-          const webNotes = research?.sources.length ? mergeWebNotes(next.webNotes, research.sources) : next.webNotes;
-          const advisor = {
-            id: crypto.randomUUID(),
-            role: "advisor" as const,
-            text: reply,
-            at: new Date().toISOString(),
-            sources: research?.sources,
-            followUps,
-            grounding: {
-              verdict: grounding.verdict,
-              confidenceCap: grounding.confidenceCap,
-              flags: grounding.flags,
-              evidence: grounding.evidence,
-              motto: grounding.motto,
-            },
-            receipt: { sha256: receipt.sha256, sourceUrls: receipt.sourceUrls, statIds: receipt.statIds },
-          };
-          setState({
-            ...next,
-            messages: [...next.messages, advisor],
-            webNotes,
-            webStatus: !willFetch
-              ? next.webStatus
-              : research?.unavailable
-                ? "unavailable"
-                : research?.sources.length
-                  ? "ok"
-                  : research?.failed.length
-                    ? "unavailable"
-                    : next.webStatus,
-            webMessage: research?.notes ?? next.webMessage,
-          });
+          try {
+            const { reply, state: next, followUps, grounding, receipt } = advise(base, text, research);
+            const webNotes = research?.sources.length ? mergeWebNotes(next.webNotes, research.sources) : next.webNotes;
+            const advisor = {
+              id: crypto.randomUUID(),
+              role: "advisor" as const,
+              text: reply,
+              at: new Date().toISOString(),
+              sources: research?.sources,
+              followUps,
+              grounding: {
+                verdict: grounding.verdict,
+                confidenceCap: grounding.confidenceCap,
+                flags: grounding.flags,
+                evidence: grounding.evidence,
+                motto: grounding.motto,
+              },
+              receipt: { sha256: receipt.sha256, sourceUrls: receipt.sourceUrls, statIds: receipt.statIds },
+            };
+            setState({
+              ...next,
+              messages: [...next.messages, advisor],
+              webNotes,
+              webStatus: !willFetch
+                ? next.webStatus
+                : research?.unavailable
+                  ? "unavailable"
+                  : research?.sources.length
+                    ? "ok"
+                    : research?.failed.length
+                      ? "unavailable"
+                      : next.webStatus,
+              webMessage: research?.notes ?? next.webMessage,
+            });
+          } catch {
+            setState((s) => ({
+              ...s,
+              messages: [
+                ...s.messages,
+                {
+                  id: crypto.randomUUID(),
+                  role: "advisor" as const,
+                  text: "I could not finish that turn from the session engine. Ask again, or use End & erase. I will not invent a statute or holding to fill the gap.",
+                  at: new Date().toISOString(),
+                },
+              ],
+            }));
+          }
         })();
       },
       answerQuestion: (id, value) => {
@@ -262,6 +286,22 @@ export function SessionProvider({ children }: { children: ReactNode }) {
           ...s,
           webEnabled: on,
           webStatus: on ? s.webStatus : "off",
+        }));
+      },
+      setHistoricalMode: (on) => {
+        setState((s) => ({
+          ...s,
+          historicalMode: on,
+          asOfYear: on ? s.asOfYear : null,
+          asOfMonth: on ? s.asOfMonth : null,
+        }));
+      },
+      setAsOf: (year, month) => {
+        setState((s) => ({
+          ...s,
+          historicalMode: year != null && month != null ? true : s.historicalMode,
+          asOfYear: year,
+          asOfMonth: month,
         }));
       },
       clearWebNotes: () => {
@@ -330,4 +370,9 @@ export function useSession() {
   const ctx = useContext(Ctx);
   if (!ctx) throw new Error("useSession outside provider");
   return ctx;
+}
+
+function looksLikeHistoricalAsk(text: string, state: SessionState): boolean {
+  if (looksHistorical(text) || routeIntent(text, state) === "historical") return true;
+  return Boolean(state.historicalMode && asOfFromSession(state.asOfYear, state.asOfMonth));
 }

@@ -36,7 +36,7 @@ Changing practice area requires a clear reset (or End & erase) so sessions do no
 
 After jurisdiction + matter + minimal facts you may **Skip to advisor** (other steps remain). Each screen has a “what’s next” one-liner. The advisor names your parties and answered facts, offers one-tap follow-ups, and can open **Math** and **Statistics** panels on a phone keyboard.
 
-The advisor is a **self-contained engine**: jurisdiction notes + topic checklists + retrieval + a deterministic dialogue / state machine that adapts from **this chat only**, plus labeled math, cited public statistics, IRAC-style reasoning, and an **AZCoherence-inspired anti-hallucination last pass** (ported logic, not the full Aziel runtime). On the hosted Worker it may also fetch **allowlisted public court, legal-aid, government, and statistical landing pages** and cite them in-session. No API keys. No third-party LLM. Default path works without Workers AI. A desktop zip is an optional offline backup and **does not include live research**.
+The advisor is a **self-contained engine**: jurisdiction notes + topic checklists + retrieval + a deterministic dialogue / state machine that adapts from **this chat only**, plus labeled math, cited public statistics, optional **historical as-of** evaluation, IRAC-style reasoning, and an **AZCoherence-inspired anti-hallucination last pass** (ported logic, not the full Aziel runtime). On the hosted Worker it may also fetch **allowlisted public court, legal-aid, government, and statistical landing pages** and cite them in-session. No API keys. No third-party LLM. Default path works without Workers AI. A desktop zip is an optional offline backup and **does not include live research**.
 
 ### Custom answers (no third-party LLM)
 
@@ -80,6 +80,17 @@ You do **not** need `whitestone-standalone.zip` to use Whitestone. The zip is th
 ### Coverage honesty
 
 The knowledge layer is a **procedural overview and checklist**, not an annotated code of every statute. Waiting periods, fees, form numbers, and local rules change. Whitestone **does not invent case citations**. Every web-backed claim shows a source title, URL, and retrieved date. Prefer the clerk’s packet over anything on this screen.
+
+**Historical as-of evaluation** (optional, same product — not a fourth practice area) lets you pick a **year and month** since the founding era (July 1776 onward) and compare user-supplied archival case or ruling facts, plus allowlisted public pages, to standing law **as of that month**.
+
+Whitestone does **not** claim a complete digitized corpus of every U.S. law since 1776. What ships:
+
+1. An as-of evaluation engine and date algebra for enact / amend / repeal / add / remove timelines (`effective_from`, nullable `effective_to`).
+2. A seeded / bundled set of **federal constitutional and major-statute milestones** with `sourceTitle` and `sourceUrl` (empty URLs are rejected in tests, same pattern as `src/stats/`).
+3. Jurisdiction hooks that return **UNKNOWN** when no dated record exists for that state or locality. Federal coverage is labeled **PARTIAL**.
+4. The same allowlisted public primary-source fetches Whitestone already uses for research (including National Archives and Constitution Annotated hosts).
+
+Every law record has: jurisdiction, civil|criminal, citation, title, effective_from, effective_to, event_type, sourceTitle, sourceUrl, notes. The engine will **REFUSE** invented form numbers and uncitable “the law said X in 1850” claims that lack a dated record. It does not invent holdings. Session-only; End & erase wipes as-of dates and archival notes with the rest of the session. Still **not a lawyer / not legal advice**. No third-party LLM.
 
 ### Live public-page research (hosted app)
 
@@ -157,6 +168,7 @@ Details, counter paths, and sitemap notes: [DEPLOY.md](DEPLOY.md).
 - `/catalog.json` — same description as static JSON
 - `GET /api/research` — research capability + allowlist summary
 - `POST /api/research` — allowlisted public-page lookup (`{ sources, notes }`)
+- Historical as-of evaluation is in-app (`src/history/`) — no extra LLM door
 
 No third-party model is invoked. Synthesis stays in the advisor engine.
 

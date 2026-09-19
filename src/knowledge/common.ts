@@ -2,7 +2,7 @@ import type { CoverageLevel, PracticeArea } from "../types";
 
 export const PRODUCT = {
   name: "Whitestone",
-  version: "1.4.0",
+  version: "1.5.0",
   author: "Aziel Eliab",
   lens: ["Service", "Clarity", "Peace"] as const,
 };
@@ -10,7 +10,7 @@ export const PRODUCT = {
 export const LEGAL_DISCLAIMER = [
   "Whitestone is educational software. It is not a law firm, not a lawyer, and not a substitute for a licensed attorney, court clerk, or judge.",
   "Nothing here is legal advice, a prediction of your case, or a representation that Whitestone can replace counsel.",
-  "Statutes, court rules, local forms, and fees change. Coverage is a high-level procedural overview — not an annotated code of every statute.",
+  "Statutes, court rules, local forms, and fees change. Coverage is a high-level procedural overview — not an annotated code of every statute. Historical as-of mode uses a seeded federal timeline (enact/amend/repeal/add/remove with effective dates) and does not claim a complete digitized corpus of every U.S. law since 1776.",
   "Do not treat captions, allegation maps, or checklists as court-ready filings. Verify every requirement with the clerk of the court that will hear the case, and with counsel when you can.",
   "Whitestone does not invent case citations. If a citation is not shown, it was not looked up.",
   "If you are in danger, call 911. National Domestic Violence Hotline: 1-800-799-7233. Suicide & Crisis Lifeline: 988.",
@@ -132,7 +132,7 @@ export const NO_EXPORT_COPY =
   "Whitestone never downloads, exports, prints, or packages your filings, chat, or evidence. You may upload files into this session. Captions and outlines stay on screen only. When you close the window or choose End & erase, the session is wiped.";
 
 export const WEB_RESEARCH_COPY =
-  "The live app may fetch allowlisted public court, legal-aid, and government pages so answers can cite current clerk/self-help material. Fetched snippets live only in this session (or a short Worker cache of the same public URL). Offline zip copies do not include live research. This is still not legal advice and not a complete statute book.";
+  "The live app may fetch allowlisted public court, legal-aid, and government pages so answers can cite current clerk/self-help material, including National Archives and Constitution Annotated pages used by historical as-of evaluation. Fetched snippets live only in this session (or a short Worker cache of the same public URL). Offline zip copies do not include live research. This is still not legal advice and not a complete statute book.";
 
 export const EPHEMERAL_COPY =
-  "Chat, uploads, fetched web notes, and derived case state live only in this browser session (memory and session storage). There is no user account and no case file on a server. End & erase wipes chat, uploads, web notes, metadata, IndexedDB, and caches for this session.";
+  "Chat, uploads, fetched web notes, as-of dates, archival notes, and derived case state live only in this browser session (memory and session storage). There is no user account and no case file on a server. End & erase wipes chat, uploads, web notes, historical as-of fields, metadata, IndexedDB, and caches for this session.";

@@ -171,6 +171,31 @@ const FEDERAL_SEEDS: ExtraSeed[] = [
     keywords: ["statistic", "divorce rate", "numbers"],
     areas: ["divorce"],
   },
+  {
+    url: "https://www.archives.gov/founding-docs/constitution",
+    title: "National Archives — Constitution of the United States",
+    keywords: ["constitution", "as of", "as-of", "historical", "founding", "1789"],
+  },
+  {
+    url: "https://www.archives.gov/founding-docs/bill-of-rights-transcript",
+    title: "National Archives — Bill of Rights",
+    keywords: ["bill of rights", "amendment", "historical", "as of", "as-of"],
+  },
+  {
+    url: "https://constitution.congress.gov/",
+    title: "Constitution Annotated — Congress.gov",
+    keywords: ["constitution", "amendment", "historical", "as of", "annotated"],
+  },
+  {
+    url: "https://www.archives.gov/milestone-documents/18th-amendment",
+    title: "National Archives — 18th Amendment",
+    keywords: ["prohibition", "18th", "eighteenth", "volstead", "historical"],
+  },
+  {
+    url: "https://www.archives.gov/milestone-documents/21st-amendment",
+    title: "National Archives — 21st Amendment",
+    keywords: ["prohibition", "21st", "repeal", "historical"],
+  },
 ];
 
 function justiaStateSlug(name: string): string {

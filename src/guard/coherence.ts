@@ -29,6 +29,8 @@ const FORM_MANDATE =
 const BARE_STAT = /\b(?:exactly |precisely )?\d{2,3}(?:\.\d+)?%/i;
 const OUTCOME = /\byou will (be convicted|be acquitted|go to jail|win|lose|be found guilty)\b/i;
 const ABSOLUTE = /\b(you must|you are required to|the court will definitely|guaranteed)\b/i;
+const HISTORICAL_LAW =
+  /\b(in|as of)\s+(1[7-9]\d{2}|20\d{2})\b.{0,120}\b(the law said|the statute required|held that)\b|\bthe law said\b.{0,80}\b(1[7-9]\d{2}|20\d{2})\b/i;
 
 export function buildAlternate(opts: {
   grounded: string;
@@ -97,6 +99,15 @@ export function detectUnsupported(primary: string, grounded: string, statIds: st
   if (ABSOLUTE.test(primary) && !/verify|clerk|overview|educational|not legal advice/i.test(primary)) {
     flags.push("absolute legal mandate without clerk-verify language");
   }
+  if (
+    HISTORICAL_LAW.test(primary) &&
+    !/https:\/\//i.test(primary) &&
+    !/dated record|seeded|will not (invent|state)|REFUSE/i.test(primary) &&
+    !lowerGround.includes("archives.gov") &&
+    !lowerGround.includes("constitution.congress.gov")
+  ) {
+    flags.push("uncitable historical law claim without a dated record");
+  }
   return flags;
 }
 
@@ -160,7 +171,8 @@ export function coherenceCheck(opts: {
   if (
     (decisionGate.action === "refuse" && !alreadyEducationalRefuse) ||
     flags.includes("criminal or case-outcome prediction") ||
-    flags.includes("case-like citation without a source URL")
+    flags.includes("case-like citation without a source URL") ||
+    flags.includes("uncitable historical law claim without a dated record")
   ) {
     verdict = "REFUSE";
     confidenceCap = 0;

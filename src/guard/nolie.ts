@@ -8,6 +8,7 @@ export const NO_LIE_LAW = {
     "No rewrite of user facts.",
     "Never lie to be helpful or to fill gaps.",
     "Prefer refuse / unknown over fabrication.",
+    "Historical as-of claims need a dated record with a source URL; otherwise UNKNOWN or REFUSE — never invent a 19th-century statute or holding.",
   ],
 } as const;
 

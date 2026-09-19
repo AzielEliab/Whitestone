@@ -17,7 +17,7 @@ export function health() {
     author: "Aziel Eliab",
     identity: "Aziel Eliab",
     product: "whitestone",
-    version: "1.4.0",
+    version: "1.5.0",
     runtime: true,
     kv_increment: false,
     stores_cases: false,

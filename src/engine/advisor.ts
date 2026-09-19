@@ -8,6 +8,12 @@ import { criminalRefuse } from "../practice/refuse";
 import { fallbackResearchNote, formatWebNotes } from "../research/format";
 import type { ResearchResult } from "../research/types";
 import { retrieveStats, formatStatsBlock } from "../stats";
+import {
+  asOfFromSession,
+  evaluateHistorical,
+  formatHistoricalBlock,
+  looksHistorical,
+} from "../history";
 import type { SessionState } from "../types";
 import { MATTER_LABELS } from "../types";
 import { nextQuestion } from "./dialogue";
@@ -42,6 +48,15 @@ export function openingMessage(state: SessionState): string {
   }
   if (state.practiceArea) {
     bits.push(`Practice area for this session: ${PRACTICE_LABELS[state.practiceArea]}. Changing area clears matter-specific notes so sessions do not mix.`);
+  }
+  if (state.historicalMode || state.asOfYear) {
+    const asOf =
+      state.asOfYear && state.asOfMonth
+        ? `${state.asOfYear}-${String(state.asOfMonth).padStart(2, "0")}`
+        : "year and month not set yet";
+    bits.push(
+      `Historical as-of evaluation is on (${asOf}). The engine compares your archival facts to a seeded federal constitutional and major-statute timeline with source URLs — not a complete digitized corpus of every U.S. law since 1776. State historical statutes are UNKNOWN unless a dated record exists. I will not invent holdings, form numbers, or uncitable “the law said X in 1850” claims.`,
+    );
   }
   if (state.practiceArea === "criminal") {
     bits.push(
@@ -99,6 +114,22 @@ export function advise(
     intent === "stats" || /\bnumbers|statistic|how common|plea rate|pro se\b/i.test(userText)
       ? retrieveStats({ query: userText, area: state.practiceArea, limit: 3 })
       : [];
+  const asOf = asOfFromSession(state.asOfYear, state.asOfMonth);
+  const historicalOn =
+    intent === "historical" ||
+    state.historicalMode ||
+    looksHistorical(userText) ||
+    Boolean(state.facts.archival?.trim() && asOf);
+  const historical = historicalOn
+    ? evaluateHistorical({
+        asOf,
+        query: userText,
+        archivalFacts: state.facts.archival,
+        jurisdiction: state.jurisdiction,
+        area: state.practiceArea,
+        research,
+      })
+    : null;
   const reasoned = reasonAbout(next, intent);
 
   const parts: string[] = [];
@@ -139,13 +170,22 @@ export function advise(
     }
   }
 
+  if (historical) {
+    parts.push(formatHistoricalBlock(historical, state.facts.archival));
+    knowledgeBits.push(
+      ...historical.matched.map((r) => `${r.citation} ${r.title} ${r.sourceUrl}`),
+      ...historical.standing.slice(0, 4).map((r) => `${r.citation} ${r.sourceUrl}`),
+      historical.honesty,
+    );
+  }
+
   if (intent === "citation" || /citation|case law|held that|precedent/i.test(userText)) {
     parts.push(
       "Whitestone does not invent case citations. I will not fabricate an opinion name or a reporter cite. Ask the clerk, a law library, or counsel for controlling authority.",
     );
   }
 
-  if (j && (intent === "venue" || /residenc|how long|wait|separat|court|where to file|venue|clerk|community|property|protect|legal separation/i.test(userText))) {
+  if (intent !== "historical" && j && (intent === "venue" || /residenc|how long|wait|separat|court|where to file|venue|clerk|community|property|protect|legal separation/i.test(userText))) {
     const q = userText.toLowerCase();
     if (/residenc|how long|wait|separat/.test(q) && state.matter === "divorce" && state.practiceArea !== "criminal") {
       const line = `${j.name} divorce timing (overview, verify): residency ${j.residencyDivorce}. Waiting / separation: ${j.waitingOrSeparation}.`;
@@ -175,7 +215,9 @@ export function advise(
     }
   }
 
-  if (intent === "forms" && topic) {
+  if (intent === "historical") {
+    /* Dated corpus block already appended. Do not dump today's checklist as if it were 1850 law. */
+  } else if (intent === "forms" && topic) {
     parts.push(
       `For ${snap.filingName} in a ${MATTER_LABELS[topic.id]} matter, typical documents (verify locally — form numbers change): ${topic.documentChecklist.slice(0, 5).join("; ")}.`,
     );
@@ -203,7 +245,7 @@ export function advise(
     }
   }
 
-  if (intent !== "forms" && intent !== "stats" && intent !== "math") {
+  if (intent !== "forms" && intent !== "stats" && intent !== "math" && intent !== "historical") {
     for (const hit of hits.slice(0, intent === "general" ? 2 : 3)) {
       parts.push(`${hit.title}: ${hit.body}`);
       knowledgeBits.push(hit.body);
@@ -244,7 +286,7 @@ export function advise(
     stats.map((s) => s.id),
     factsLine,
     knowledgeBits,
-    stats.map((s) => s.sourceUrl),
+    [...stats.map((s) => s.sourceUrl), ...(historical?.sourceUrls ?? [])],
     Boolean(math),
     reasoned.contradictions.length > 0,
   );

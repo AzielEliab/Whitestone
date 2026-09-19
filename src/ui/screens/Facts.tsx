@@ -2,10 +2,11 @@ import { canSkipToAdvisor } from "../../engine/facts";
 import { PARTY_LABELS } from "../../practice/areas";
 import { useSession } from "../../session/store";
 import { Button } from "../components/Button";
+import { AsOfPicker } from "../components/AsOfPicker";
 import { WhatsNext } from "../components/WhatsNext";
 
 export function Facts() {
-  const { state, patch, setStep, seedAdvisor } = useSession();
+  const { state, patch, setStep, seedAdvisor, setHistoricalMode } = useSession();
   const p = state.parties[0];
   const r = state.parties[1];
   const area = state.practiceArea ?? "divorce";
@@ -69,6 +70,34 @@ export function Facts() {
           onChange={(e) => patch({ facts: { ...state.facts, relationship: e.target.value } })}
           placeholder={relationshipPlaceholder}
         />
+      </div>
+      <div className="history-option">
+        <label className="web-toggle">
+          <input
+            type="checkbox"
+            checked={state.historicalMode}
+            onChange={(e) => setHistoricalMode(e.target.checked)}
+          />
+          Historical as-of evaluation (year + month). Seeded federal timeline — not every law since 1776.
+        </label>
+        {state.historicalMode && (
+          <>
+            <AsOfPicker />
+            <div className="field">
+              <label htmlFor="archival">Archival case / ruling facts to compare</label>
+              <textarea
+                id="archival"
+                value={state.facts.archival ?? ""}
+                onChange={(e) => patch({ facts: { ...state.facts, archival: e.target.value } })}
+                placeholder="Dated facts from the archival file — do not ask Whitestone to invent a holding."
+              />
+            </div>
+            <p className="muted">
+              End & erase wipes the as-of date and archival notes with the rest of the session. Not legal
+              advice.
+            </p>
+          </>
+        )}
       </div>
       <div className="field">
         <label htmlFor="goals">What do you need the court to do?</label>

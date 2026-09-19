@@ -13,9 +13,21 @@ function unavailable(notes: string): ResearchResult {
   };
 }
 
+const RESEARCH_MS = 4_000;
+
+async function fetchResearch(url: string, init: RequestInit): Promise<Response> {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), RESEARCH_MS);
+  try {
+    return await fetch(url, { ...init, signal: ctrl.signal });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 export async function probeResearch(): Promise<boolean> {
   try {
-    const res = await fetch("/api/research", {
+    const res = await fetchResearch("/api/research", {
       method: "GET",
       headers: { accept: "application/json" },
     });
@@ -29,7 +41,7 @@ export async function probeResearch(): Promise<boolean> {
 
 export async function requestResearch(input: ResearchInput): Promise<ResearchResult> {
   try {
-    const res = await fetch("/api/research", {
+    const res = await fetchResearch("/api/research", {
       method: "POST",
       headers: { "content-type": "application/json", accept: "application/json" },
       body: JSON.stringify({

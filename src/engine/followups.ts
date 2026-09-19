@@ -7,6 +7,11 @@ export function followUpPrompts(state: SessionState, intent: AdvisorIntent): str
   const q = nextQuestion(state);
   if (q) chips.push(q.prompt);
 
+  if (state.historicalMode || intent === "historical") {
+    chips.push("Was the 18th Amendment in force as of 1925-06?");
+    chips.push("What was standing federal law as of 1866-04?");
+  }
+
   if (intent === "math") {
     chips.push("30 business days from March 1 2026");
     if (state.practiceArea === "criminal") chips.push("what's 10% of $5000 bail");

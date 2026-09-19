@@ -36,6 +36,9 @@ describe("allowlist", () => {
       "federal-public",
     );
     expect(classifyUrl("https://bjs.ojp.gov/content/pub/pdf/fdluc09.pdf")?.kind).toBe("federal-public");
+    expect(classifyUrl("https://www.archives.gov/founding-docs/constitution")?.kind).toBe("federal-public");
+    expect(classifyUrl("https://constitution.congress.gov/")?.kind).toBe("federal-public");
+    expect(classifyUrl("https://www.ada.gov/law-and-regs/ada/")?.kind).toBe("federal-public");
     expect(classifyUrl("https://www.ncsc.org/information-and-resources/self-represented-litigants")?.kind).toBe(
       "statistical",
     );

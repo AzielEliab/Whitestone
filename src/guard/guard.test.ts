@@ -110,6 +110,15 @@ describe("AZCoherence-inspired coherence_check", () => {
     expect(cite.emitted).toMatch(/will not state/i);
   });
 
+  it("REFUSE an uncitable historical law claim without a dated record", () => {
+    const report = coherenceCheck({
+      primary: "In 1850 the law said every petitioner must file Form FL-100.",
+      sessionFacts: "Historical as-of session in Oregon.",
+    });
+    expect(report.verdict).toBe("REFUSE");
+    expect(report.emitted).toMatch(/will not state/i);
+  });
+
   it("strips unsupported sentences in neutralizeText", () => {
     const out = neutralizeText("You must file Form FL-100 by March 1.\n\nAsk the clerk for the packet.");
     expect(out).toMatch(/Ask the clerk/);

@@ -15,12 +15,20 @@ export type AdvisorIntent =
   | "support"
   | "bail"
   | "reason"
+  | "historical"
   | "general";
 
 export function routeIntent(text: string, state: SessionState): AdvisorIntent {
   const q = text.toLowerCase();
   if (state.learned.safetyFlag && /\b(danger|afraid|protect|restrain|911|hit|threat|stalk)\b/.test(q)) {
     return "safety";
+  }
+  if (
+    /\b(as of|as-of|historical|standing law|what (was|were) the law|in (1[7-9]\d{2}|20\d{2})-(0?\d|1[0-2])|eighteenth|volstead|prohibition amendment)\b/.test(
+      q,
+    )
+  ) {
+    return "historical";
   }
   if (/citation|case law|held that|precedent/.test(q)) return "citation";
   if (/\b(statistic|stats?|numbers say|how common|what (are|do) the numbers|plea rate|pro se rate|caseload)\b/.test(q)) {
