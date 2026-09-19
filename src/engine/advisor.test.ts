@@ -169,7 +169,7 @@ describe("dialogue and advisor", () => {
     const ok = advise(s, "Was the 18th Amendment in force as of 1925-06?");
     expect(ok.intent).toBe("historical");
     expect(ok.reply).toMatch(/18th|XVIII/i);
-    expect(ok.reply).toContain("https://www.archives.gov/milestone-documents/18th-amendment");
+    expect(ok.reply).toContain("https://www.archives.gov/founding-docs/amendments-11-27");
     expect(ok.reply).toMatch(/does not ship a complete digitized corpus/i);
     expect(ok.reply).toMatch(/UNKNOWN/);
     expect(ok.reply).toMatch(/not legal advice/i);
@@ -214,6 +214,7 @@ describe("dialogue and advisor", () => {
     expect(reply).toMatch(/UNKNOWN/);
     expect(reply).toMatch(/will not invent/);
     expect(reply).toMatch(/0\.75|cap 75/i);
+    expect(reply).toMatch(/not legal advice/i);
   });
 
   it("returns cited statistics without inventing a figure", () => {

@@ -108,9 +108,13 @@ export function CaseModePanel({ onInsert }: { onInsert: (text: string) => void }
       <Button type="button" onClick={() => onInsert(formatCaseModeBlock(evaln))}>
         Insert Case Mode block
       </Button>
-      <Button type="button" onClick={downloadExport}>
-        Export hash chain + score card
-      </Button>
+      {state.caseMode ? (
+        <Button type="button" onClick={downloadExport}>
+          Export hash chain + score card
+        </Button>
+      ) : (
+        <p className="muted">Turn on Case Mode to export the educational hash chain + score card. Not legal advice.</p>
+      )}
     </section>
   );
 }

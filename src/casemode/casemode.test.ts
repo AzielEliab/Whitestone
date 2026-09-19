@@ -91,6 +91,14 @@ describe("Case Mode", () => {
     const card = buildCaseExport(ev);
     expect(card.receipt.sha256).toMatch(/^[0-9a-f]{64}$/);
     expect(card.lattice.durable_worker_memory).toBe(false);
+    expect(card.lattice.nodes.length).toBeGreaterThan(0);
+    expect(card.lattice.tip).toMatch(/^[0-9a-f]{64}$/);
+    expect(card.lattice.nodes[1]?.prev).toBe(card.lattice.nodes[0]?.sha256);
+    expect(card.disclaimer).toMatch(/not legal advice/i);
+    expect(card.educational).toBe(true);
+    expect(ev.disclaimer).toMatch(/not legal advice/i);
+    expect(ev.truth_upheld.value ?? 0).toBeLessThanOrEqual(0.75);
+    expect(ev.honesty.honesty_overall.value ?? 0).toBeLessThanOrEqual(0.75);
   });
 
   it("names independent vs on-behalf-of only when evidenced", () => {

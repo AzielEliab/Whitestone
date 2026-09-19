@@ -164,7 +164,8 @@ export function evaluateCaseMode(input: {
     ],
     limitation: CASEMODE_LIMITATION,
     nolie: "NO-LIE: Whitestone will not invent suppression, buried truth, a shooter, or a recovered mark without hashchained uploads and/or cited sources. UNKNOWN is the honest gap.",
-    disclaimer: "Educational / archival Case Mode. Labeled scores only. Confidence cap 0.75. Verify with primary sources and counsel.",
+    disclaimer:
+      "Educational / archival Case Mode. Not a lawyer. Not legal advice. Labeled scores only. Confidence cap 0.75. Verify with primary sources and counsel.",
   };
 }
 
