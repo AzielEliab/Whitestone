@@ -1,4 +1,4 @@
-import type { EvidenceFile } from "../types";
+import type { EvidenceFile, UploadKind } from "../types";
 
 export const MAX_BYTES = 12 * 1024 * 1024;
 export const LARGE_BYTES = 2 * 1024 * 1024;
@@ -6,7 +6,7 @@ const MAX_TEXT = 40_000;
 
 /** Camera, gallery, and files — including iPhone HEIC. */
 export const FILE_ACCEPT =
-  "image/*,.pdf,.txt,.md,.csv,.docx,.doc,.heic,.heif,application/pdf,text/plain,text/csv,application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+  "image/*,video/*,audio/*,.pdf,.txt,.md,.csv,.docx,.doc,.heic,.heif,.mp4,.webm,.mov,.mp3,.wav,.ogg,application/pdf,text/plain,text/csv,application/vnd.openxmlformats-officedocument.wordprocessingml.document";
 
 export const CAMERA_ACCEPT = "image/*";
 
@@ -24,10 +24,10 @@ export function allowedFile(file: File): string | null {
   const type = file.type || "";
   const name = file.name || "";
   const ok =
-    /^(application\/pdf|text\/|image\/|application\/vnd\.openxmlformats-officedocument\.wordprocessingml\.document|application\/msword)/i.test(
+    /^(application\/pdf|text\/|image\/|video\/|audio\/|application\/vnd\.openxmlformats-officedocument\.wordprocessingml\.document|application\/msword)/i.test(
       type,
     ) ||
-    /\.(pdf|txt|md|csv|docx|doc|png|jpe?g|gif|webp|heic|heif|bmp)$/i.test(name) ||
+    /\.(pdf|txt|md|csv|docx|doc|png|jpe?g|gif|webp|heic|heif|bmp|mp4|webm|mov|mp3|wav|ogg|m4a)$/i.test(name) ||
     (!type && /^image\./i.test(name));
   if (!ok) return "Use PDF, DOCX, text, or image files (camera, photos, or files).";
   if (file.size > MAX_BYTES) {
@@ -36,7 +36,10 @@ export function allowedFile(file: File): string | null {
   return null;
 }
 
-export async function extractEvidence(file: File): Promise<EvidenceFile> {
+export async function extractEvidence(
+  file: File,
+  opts?: { kind?: UploadKind; sourceDate?: string | null },
+): Promise<EvidenceFile> {
   const err = allowedFile(file);
   if (err) throw new Error(err);
 
@@ -56,6 +59,11 @@ export async function extractEvidence(file: File): Promise<EvidenceFile> {
   } else if (mime.startsWith("image/") || /\.(png|jpe?g|gif|webp|heic|heif|bmp)$/i.test(file.name)) {
     previewUrl = URL.createObjectURL(file);
     text = "";
+  } else if (mime.startsWith("video/") || /\.(mp4|webm|mov)$/i.test(file.name)) {
+    previewUrl = URL.createObjectURL(file);
+    text = `Video in session only. filename=${file.name}; mime=${mime}; bytes=${file.size}. No invented visual claims. Add a note for what the frames show.`;
+  } else if (mime.startsWith("audio/") || /\.(mp3|wav|ogg|m4a)$/i.test(file.name)) {
+    text = `Audio in session only. filename=${file.name}; mime=${mime}; bytes=${file.size}. VibeLock-lite may use this layer. No invented transcript.`;
   } else {
     text = await file.text().catch(() => "");
   }
@@ -71,7 +79,13 @@ export async function extractEvidence(file: File): Promise<EvidenceFile> {
     text,
     note: mime.startsWith("image/")
       ? "Image stored only in this session. Add a note describing the fact it proves — Whitestone does not send images to an OCR service."
-      : "",
+      : mime.startsWith("video/")
+        ? "Video metadata only unless you add a note. Whitestone will not invent what the frames show."
+        : mime.startsWith("audio/")
+          ? "Audio stored in this session. Add a note; no invented transcript."
+          : "",
+    kind: opts?.kind ?? "evidence",
+    sourceDate: opts?.sourceDate?.trim() || null,
     previewUrl,
   };
 }

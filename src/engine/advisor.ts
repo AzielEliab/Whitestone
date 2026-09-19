@@ -13,7 +13,10 @@ import {
   evaluateHistorical,
   formatHistoricalBlock,
   looksHistorical,
+  standingAsOf,
 } from "../history";
+import { formatHonestyBlock, honestyFromSession } from "../honesty";
+import { caseModeFromSession, formatCaseModeBlock } from "../casemode";
 import type { SessionState } from "../types";
 import { MATTER_LABELS } from "../types";
 import { nextQuestion } from "./dialogue";
@@ -39,7 +42,9 @@ export function openingMessage(state: SessionState): string {
   const bits = [
     "I am Whitestone's session advisor — a structured knowledge guide, not a lawyer and not an online model calling an outside company.",
     LEGAL_DISCLAIMER,
-    "This chat exists only in your current session. There is no export of filings, chat, or evidence.",
+    state.caseMode
+      ? "This chat is session-only. Case Mode allows an educational/archival export of the hash chain + score card — not court-ready papers."
+      : "This chat exists only in your current session. There is no export of filings, chat, or evidence.",
   ];
   if (state.webEnabled) {
     bits.push(
@@ -55,7 +60,12 @@ export function openingMessage(state: SessionState): string {
         ? `${state.asOfYear}-${String(state.asOfMonth).padStart(2, "0")}`
         : "year and month not set yet";
     bits.push(
-      `Historical as-of evaluation is on (${asOf}). The engine compares your archival facts to a seeded federal constitutional and major-statute timeline with source URLs — not a complete digitized corpus of every U.S. law since 1776. State historical statutes are UNKNOWN unless a dated record exists. I will not invent holdings, form numbers, or uncitable “the law said X in 1850” claims.`,
+      `Historical as-of evaluation is on (${asOf}). The engine compares your archival facts to a seeded federal constitutional and major-statute timeline with source URLs — not a complete digitized corpus of every U.S. law since 1776. State historical statutes are UNKNOWN unless a dated record exists. I will not invent holdings, form numbers, or uncitable “the law said X in 1850” claims. Upload case filings, evidence, historical reports, and news clippings on the historical path — in only. Honesty scores (truth_buried / truth_overcame_lie / honesty_overall) stay UNKNOWN without dated sources. Confidence is not truth.`,
+    );
+  }
+  if (state.caseMode) {
+    bits.push(
+      "Case Mode is on. Labeled scores: truth_upheld, narrative_suppression, systemic_suppression, personal_professional_suppression (plus honesty axes). Confidence is hard-capped at 75%. why/who/what/how/when plus independent vs on-behalf-of stay UNKNOWN unless evidenced. TrajectoryLock / VibeLock / SpectralLock are cited or SLOT — no invented shooter, lab mark, or voice-ID. Export is the hash chain + score card only.",
     );
   }
   if (state.practiceArea === "criminal") {
@@ -130,6 +140,26 @@ export function advise(
         research,
       })
     : null;
+  const honestyOn =
+    intent === "honesty" ||
+    Boolean(state.historicalMode && (state.facts.stated_outcome?.trim() || state.uploads.some((u) => u.kind && u.kind !== "evidence"))) ||
+    (historicalOn && state.uploads.length > 0);
+  const honesty = honestyOn
+    ? honestyFromSession({
+        ...next,
+        historicalSources: historical
+          ? [...historical.matched, ...historical.standing].slice(0, 6).map((r) => ({
+              title: `${r.citation} ${r.title}`,
+              url: r.sourceUrl,
+              date: r.effective_from,
+            }))
+          : asOf
+            ? standingAsOf({ asOf, area: state.practiceArea, jurisdiction: state.jurisdiction })
+                .slice(0, 6)
+                .map((r) => ({ title: `${r.citation} ${r.title}`, url: r.sourceUrl, date: r.effective_from }))
+            : [],
+      })
+    : null;
   const reasoned = reasonAbout(next, intent);
 
   const parts: string[] = [];
@@ -179,6 +209,27 @@ export function advise(
     );
   }
 
+  const caseOn = intent === "casemode" || state.caseMode;
+  const caseEval = caseOn
+    ? caseModeFromSession({
+        ...next,
+        historicalSources: historical
+          ? [...historical.matched, ...historical.standing].slice(0, 6).map((r) => ({
+              title: `${r.citation} ${r.title}`,
+              url: r.sourceUrl,
+              date: r.effective_from,
+            }))
+          : [],
+      })
+    : null;
+  if (caseEval) {
+    parts.push(formatCaseModeBlock(caseEval));
+    knowledgeBits.push(caseEval.limitation, caseEval.nolie, ...caseEval.cites);
+  } else if (honesty) {
+    parts.push(formatHonestyBlock(honesty));
+    knowledgeBits.push(honesty.limitation, honesty.nolie, ...honesty.cites);
+  }
+
   if (intent === "citation" || /citation|case law|held that|precedent/i.test(userText)) {
     parts.push(
       "Whitestone does not invent case citations. I will not fabricate an opinion name or a reporter cite. Ask the clerk, a law library, or counsel for controlling authority.",
@@ -215,8 +266,8 @@ export function advise(
     }
   }
 
-  if (intent === "historical") {
-    /* Dated corpus block already appended. Do not dump today's checklist as if it were 1850 law. */
+  if (intent === "historical" || intent === "honesty" || intent === "casemode") {
+    /* Dated corpus / honesty block already appended. Do not dump today's checklist as if it were 1850 law. */
   } else if (intent === "forms" && topic) {
     parts.push(
       `For ${snap.filingName} in a ${MATTER_LABELS[topic.id]} matter, typical documents (verify locally — form numbers change): ${topic.documentChecklist.slice(0, 5).join("; ")}.`,
@@ -245,7 +296,7 @@ export function advise(
     }
   }
 
-  if (intent !== "forms" && intent !== "stats" && intent !== "math" && intent !== "historical") {
+  if (intent !== "forms" && intent !== "stats" && intent !== "math" && intent !== "historical" && intent !== "honesty" && intent !== "casemode") {
     for (const hit of hits.slice(0, intent === "general" ? 2 : 3)) {
       parts.push(`${hit.title}: ${hit.body}`);
       knowledgeBits.push(hit.body);
@@ -286,7 +337,7 @@ export function advise(
     stats.map((s) => s.id),
     factsLine,
     knowledgeBits,
-    [...stats.map((s) => s.sourceUrl), ...(historical?.sourceUrls ?? [])],
+    [...stats.map((s) => s.sourceUrl), ...(historical?.sourceUrls ?? []), ...(honesty?.evidence.map((e) => e.source).filter((s) => /^https:\/\//.test(s)) ?? [])],
     Boolean(math),
     reasoned.contradictions.length > 0,
   );

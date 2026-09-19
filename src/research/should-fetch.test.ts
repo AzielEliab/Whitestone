@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseResearchInput, shouldFetch } from "./should-fetch";
+import { caseModeVerifyQuery, parseResearchInput, shouldFetch } from "./should-fetch";
 
 describe("should-fetch rules", () => {
   it("fetches procedural / currency questions", () => {
@@ -42,6 +42,43 @@ describe("should-fetch rules", () => {
     expect(shouldFetch({ query: "", jurisdiction: "CA", matter: "divorce" })).toBe(false);
     expect(shouldFetch({ query: "ok", jurisdiction: null, matter: null })).toBe(false);
     expect(shouldFetch({ query: "hi", jurisdiction: null, matter: null })).toBe(false);
+  });
+
+  it("does not fetch honesty / anti-corruption scoring (session-local)", () => {
+    expect(
+      shouldFetch({
+        query: "Score honesty of the stated outcome against my uploads.",
+        jurisdiction: "CA",
+        matter: "rights-education",
+      }),
+    ).toBe(false);
+    expect(
+      shouldFetch({
+        query: "truth_buried and honesty_overall for this case",
+        jurisdiction: "CA",
+        matter: "rights-education",
+      }),
+    ).toBe(false);
+    expect(
+      shouldFetch({
+        query: "Run Case Mode on the stated outcome against my uploads.",
+        jurisdiction: "CA",
+        matter: "rights-education",
+      }),
+    ).toBe(false);
+    const verify = caseModeVerifyQuery({
+      stated: "Official result: water safe, complaint denied.",
+      jurisdiction: "MI",
+    });
+    expect(verify).toMatch(/official court/);
+    expect(verify).not.toMatch(/case mode|truth_upheld|honesty/i);
+    expect(
+      shouldFetch({
+        query: verify,
+        jurisdiction: "MI",
+        matter: "rights-education",
+      }),
+    ).toBe(true);
   });
 
   it("parses and rejects unsafe research input", () => {

@@ -6,7 +6,23 @@ const MATTERS = new Set<MatterType>(mattersForArea(null));
 
 /** Procedural / currency questions that benefit from an allowlisted public page. */
 export const FETCH_HINTS =
-  /form|packet|clerk|court|file|filing|fee|self-?help|official|current|statute|code|guideline|worksheet|residenc|venue|where to|portal|lawhelp|support|custody|divorce|dissolution|protect|restrain|parenting|paternity|parentage|guardian|adoption|name change|alimony|spousal|service of process|summons|caption|look ?up|from the web|public page|website|small claims|eviction|landlord|tenant|contract|debt|collection|bail|arraign|discovery|plea|sentence|expunge|miranda|public defender|criminal|civil|statistic|numbers say|plea rate|pro se|caseload|as of|as-of|historical|amendment|constitution|prohibition|archives/i;
+  /form|packet|clerk|court|file|filing|fee|self-?help|official|current|statute|code|guideline|worksheet|residenc|venue|where to|portal|lawhelp|support|custody|divorce|dissolution|protect|restrain|parenting|paternity|parentage|guardian|adoption|name change|alimony|spousal|service of process|summons|caption|look ?up|from the web|public page|website|small claims|eviction|landlord|tenant|contract|debt|collection|bail|arraign|discovery|plea|sentence|expunge|miranda|public defender|criminal|civil|statistic|numbers say|plea rate|pro se|caseload|as of|as-of|historical|amendment|constitution|prohibition|archives|government|news|verify online/i;
+
+/** Allowlisted Case Mode verify query — no scoring keywords, so shouldFetch can run. */
+export function caseModeVerifyQuery(opts: {
+  stated?: string;
+  official?: string;
+  archival?: string;
+  jurisdiction?: string | null;
+}): string {
+  const snippet = [opts.stated, opts.official, opts.archival]
+    .map((s) => (s ?? "").trim())
+    .filter(Boolean)
+    .join(" ")
+    .replace(/\s+/g, " ")
+    .slice(0, 180);
+  return `official court government news statistical public page ${opts.jurisdiction ?? ""} ${snippet}`.replace(/\s+/g, " ").trim();
+}
 
 export const STATUTE_HINT = /statute|code|§|usc|annotated|title \d+/i;
 
@@ -25,6 +41,13 @@ export function shouldFetch(opts: {
     return Boolean(opts.jurisdiction || opts.matter);
   }
   if (!query) return false;
+  if (
+    /\b(honesty|truth_buried|truth_overcame|anti-corruption|zionpattern|triadscore|hashchain lattice|case mode|casemode|truth_upheld|narrative_suppression|trajectorylock)\b/i.test(
+      query,
+    )
+  ) {
+    return false;
+  }
   if (FETCH_HINTS.test(query)) return true;
   if (opts.jurisdiction && opts.matter && query.length >= 12) return true;
   return false;

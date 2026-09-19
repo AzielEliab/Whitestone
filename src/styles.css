@@ -427,6 +427,18 @@ img, video { max-width: 100%; height: auto; }
   border-radius: 12px;
   padding: 12px 14px;
 }
+.historical-uploads {
+  display: grid;
+  gap: 10px;
+  margin: 10px 0;
+}
+.score-list {
+  margin: 0;
+  padding-left: 1.1rem;
+  display: grid;
+  gap: 8px;
+}
+.score-list .muted { display: block; }
 .asof-picker { margin-top: 8px; }
 .asof-chip {
   pointer-events: none;

@@ -7,7 +7,8 @@ export type SourceKind =
   | "lii"
   | "justia"
   | "federal-public"
-  | "statistical";
+  | "statistical"
+  | "software-public";
 
 export type ResearchReason = "ask" | "filing" | "manual";
 

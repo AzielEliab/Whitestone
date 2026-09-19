@@ -16,12 +16,28 @@ export type AdvisorIntent =
   | "bail"
   | "reason"
   | "historical"
+  | "honesty"
+  | "casemode"
   | "general";
 
 export function routeIntent(text: string, state: SessionState): AdvisorIntent {
   const q = text.toLowerCase();
   if (state.learned.safetyFlag && /\b(danger|afraid|protect|restrain|911|hit|threat|stalk)\b/.test(q)) {
     return "safety";
+  }
+  if (
+    /\b(case mode|casemode|truth_upheld|narrative_suppression|systemic_suppression|personal_professional_suppression|trajectorylock|on behalf of|whistleblower export)\b/.test(
+      q,
+    )
+  ) {
+    return "casemode";
+  }
+  if (
+    /\b(honesty|anti-corruption|truth buried|truth_buried|overcame (the )?lie|stated outcome|hashchain|lattice|zionpattern|spre score|physling|triadscore)\b/.test(
+      q,
+    )
+  ) {
+    return "honesty";
   }
   if (
     /\b(as of|as-of|historical|standing law|what (was|were) the law|in (1[7-9]\d{2}|20\d{2})-(0?\d|1[0-2])|eighteenth|volstead|prohibition amendment)\b/.test(

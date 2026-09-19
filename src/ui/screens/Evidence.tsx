@@ -9,6 +9,7 @@ import {
 import { canSkipToAdvisor } from "../../engine/facts";
 import { useSession } from "../../session/store";
 import { Button } from "../components/Button";
+import { HistoricalUploads } from "../components/HistoricalUploads";
 import { WhatsNext } from "../components/WhatsNext";
 
 export function Evidence() {
@@ -32,7 +33,7 @@ export function Evidence() {
             large ? " — large file, keep this screen on" : ""
           }`,
         );
-        addUpload(await extractEvidence(file));
+        addUpload(await extractEvidence(file, { kind: "evidence" }));
       }
     } catch (ex) {
       setErr(ex instanceof Error ? ex.message : "Could not read file");
@@ -52,6 +53,10 @@ export function Evidence() {
         die with End & erase.
       </p>
       <p className="muted">12 MB max per file. PDF, DOCX, text, or images (including HEIC).</p>
+      {state.historicalMode ? (
+        <HistoricalUploads compact />
+      ) : (
+        <>
       <div className="upload-actions">
         <label className="btn file-btn">
           Choose files
@@ -101,6 +106,7 @@ export function Evidence() {
           <strong>{f.name}</strong>
           <span className="muted">
             {formatFileSize(f.size)} · {f.mime || "file"}
+            {f.sourceDate ? ` · dated ${f.sourceDate}` : ""}
           </span>
           {f.previewUrl && <img src={f.previewUrl} alt="" />}
           {f.text && (
@@ -128,6 +134,8 @@ export function Evidence() {
           <Button onClick={() => removeUpload(f.id)}>Remove from session</Button>
         </article>
       ))}
+        </>
+      )}
       {state.mappings.length > 0 && (
         <div>
           <h3>Evidence → issue map</h3>

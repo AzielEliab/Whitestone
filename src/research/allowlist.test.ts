@@ -42,6 +42,9 @@ describe("allowlist", () => {
     expect(classifyUrl("https://www.ncsc.org/information-and-resources/self-represented-litigants")?.kind).toBe(
       "statistical",
     );
+    expect(classifyUrl("https://spectrallock-download-tracker.vibelock.workers.dev/v1/unredact")?.kind).toBe(
+      "software-public",
+    );
   });
 
   it("blocks blogs, SEO mills, lawyer directories, and private hosts", () => {

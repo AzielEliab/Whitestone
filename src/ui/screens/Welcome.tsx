@@ -12,7 +12,7 @@ import { LambLens } from "../components/LambLens";
 import { WhatsNext } from "../components/WhatsNext";
 
 export function Welcome() {
-  const { state, beginSession, setHistoricalMode } = useSession();
+  const { state, beginSession, setHistoricalMode, setCaseMode } = useSession();
 
   function chooseArea(area: PracticeArea) {
     if (state.practiceArea && state.practiceArea !== area && hasAreaSpecificState(state)) {
@@ -61,9 +61,25 @@ export function Welcome() {
           />
           <span>
             <strong>Historical as-of evaluation</strong> — optional mode, not a fourth practice area.
-            Compare archival case or ruling facts to standing law as of a year and month. Seeded federal
-            constitutional and major-statute milestones only. Not a complete U.S. law book since 1776.
-            State historical coverage is UNKNOWN unless a dated record exists.
+            Compare archival case or ruling facts to standing law as of a year and month. Upload filings,
+            evidence, historical reports, and news clippings (in only). Honesty scores stay UNKNOWN
+            without dated sources. Seeded federal milestones only — not a complete U.S. law book since
+            1776. Confidence is not truth.
+          </span>
+        </label>
+      </div>
+      <div className="history-option">
+        <label className="web-toggle">
+          <input
+            type="checkbox"
+            checked={state.caseMode}
+            onChange={(e) => setCaseMode(e.target.checked)}
+          />
+          <span>
+            <strong>Case Mode</strong> — evaluate a current and/or historical case. Labeled scores
+            (truth_upheld, narrative / systemic / personal-professional suppression) plus honesty axes.
+            Confidence cap 75%. Hashchained uploads. Whistleblower/archivist export of the score card +
+            hash chain only. UNKNOWN without dated sources.
           </span>
         </label>
       </div>

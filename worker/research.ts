@@ -53,7 +53,7 @@ function capability(): ResearchResult & {
     failed: [],
     fetched: 0,
     cached: 0,
-    version: "1.5.0",
+    version: "1.6.0",
     ephemeral: true,
     third_party_llm: false,
     allowlist: describeAllowlist(),

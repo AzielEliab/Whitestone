@@ -10,7 +10,9 @@ export function EraseBar() {
       <p className="muted erase-note">
         <span className="erase-note-full">
           Uploads only. No export of case papers. End & erase wipes this session,
-          including chat, uploads, web notes, as-of dates, archival notes, and any Home Screen shell cache.
+          including chat, uploads, web notes, as-of dates, archival notes, honesty lattice, Case Mode
+          scores, and any Home Screen shell cache. Case Mode export is a score card + hash chain you
+          choose to save — End & erase still wipes the live session.
         </span>
         <span className="erase-note-short">Uploads only · no case export</span>
       </p>

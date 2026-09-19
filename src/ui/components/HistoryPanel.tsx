@@ -9,6 +9,8 @@ import {
 import { useSession } from "../../session/store";
 import { AsOfPicker } from "./AsOfPicker";
 import { Button } from "./Button";
+import { HistoricalUploads } from "./HistoricalUploads";
+import { HonestyPanel } from "./HonestyPanel";
 
 export function HistoryPanel({ onInsert }: { onInsert: (text: string) => void }) {
   const { state, setHistoricalMode, patch } = useSession();
@@ -55,6 +57,8 @@ export function HistoryPanel({ onInsert }: { onInsert: (text: string) => void })
           placeholder="Paste the dated facts you want compared — not a request to invent a holding."
         />
       </div>
+      <HistoricalUploads compact />
+      <HonestyPanel onInsert={onInsert} />
       <div className="field">
         <label htmlFor="hist-q">Ask the as-of engine</label>
         <input

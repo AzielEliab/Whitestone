@@ -8,6 +8,8 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { probeSpectralLockLive } from "../casemode/spectrallock";
+import { probeTrajectoryLockLive } from "../casemode/trajectory";
 import { advise, openingMessage } from "../engine/advisor";
 import { routeIntent } from "../engine/intent";
 import { mapEvidence } from "../engine/evidence-map";
@@ -15,7 +17,7 @@ import { asOfFromSession, looksHistorical } from "../history";
 import { learnFromSession } from "../engine/learn";
 import { probeResearch, requestResearch } from "../research/client";
 import { mergeWebNotes } from "../research/format";
-import { shouldFetch } from "../research/should-fetch";
+import { caseModeVerifyQuery, shouldFetch } from "../research/should-fetch";
 import type { ResearchReason, ResearchResult } from "../research/types";
 import {
   clearAreaSpecificState,
@@ -43,9 +45,12 @@ interface SessionApi {
   seedAdvisor: () => void;
   setWebEnabled: (on: boolean) => void;
   setHistoricalMode: (on: boolean) => void;
+  setCaseMode: (on: boolean) => void;
   setAsOf: (year: number | null, month: number | null) => void;
   clearWebNotes: () => void;
   refreshResearch: (query?: string, reason?: ResearchReason) => Promise<void>;
+  refreshSpectralLock: () => Promise<void>;
+  refreshTrajectoryLock: () => Promise<void>;
   erase: () => Promise<void>;
 }
 
@@ -75,8 +80,21 @@ function hydrate(): SessionState {
         webStatus: parsed.webStatus ?? "idle",
         webMessage: parsed.webMessage ?? "",
         historicalMode: parsed.historicalMode === true,
+        caseMode: parsed.caseMode === true,
+        spectralLive: parsed.spectralLive && parsed.spectralLive.lab_claim === false ? parsed.spectralLive : null,
+        trajectoryLive:
+          parsed.trajectoryLive && parsed.trajectoryLive.certified_instrument === false
+            ? parsed.trajectoryLive
+            : null,
         asOfYear: typeof parsed.asOfYear === "number" ? parsed.asOfYear : null,
         asOfMonth: typeof parsed.asOfMonth === "number" ? parsed.asOfMonth : null,
+        uploads: Array.isArray(parsed.uploads)
+          ? parsed.uploads.map((u) => ({
+              ...u,
+              kind: u.kind ?? "evidence",
+              sourceDate: typeof u.sourceDate === "string" && u.sourceDate.trim() ? u.sourceDate : null,
+            }))
+          : [],
       };
     }
   } catch {
@@ -156,12 +174,24 @@ export function SessionProvider({ children }: { children: ReactNode }) {
             at: new Date().toISOString(),
           };
           const base: SessionState = { ...stateRef.current, messages: [...stateRef.current.messages, user] };
-          const historicalLocal = looksLikeHistoricalAsk(text, base);
+          setState(base);
+          try {
+          const localEval = looksLikeLocalEvalAsk(text, base);
+          const intent = routeIntent(text, base);
+          const researchQuery =
+            intent === "casemode"
+              ? caseModeVerifyQuery({
+                  stated: base.facts.stated_outcome,
+                  official: base.facts.official_narrative,
+                  archival: base.facts.archival,
+                  jurisdiction: base.jurisdiction,
+                })
+              : text;
           const willFetch =
             base.webEnabled &&
-            !historicalLocal &&
+            !(localEval && intent !== "casemode") &&
             shouldFetch({
-              query: text,
+              query: researchQuery,
               jurisdiction: base.jurisdiction,
               matter: base.matter,
               practiceArea: base.practiceArea,
@@ -170,6 +200,17 @@ export function SessionProvider({ children }: { children: ReactNode }) {
           setState({ ...base, webStatus: willFetch ? "loading" : base.webStatus });
 
           let research: ResearchResult | null = null;
+          let spectralLive = base.spectralLive;
+          let trajectoryLive = base.trajectoryLive;
+          if ((intent === "casemode" || base.caseMode) && base.webEnabled) {
+            const [sl, tl] = await Promise.all([
+              probeSpectralLockLive().catch(() => base.spectralLive),
+              probeTrajectoryLockLive().catch(() => base.trajectoryLive),
+            ]);
+            spectralLive = sl;
+            trajectoryLive = tl;
+          }
+          const evalBase: SessionState = { ...base, spectralLive, trajectoryLive };
           if (willFetch) {
             if (researchReady.current === null) researchReady.current = await probeResearch();
             research = researchReady.current
@@ -177,7 +218,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
                   jurisdiction: base.jurisdiction,
                   matter: base.matter,
                   practiceArea: base.practiceArea,
-                  query: text,
+                  query: researchQuery,
                   reason: "ask",
                 })
               : {
@@ -192,8 +233,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
                 };
           }
 
-          try {
-            const { reply, state: next, followUps, grounding, receipt } = advise(base, text, research);
+            const { reply, state: next, followUps, grounding, receipt } = advise(evalBase, text, research);
             const webNotes = research?.sources.length ? mergeWebNotes(next.webNotes, research.sources) : next.webNotes;
             const advisor = {
               id: crypto.randomUUID(),
@@ -296,6 +336,13 @@ export function SessionProvider({ children }: { children: ReactNode }) {
           asOfMonth: on ? s.asOfMonth : null,
         }));
       },
+      setCaseMode: (on) => {
+        setState((s) => ({
+          ...s,
+          caseMode: on,
+          historicalMode: on ? true : s.historicalMode,
+        }));
+      },
       setAsOf: (year, month) => {
         setState((s) => ({
           ...s,
@@ -311,6 +358,26 @@ export function SessionProvider({ children }: { children: ReactNode }) {
           webStatus: s.webEnabled ? "idle" : "off",
           webMessage: "",
         }));
+      },
+      refreshSpectralLock: async () => {
+        const snap = stateRef.current;
+        if (!snap.webEnabled) return;
+        try {
+          const spectralLive = await probeSpectralLockLive();
+          setState((s) => ({ ...s, spectralLive }));
+        } catch {
+          /* Case Mode continues; no invented lab claim. */
+        }
+      },
+      refreshTrajectoryLock: async () => {
+        const snap = stateRef.current;
+        if (!snap.webEnabled) return;
+        try {
+          const trajectoryLive = await probeTrajectoryLockLive();
+          setState((s) => ({ ...s, trajectoryLive }));
+        } catch {
+          /* Case Mode continues; no invented shooter. */
+        }
       },
       refreshResearch: async (query?: string, reason: ResearchReason = "manual") => {
         const snap = stateRef.current;
@@ -372,7 +439,8 @@ export function useSession() {
   return ctx;
 }
 
-function looksLikeHistoricalAsk(text: string, state: SessionState): boolean {
-  if (looksHistorical(text) || routeIntent(text, state) === "historical") return true;
+function looksLikeLocalEvalAsk(text: string, state: SessionState): boolean {
+  const intent = routeIntent(text, state);
+  if (looksHistorical(text) || intent === "historical" || intent === "honesty" || intent === "casemode") return true;
   return Boolean(state.historicalMode && asOfFromSession(state.asOfYear, state.asOfMonth));
 }
