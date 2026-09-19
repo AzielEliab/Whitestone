@@ -16,11 +16,11 @@
   "license": "Apache-2.0",
   "sha256_tip": "published on each GitHub Release",
   "practice_areas": ["criminal", "civil", "divorce"],
-  "coverage": "High-level procedural overview and checklists for Criminal (bail/arraignment, discovery, plea, sentencing, expungement, rights), Civil (small claims, contracts, landlord-tenant, civil protection orders, name change, debt-collection defense), and Divorce/family (custody, support, dissolution, parentage, guardianship, family protection orders, adoption overview) — all 50 U.S. states and D.C. Optional historical as-of mode evaluates archival facts against a seeded federal constitutional and major-statute timeline with source URLs; state historical statutes are UNKNOWN unless a dated record exists. Not an annotated code and not a complete digitized corpus of every U.S. law since 1776.",
+  "coverage": "High-level procedural overview and checklists for Criminal (bail/arraignment, discovery, plea, sentencing, expungement, rights), Civil (small claims, contracts, landlord-tenant, civil protection orders, name change, debt-collection defense), and Divorce/family (custody, support, dissolution, parentage, guardianship, family protection orders, adoption overview) — all 50 U.S. states and D.C. Optional historical as-of mode evaluates archival facts against a seeded federal constitutional and major-statute timeline with source URLs; state historical statutes are UNKNOWN unless a dated record exists.",
   "ephemeral": true,
   "exports": false,
   "third_party_llm": false,
   "web_research": "allowlisted-public-pages",
   "lens": ["Service", "Clarity", "Peace"],
-  "disclaimer": "Educational procedural guidance only. Not a lawyer. Not legal advice. Verify with the court clerk and counsel."
+  "disclaimer": "Educational procedural guidance. Verify with the court clerk and counsel."
 }

@@ -5,7 +5,7 @@
   "scripts": {
     "verify-mesh": "node scripts/verify-mesh-proxy.mjs",
     "verify-human-bot": "node scripts/verify-human-bot.mjs",
-    "verify": "node scripts/verify-mesh-proxy.mjs && node scripts/verify-human-bot.mjs",
+    "verify": "node scripts/verify-mesh-proxy.mjs && node scripts/verify-human-bot.mjs && node scripts/verify-discovery-copy.mjs",
     "deploy": "wrangler deploy"
   },
   "dependencies": {

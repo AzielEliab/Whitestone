@@ -35,9 +35,8 @@ Then open the printed URL.
 
 Rules:
 - Session memory only. End & erase wipes chat, uploads, and any fetched web notes.
-- No export / print / save-as of filings or evidence packages.
-- Not a lawyer. Not legal advice.
-- This offline zip does not include live /api/research. The hosted Worker may fetch allowlisted public court/legal-aid pages; this copy uses the bundled knowledge layer only.
+- Uploads only — no export / print / save-as of filings or evidence packages.
+- This offline zip uses the bundled knowledge layer. The hosted Worker may fetch allowlisted public court/legal-aid pages.
 
 Source: https://github.com/AzielEliab/Whitestone
 `,

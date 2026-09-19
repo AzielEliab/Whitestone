@@ -27,3 +27,5 @@ jobs:
         run: node workers/download-tracker/scripts/verify-mesh-proxy.mjs
       - name: Verify download-tracker human/bot counters
         run: node workers/download-tracker/scripts/verify-human-bot.mjs
+      - name: Verify discovery-surface copy
+        run: node workers/download-tracker/scripts/verify-discovery-copy.mjs

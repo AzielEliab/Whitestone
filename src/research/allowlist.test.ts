@@ -61,10 +61,11 @@ describe("allowlist", () => {
     expect(selfHelpHosts().has("selfhelp.courts.ca.gov")).toBe(true);
   });
 
-  it("describes the allowlist without claiming complete statute coverage", () => {
+  it("describes the allowlist with positive hosts only", () => {
     const desc = describeAllowlist();
     expect(desc.kinds).toContain("state-judiciary");
-    expect(desc.blockedExamples.join(" ")).toMatch(/blog/i);
+    expect(desc.exampleHosts.join(" ")).toMatch(/law\.cornell\.edu/i);
+    expect(desc).not.toHaveProperty("blockedExamples");
     expect(parseHttpsUrl("https://www.law.cornell.edu/wex/family_law")?.protocol).toBe("https:");
   });
 });
