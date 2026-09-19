@@ -326,7 +326,7 @@ export function evaluateHonesty(input: HonestyInput): HonestyEvaluation {
       "https://github.com/AzielEliab/aziel-corpus",
       "https://github.com/AzielEliab/zion-pattern-solver",
       "https://github.com/AzielEliab/AZCoherence",
-      "AKM-TRIAD-1.0 (cite; posterior ≠ truth)",
+      "AKM-TRIAD-1.0 (cite; posterior is a labeled score; Confidence is not truth)",
       "CL-WP-0.4 ChainLock hashchain (cite only; ephemeral lattice)",
       "NO-LIE-NO-REWRITE-1.0",
     ],

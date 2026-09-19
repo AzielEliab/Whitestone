@@ -63,7 +63,7 @@ Engine cites (ported, not invented):
 - SPRE — https://github.com/AzielEliab/az-clce/blob/main/docs/spre.md
 - PhysLing home — https://github.com/AzielEliab/aziel-corpus (lite slot only)
 - Triad — https://github.com/AzielEliab/az-clce/blob/main/docs/triad.md (`aziel.triad.v0.3`)
-- Triadscore — AKM-TRIAD-1.0 (posterior ≠ truth; no durable memory)
+- Triadscore — AKM-TRIAD-1.0 (posterior is a labeled score; Confidence is not truth; no durable memory)
 - ZionPattern — https://github.com/AzielEliab/zion-pattern-solver (75% cap)
 - Lattice — ChainLock CL-WP-0.4 cite only; ephemeral session hashes; wipe with End & erase
 

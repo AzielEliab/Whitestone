@@ -83,12 +83,29 @@ Ported logic (cite the specs; Confidence is not truth):
 2. **SPRE** — structural similarity `{P1..P5, E, C, T, D}`; `PC = SSI × E`. Official narrative is never evidence.
 3. **PhysLing** — home is [aziel-corpus](https://github.com/AzielEliab/aziel-corpus). Whitestone fills a lite slot only when dated independent physical language is present; otherwise unverified.
 4. **Triad** — `aziel.triad.v0.3` mean of SPRE+CLCE+PhysLing only when all three verified.
-5. **Triadscore** — AKM-TRIAD-1.0 style 3-of-4 + Beta posterior. Posterior ≠ truth. No durable AKM memory.
+5. **Triadscore** — AKM-TRIAD-1.0 style 3-of-4 + Beta posterior. Posterior is a labeled score. Confidence is not truth. No durable AKM memory.
 6. **ZionPattern** — nine ontology nodes, hard 75% cap ([zion-pattern-solver](https://github.com/AzielEliab/zion-pattern-solver)). Does not solve cases.
 
 **Hashchain lattice:** content hashes of session materials vs prior in-session nodes and bundled pattern pins. Ephemeral. Cite-only of ChainLock CL-WP-0.4 — not durable Worker memory. Similar events only with labeled similarity + sources. Wipe with End & erase.
 
-Audit handoff of historical law dates + honesty scores: [docs/AUDIT-HANDOFF.md](docs/AUDIT-HANDOFF.md).
+### Case Mode (current and/or historical)
+
+Optional **Case Mode** evaluates a current or historical case on the same session path. Labeled scores (hard cap 75%; UNKNOWN without dated hashchained sources):
+
+- `truth_upheld`
+- `narrative_suppression`
+- `systemic_suppression`
+- `personal_professional_suppression`
+
+plus the honesty axes above. Always emit **why / who / what / how / when** and whether a named actor was independent or acting on behalf of another party (UNKNOWN when not evidenced).
+
+Case Mode ingest adds certificates, findings, articles, police reports, phone, images, paintings, documents, video, and audio alongside filings / evidence / reports / clippings. Video and audio extract metadata only — no invented frames or transcripts.
+
+**Export** (Case Mode only): a hash-chain score card JSON for educational / archival use. End & erase still wipes the live session.
+
+Ported or cited slots: TrajectoryLock (victim × impact direction × location; does not name a shooter), VibeLock, SpectralLock allowlist (`https://spectrallock-download-tracker.vibelock.workers.dev` `/v1/unredact` `/v1/recover` `/v1/handwriting` — leftover-bytes / heuristics). Online verify uses the same allowlisted public-page fetches. Confidence is not truth.
+
+Audit handoff of historical law dates + honesty + Case Mode scores: [docs/AUDIT-HANDOFF.md](docs/AUDIT-HANDOFF.md).
 
 Whitestone stays a standalone SPA + Worker. It does **not** invent a full FragGate mesh.
 

@@ -68,6 +68,27 @@ describe("Case Mode", () => {
     expect(card.lattice.durable_worker_memory).toBe(false);
   });
 
+  it("names independent vs on-behalf-of only when evidenced", () => {
+    const ev = evaluateCaseMode({
+      official: "Jane Rivera, officer of City Water, said the file is closed.",
+      statedOutcome: "Jane Rivera speaking on behalf of City Water closed the inquiry.",
+      archival: "Independent civilian witness Mara Chen reported rashes in 2015.",
+      asOfIso: "2015-06",
+      uploads: [
+        upload(
+          "clip",
+          "news_clipping",
+          "Mara Chen, independent civilian witness, contradicted the official all-clear.",
+          "2015-09-12",
+        ),
+      ],
+    });
+    expect(ev.fivew.independent_or_behalf.role).toBe("on_behalf_of");
+    expect(ev.fivew.independent_or_behalf.behalfOf).toMatch(/City Water/i);
+    expect(ev.fivew.when).toBe("2015-06");
+    expect(ev.fivew.why).toMatch(/hashchained/i);
+  });
+
   it("reads session through caseModeFromSession", () => {
     const s = emptySession();
     s.caseMode = true;

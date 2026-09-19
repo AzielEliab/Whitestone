@@ -1,7 +1,7 @@
 /**
  * AKM-TRIAD-style triadscore (ported pattern, not fabric memory).
  * Cite: AKM-TRIAD-1.0 — deterministic 3-of-4 triad + Bayesian posterior.
- * Posterior ≠ truth. UNKNOWN is distinct from MISS. No durable AKM store.
+ * Posterior is a labeled score. Confidence is not truth. UNKNOWN is distinct from MISS. No durable AKM store.
  * Whitestone stays standalone — this is labeled scoring only.
  * Author: Aziel Eliab. Apache-2.0.
  */
