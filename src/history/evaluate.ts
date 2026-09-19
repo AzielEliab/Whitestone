@@ -1,6 +1,6 @@
 import type { ResearchResult } from "../research/types";
 import type { PracticeArea } from "../types";
-import { formatAsOf, formatAsOfIso, parseAsOf } from "./asof";
+import { dateOnOrBeforeAsOf, formatAsOf, formatAsOfIso, parseAsOf } from "./asof";
 import type { AsOfMonth } from "./types";
 import { LAW_RECORDS } from "./records";
 import {
@@ -31,6 +31,7 @@ export interface HistoricalEvaluation {
   standing: LawRecord[];
   timeline: LawRecord[];
   matched: LawRecord[];
+  later: LawRecord[];
   refused: string[];
   unknown: string[];
   notes: string[];
@@ -85,6 +86,7 @@ export function evaluateHistorical(opts: {
       standing: [],
       timeline: [],
       matched: [],
+      later: [],
       refused,
       unknown: ["Pick a year and month (as of YYYY-MM) before comparing archival facts to standing law."],
       notes,
@@ -94,12 +96,14 @@ export function evaluateHistorical(opts: {
 
   const standing = standingAsOf({ asOf, kind, area: opts.area, jurisdiction: opts.jurisdiction });
   const timeline = timelineAsOf({ asOf, kind, area: opts.area, query: combined });
-  const matched = uniqueRecords(
+  const scored = uniqueRecords(
     LAW_RECORDS.filter((r) => {
       if (kind !== "all" && r.kind !== kind) return false;
       return combined ? recordMatchesQuery(r, combined) : false;
     }).sort((a, b) => scoreRecordQuery(b, combined) - scoreRecordQuery(a, combined)),
   );
+  const matched = scored.filter((r) => dateOnOrBeforeAsOf(r.effective_from, asOf));
+  const later = scored.filter((r) => !dateOnOrBeforeAsOf(r.effective_from, asOf));
 
   if (hook.status === "UNKNOWN") {
     unknown.push(hook.note);
@@ -168,6 +172,7 @@ export function evaluateHistorical(opts: {
     standing,
     timeline,
     matched: uniqueRecords(matched),
+    later: uniqueRecords(later),
     refused,
     unknown,
     notes,

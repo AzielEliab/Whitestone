@@ -93,7 +93,9 @@ export function snapshotLine(state: SessionState): string {
 
 export function canSkipToAdvisor(state: SessionState): boolean {
   const named = state.parties.some((p) => p.name.trim());
-  const facts = Boolean(state.facts.goals?.trim() || state.facts.relationship?.trim());
+  const facts = Boolean(
+    state.facts.goals?.trim() || state.facts.relationship?.trim() || state.facts.archival?.trim(),
+  );
   return Boolean(state.jurisdiction && state.matter && (named || facts));
 }
 

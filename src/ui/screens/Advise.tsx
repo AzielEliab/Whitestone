@@ -12,14 +12,21 @@ import { WhatsNext } from "../components/WhatsNext";
 import { nextQuestion } from "../../engine/dialogue";
 
 export function Advise() {
-  const { state, ask, answerQuestion, setStep, setWebEnabled, clearWebNotes, refreshResearch } =
+  const { state, ask, answerQuestion, setStep, setWebEnabled, clearWebNotes, refreshResearch, seedAdvisor } =
     useSession();
   const [draft, setDraft] = useState("");
   const [tool, setTool] = useState<"none" | "math" | "stats" | "history">("none");
   const q = nextQuestion(state);
   const seeded = useRef(false);
+  const opened = useRef(false);
   const lastAdvisor = [...state.messages].reverse().find((m) => m.role === "advisor");
   const followUps = lastAdvisor?.followUps?.length ? lastAdvisor.followUps : starterPrompts(state);
+
+  useEffect(() => {
+    if (opened.current || state.messages.some((m) => m.role === "advisor")) return;
+    opened.current = true;
+    seedAdvisor();
+  }, [seedAdvisor, state.messages]);
 
   useEffect(() => {
     if (seeded.current || !state.webEnabled || !state.jurisdiction || state.webNotes.length) return;

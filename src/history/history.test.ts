@@ -125,6 +125,8 @@ describe("historical evaluation", () => {
     const text = formatHistoricalBlock(result);
     expect(text).toMatch(/does not ship a complete digitized corpus/i);
     expect(text).toContain("https://www.archives.gov/milestone-documents/18th-amendment");
+    expect(result.later.some((r) => r.event_type === "repeal" && r.citation.includes("amend. XVIII"))).toBe(true);
+    expect(text).toMatch(/not yet in force/i);
     expect(text).toMatch(/UNKNOWN/);
     expect(text).toMatch(/not legal advice/i);
   });

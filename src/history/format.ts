@@ -41,9 +41,17 @@ export function formatHistoricalBlock(evaln: HistoricalEvaluation, archivalFacts
   const standingShow = (matchedStanding.length ? matchedStanding : evaln.standing).slice(0, 6);
   if (evaln.matched.length) {
     parts.push(
-      `Dated records matched to your ask / archival facts:\n${evaln.matched
+      `Dated records on or before this as-of month that match your ask / archival facts:\n${evaln.matched
         .slice(0, 5)
         .map((r, i) => `${i + 1}. ${formatLawBullet(r)}`)
+        .join("\n")}`,
+    );
+  }
+  if (evaln.later.length) {
+    parts.push(
+      `Later dated records (not yet in force as of ${evaln.asOfLabel}):\n${evaln.later
+        .slice(0, 3)
+        .map((r, i) => `${i + 1}. ${r.effective_from} ${r.event_type.toUpperCase()} — ${r.citation} (${r.sourceUrl})`)
         .join("\n")}`,
     );
   }
