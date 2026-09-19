@@ -49,8 +49,8 @@ is the Cloudflare namespace title).
 | GET | `/` | Isolated homepage: increment views, live counts, Live Nodes strip. Rose-star brand mark top-left (`/sigil.png`, empty alt). |
 | GET | `/sigil.png` | Same-origin Aziel Eliab rose-star brand mark (Worker assets). |
 | GET | `/download?repo=&tag=&asset=` | Increment downloads, serve the zip from `ASSETS` (or stream GitHub if missing) |
-| GET | `/count` | JSON `{project, views, downloads, total}` (reads both KV counters; does not increment) |
-| GET | `/stats` | JSON totals plus per-repo and per-branch breakdown |
+| GET | `/count` | JSON `{project, views, downloads, total}` plus additive `views_human` / `views_bot` / `downloads_human` / `downloads_bot` (does not increment) |
+| GET | `/stats` | JSON totals plus per-repo / per-branch breakdown plus the same human/bot fields |
 | POST | `/event` | A fork reports a download |
 | GET | `/v1/mesh` · `/v1/mesh/status` | PROXY suite mesh status via `AZIEL_RUNTIME`. Default OFF. Never enables. |
 | GET | `/v1/mesh/nodes` | PROXY Live Nodes roster (5-minute presence) |
@@ -95,7 +95,52 @@ Bing, Google Gemini / Vertex, Mistral, Meta AI, Apple Intelligence
 surfaces, Amazon Q tooling, DuckAssist, You.com, Cohere, and other
 MCP/OpenAPI-capable assistants. Always send `User-Agent: Mozilla/5.0`.
 
+## Human / bot schema (`/stats` and `/count`)
+
+Additive dual-count so digests can report real human counts. Old clients
+keep working: `project`, `views`, `downloads`, and `total` (`total` =
+downloads) are unchanged. New keys start at 0. Existing KV totals are
+**never reset**.
+
+Classification runs at the edge on each counted GET (`/`, `/download`,
+`/go`) and on counted `POST /event`:
+
+1. Health-check / uptime UA → bot bucket (counted, not skipped).
+2. Cloudflare `request.cf.botManagement` when present: `verifiedBot ===
+   true` or `score <= 30` → bot. Score `0` means not computed — ignored,
+   never invented.
+3. UA denylist (Googlebot, bingbot, GPTBot, ClaudeBot, Bytespider,
+   PetalBot, Yandex, Semrush, Ahrefs, DotBot, curl/wget/python-requests
+   defaults, CF-Healthchecks, …) → bot.
+4. Empty UA → bot.
+5. Else → human.
+
+If Bot Management is unavailable, method is `ua_denylist +
+healthcheck_ua` only.
+
+**Invariant (always, on the JSON response):**
+`views === views_human + views_bot` and
+`downloads === downloads_human + downloads_bot`.
+
+**Legacy strategy (b) — display remainder:** stored `views_human` /
+`downloads_human` start at 0. The response sets `views_bot = views -
+views_human` (same for downloads) so pre-split totals show as bot until
+proven human. KV history is not rewritten. New traffic updates both the
+total and one bucket. Shared modules (copy into other product trackers):
+`src/classify.js` and `src/stats-shape.js`.
+
+Homepage HTML is unchanged. Metrics / subsurface only.
+
 ## Deploy
+
+After CLEAR, GitBaby deploys. From this directory:
+
+```bash
+cd workers/download-tracker
+npx wrangler deploy
+```
+
+First-time KV (already pinned in `wrangler.toml` for this Worker):
 
 ```bash
 cd workers/download-tracker
@@ -114,4 +159,5 @@ Expected hostname:
 ```bash
 cd workers/download-tracker
 node scripts/verify-mesh-proxy.mjs
+node scripts/verify-human-bot.mjs
 ```
