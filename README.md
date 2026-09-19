@@ -27,7 +27,7 @@ Then the session-only path:
 1. Choose a jurisdiction
 2. Choose a matter type for that area
 3. Enter people and facts
-4. Upload evidence (PDF, DOCX, text, images) — **in only**
+4. Upload evidence (PDF, DOCX, text, images) — **in only**. Historical as-of path adds labeled buttons for **case filings, evidence, historical reports, and news clippings**.
 5. Guided Q&A from a structured knowledge base
 6. On-screen filing structure / caption draft
 7. **End & erase**
@@ -65,7 +65,32 @@ Local modules (Apache-2.0, author Aziel Eliab):
 3. **NO-LIE-NO-REWRITE-1.0** (cite only) — claims that still hash to their sources; no rewrite of user facts; never lie to be helpful; prefer refuse/unknown over fabrication.
 4. **Session receipt** — ephemeral `content_sha256` over reply text + source URLs + stat ids. Wiped with End & erase. **Not** durable ChainLock / LOCKSET.
 
-A light R/D/P inconsistency *hint* may appear when answers clash. AZ-CLCE is not vendored.
+A light R/D/P inconsistency *hint* may appear when answers clash.
+
+### Anti-corruption honesty eval (ported engines, labeled scores)
+
+On the historical path, Whitestone can compare **stated outcomes / reports / results** to session uploads. Scores:
+
+- `truth_buried`
+- `truth_overcame_lie`
+- `honesty_overall`
+
+Each is **LABELED** or **UNKNOWN**. UNKNOWN when dated independent sources/uploads are insufficient. **NO-LIE:** Whitestone never invents a buried-truth claim without dated sources or uploads.
+
+Ported logic (cite the specs; Confidence is not truth):
+
+1. **AZ-CLCE** — Jaccard R/D/P triple ([az-clce](https://github.com/AzielEliab/az-clce)). Detects inconsistency, not intent. Type D is a label only.
+2. **SPRE** — structural similarity `{P1..P5, E, C, T, D}`; `PC = SSI × E`. Official narrative is never evidence.
+3. **PhysLing** — home is [aziel-corpus](https://github.com/AzielEliab/aziel-corpus). Whitestone fills a lite slot only when dated independent physical language is present; otherwise unverified.
+4. **Triad** — `aziel.triad.v0.3` mean of SPRE+CLCE+PhysLing only when all three verified.
+5. **Triadscore** — AKM-TRIAD-1.0 style 3-of-4 + Beta posterior. Posterior ≠ truth. No durable AKM memory.
+6. **ZionPattern** — nine ontology nodes, hard 75% cap ([zion-pattern-solver](https://github.com/AzielEliab/zion-pattern-solver)). Does not solve cases.
+
+**Hashchain lattice:** content hashes of session materials vs prior in-session nodes and bundled pattern pins. Ephemeral. Cite-only of ChainLock CL-WP-0.4 — not durable Worker memory. Similar events only with labeled similarity + sources. Wipe with End & erase.
+
+Audit handoff of historical law dates + honesty scores: [docs/AUDIT-HANDOFF.md](docs/AUDIT-HANDOFF.md).
+
+Whitestone stays a standalone SPA + Worker. It does **not** invent a full FragGate mesh.
 
 ## Use in a browser (no download required)
 
@@ -90,7 +115,7 @@ Whitestone does **not** claim a complete digitized corpus of every U.S. law sinc
 3. Jurisdiction hooks that return **UNKNOWN** when no dated record exists for that state or locality. Federal coverage is labeled **PARTIAL**.
 4. The same allowlisted public primary-source fetches Whitestone already uses for research (including National Archives and Constitution Annotated hosts).
 
-Every law record has: jurisdiction, civil|criminal, citation, title, effective_from, effective_to, event_type, sourceTitle, sourceUrl, notes. The engine will **REFUSE** invented form numbers and uncitable “the law said X in 1850” claims that lack a dated record. It does not invent holdings. Session-only; End & erase wipes as-of dates and archival notes with the rest of the session. No third-party LLM.
+Every law record has: jurisdiction, civil|criminal, citation, title, effective_from, effective_to, event_type, sourceTitle, sourceUrl, notes. The engine will **REFUSE** invented form numbers and uncitable “the law said X in 1850” claims that lack a dated record. It does not invent holdings. Session-only; End & erase wipes as-of dates, archival notes, honesty lattice, and uploads with the rest of the session. No third-party LLM. Lamb Lens: Service → Clarity → Peace.
 
 ### Live public-page research (hosted app)
 

@@ -80,6 +80,9 @@ export function snapshotLine(state: SessionState): string {
   if (state.facts.archival?.trim()) {
     bits.push(`Archival case/ruling facts: ${state.facts.archival.trim().slice(0, 240)}.`);
   }
+  if (state.facts.stated_outcome?.trim()) {
+    bits.push(`Stated outcome/report: ${state.facts.stated_outcome.trim().slice(0, 200)}.`);
+  }
   if (s.answered.length) {
     bits.push(
       `Answered facts: ${s.answered
@@ -94,7 +97,10 @@ export function snapshotLine(state: SessionState): string {
 export function canSkipToAdvisor(state: SessionState): boolean {
   const named = state.parties.some((p) => p.name.trim());
   const facts = Boolean(
-    state.facts.goals?.trim() || state.facts.relationship?.trim() || state.facts.archival?.trim(),
+    state.facts.goals?.trim() ||
+      state.facts.relationship?.trim() ||
+      state.facts.archival?.trim() ||
+      state.facts.stated_outcome?.trim(),
   );
   return Boolean(state.jurisdiction && state.matter && (named || facts));
 }
@@ -115,10 +121,12 @@ export function whatsNextLine(state: SessionState): string {
         ? "Add names and what you want the court to do — or skip to the advisor."
         : "Name the parties and a short goal so the advisor can speak to this session.";
     case "evidence":
-      return "Uploads are optional and never exported. Continue when ready.";
+      return state.historicalMode
+        ? "Upload case filings, evidence, historical reports, or news clippings (in only). Add a document date when you have one."
+        : "Uploads are optional and never exported. Continue when ready.";
     case "advise":
       return state.historicalMode
-        ? "Ask a question, tap a follow-up, or open Math / Statistics / Historical as-of. Composer stays usable on a phone keyboard."
+        ? "Ask a question, tap a follow-up, or open Math / Statistics / Historical as-of / Honesty eval. Composer stays usable on a phone keyboard."
         : "Ask a question, tap a follow-up, or open Math / Statistics. Composer stays usable on a phone keyboard.";
     case "filing":
       return "Review the on-screen structure only. Recreate papers on the clerk's form. Nothing is exported.";

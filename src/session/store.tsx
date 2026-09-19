@@ -77,6 +77,13 @@ function hydrate(): SessionState {
         historicalMode: parsed.historicalMode === true,
         asOfYear: typeof parsed.asOfYear === "number" ? parsed.asOfYear : null,
         asOfMonth: typeof parsed.asOfMonth === "number" ? parsed.asOfMonth : null,
+        uploads: Array.isArray(parsed.uploads)
+          ? parsed.uploads.map((u) => ({
+              ...u,
+              kind: u.kind === "filing" || u.kind === "historical_report" || u.kind === "news_clipping" || u.kind === "evidence" ? u.kind : "evidence",
+              sourceDate: typeof u.sourceDate === "string" && u.sourceDate.trim() ? u.sourceDate : null,
+            }))
+          : [],
       };
     }
   } catch {

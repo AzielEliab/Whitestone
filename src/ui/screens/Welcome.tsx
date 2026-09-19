@@ -61,9 +61,10 @@ export function Welcome() {
           />
           <span>
             <strong>Historical as-of evaluation</strong> — optional mode, not a fourth practice area.
-            Compare archival case or ruling facts to standing law as of a year and month. Seeded federal
-            constitutional and major-statute milestones only. Not a complete U.S. law book since 1776.
-            State historical coverage is UNKNOWN unless a dated record exists.
+            Compare archival case or ruling facts to standing law as of a year and month. Upload filings,
+            evidence, historical reports, and news clippings (in only). Honesty scores stay UNKNOWN
+            without dated sources. Seeded federal milestones only — not a complete U.S. law book since
+            1776. Confidence is not truth.
           </span>
         </label>
       </div>

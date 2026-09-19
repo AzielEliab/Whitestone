@@ -1,8 +1,8 @@
 {
   "name": "whitestone",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "private": true,
-  "description": "Ephemeral pro se advisor for Criminal, Civil, and Divorce, plus optional historical as-of legal evaluation. Session-only memory; wipe on close. Live Worker URL on phone or desktop; optional software zip. No case exports, no third-party LLM APIs. Labeled math, cited statistics, seeded dated-law timeline, AZCoherence-inspired grounding.",
+  "description": "Ephemeral pro se advisor for Criminal, Civil, and Divorce, plus optional historical as-of and anti-corruption honesty evaluation. Session-only memory; wipe on close. Live Worker URL on phone or desktop; optional software zip. No case exports, no third-party LLM APIs. Labeled math, cited statistics, seeded dated-law timeline, ported CLCE/SPRE/PhysLing/triad/ZionPattern scores, AZCoherence-inspired grounding.",
   "license": "Apache-2.0",
   "author": "Aziel Eliab",
   "type": "module",

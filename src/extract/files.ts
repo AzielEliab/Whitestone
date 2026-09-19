@@ -1,4 +1,4 @@
-import type { EvidenceFile } from "../types";
+import type { EvidenceFile, UploadKind } from "../types";
 
 export const MAX_BYTES = 12 * 1024 * 1024;
 export const LARGE_BYTES = 2 * 1024 * 1024;
@@ -36,7 +36,10 @@ export function allowedFile(file: File): string | null {
   return null;
 }
 
-export async function extractEvidence(file: File): Promise<EvidenceFile> {
+export async function extractEvidence(
+  file: File,
+  opts?: { kind?: UploadKind; sourceDate?: string | null },
+): Promise<EvidenceFile> {
   const err = allowedFile(file);
   if (err) throw new Error(err);
 
@@ -72,6 +75,8 @@ export async function extractEvidence(file: File): Promise<EvidenceFile> {
     note: mime.startsWith("image/")
       ? "Image stored only in this session. Add a note describing the fact it proves — Whitestone does not send images to an OCR service."
       : "",
+    kind: opts?.kind ?? "evidence",
+    sourceDate: opts?.sourceDate?.trim() || null,
     previewUrl,
   };
 }

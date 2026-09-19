@@ -12,12 +12,12 @@ const DEFAULT_RELEASE =
 const SOFTWARE = {
   name: "Whitestone",
   slug: "whitestone",
-  version: "1.5.0",
+  version: "1.6.0",
   author: "Aziel Eliab",
   identity: "Aziel Eliab",
   author_id: "https://www.azieleliab.com/#aziel",
   one_line:
-    "One ephemeral pro se advisor with Criminal, Civil, and Divorce practice areas, plus optional historical as-of evaluation against a seeded federal timeline. Live Worker URL on phone or desktop — zip optional. Session-only memory; wipe on close. Uploads only, no case exports, no third-party LLM APIs. Labeled math, cited statistics, AZCoherence-inspired grounding. Hosted app may fetch allowlisted public court/legal-aid pages for this session only.",
+    "One ephemeral pro se advisor with Criminal, Civil, and Divorce practice areas, plus optional historical as-of and anti-corruption honesty evaluation. Live Worker URL on phone or desktop — zip optional. Session-only memory; wipe on close. Uploads only, no case exports, no third-party LLM APIs. Ported CLCE/SPRE/PhysLing/triad/ZionPattern labeled scores. Hosted app may fetch allowlisted public court/legal-aid pages for this session only.",
   kind: "software",
   door: "standalone",
   github: "https://github.com/AzielEliab/Whitestone",

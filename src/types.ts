@@ -53,6 +53,15 @@ export interface Child {
   livesWith: string;
 }
 
+export type UploadKind = "filing" | "evidence" | "historical_report" | "news_clipping";
+
+export const UPLOAD_KIND_LABELS: Record<UploadKind, string> = {
+  filing: "Case filing",
+  evidence: "Evidence",
+  historical_report: "Historical report",
+  news_clipping: "News clipping",
+};
+
 export interface EvidenceFile {
   id: string;
   name: string;
@@ -61,6 +70,8 @@ export interface EvidenceFile {
   addedAt: string;
   text: string;
   note: string;
+  kind: UploadKind;
+  sourceDate: string | null;
   previewUrl?: string;
 }
 

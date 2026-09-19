@@ -681,7 +681,7 @@ function openapiSpec(request) {
     openapi: "3.1.0",
     info: {
       title: "Whitestone runtime",
-      version: "1.5.0",
+      version: "1.6.0",
       summary: "Ephemeral pro se advisor download tracker. Hosted API is educational procedural software.",
       description: engine.LIMITATION + " Suite mesh /v1/mesh/* PROXY to aziel-runtime (AZIEL_RUNTIME). Default OFF. QNM-BUILD-1.0 live|locked|isolated. No Node Gate. No auto-heal. Aziel Eliab only.",
     },

@@ -179,6 +179,24 @@ describe("dialogue and advisor", () => {
     expect(bad.reply).not.toMatch(/Form CR-999 is required/i);
   });
 
+  it("keeps honesty scores UNKNOWN without dated independent uploads", () => {
+    const s = emptySession();
+    s.practiceArea = "criminal";
+    s.jurisdiction = "CA";
+    s.matter = "rights-education";
+    s.historicalMode = true;
+    s.asOfYear = 1925;
+    s.asOfMonth = 6;
+    s.facts.stated_outcome = "Official report: the matter is closed.";
+    const { reply, intent } = advise(s, "Score honesty of the stated outcome against my uploads.");
+    expect(intent).toBe("honesty");
+    expect(reply).toMatch(/truth_buried/);
+    expect(reply).toMatch(/UNKNOWN/);
+    expect(reply).toMatch(/will not invent/);
+    expect(reply).toMatch(/Confidence is not truth|not truth/i);
+    expect(reply).toMatch(/not a lawyer/i);
+  });
+
   it("returns cited statistics without inventing a figure", () => {
     const s = emptySession();
     s.practiceArea = "criminal";
@@ -236,6 +254,8 @@ describe("evidence and learning", () => {
           addedAt: new Date().toISOString(),
           text: "Employee paystub wages overtime",
           note: "",
+          kind: "evidence",
+          sourceDate: null,
         },
       ],
       "child-support",

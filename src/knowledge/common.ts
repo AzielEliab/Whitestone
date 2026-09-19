@@ -2,7 +2,7 @@ import type { CoverageLevel, PracticeArea } from "../types";
 
 export const PRODUCT = {
   name: "Whitestone",
-  version: "1.5.0",
+  version: "1.6.0",
   author: "Aziel Eliab",
   lens: ["Service", "Clarity", "Peace"] as const,
 };
@@ -135,4 +135,4 @@ export const WEB_RESEARCH_COPY =
   "The live app may fetch allowlisted public court, legal-aid, and government pages so answers can cite current clerk/self-help material, including National Archives and Constitution Annotated pages used by historical as-of evaluation. Fetched snippets live only in this session (or a short Worker cache of the same public URL). Offline zip copies do not include live research. This is still not legal advice and not a complete statute book.";
 
 export const EPHEMERAL_COPY =
-  "Chat, uploads, fetched web notes, as-of dates, archival notes, and derived case state live only in this browser session (memory and session storage). There is no user account and no case file on a server. End & erase wipes chat, uploads, web notes, historical as-of fields, metadata, IndexedDB, and caches for this session.";
+  "Chat, uploads, fetched web notes, as-of dates, archival notes, honesty scores, the ephemeral hashchain lattice, and derived case state live only in this browser session (memory and session storage). There is no user account and no case file on a server. End & erase wipes chat, uploads, web notes, historical as-of fields, honesty lattice, metadata, IndexedDB, and caches for this session.";
