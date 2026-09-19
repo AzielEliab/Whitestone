@@ -40,6 +40,42 @@ describe("historical law records", () => {
     }
   });
 
+  it("does not invent National Archives milestone slugs that are not on the NARA list", () => {
+    const invented = [
+      "/milestone-documents/civil-rights-act-1866",
+      "/milestone-documents/espionage-act",
+      "/milestone-documents/18th-amendment",
+      "/milestone-documents/volstead-act",
+      "/milestone-documents/21st-amendment",
+      "/milestone-documents/fair-housing-act",
+      "/milestone-documents/26th-amendment",
+    ];
+    for (const record of LAW_RECORDS) {
+      expect(record.sourceUrl).toMatch(/^https:\/\//);
+      for (const slug of invented) {
+        expect(record.sourceUrl).not.toContain(slug);
+      }
+      if (record.effective_to) {
+        expect(record.effective_to >= record.effective_from).toBe(true);
+      }
+    }
+    const amendments = LAW_RECORDS.filter((r) => /U\.S\. Const\. amend/i.test(r.citation));
+    for (const record of amendments) {
+      if (record.event_type === "repeal") continue;
+      expect(record.event_type).toBe("add");
+    }
+    const closers = LAW_RECORDS.filter((r) => r.event_type === "repeal" || r.event_type === "remove");
+    for (const closer of closers) {
+      const prior = LAW_RECORDS.find(
+        (r) =>
+          r.citation === closer.citation &&
+          (r.event_type === "enact" || r.event_type === "add") &&
+          r.effective_from < closer.effective_from,
+      );
+      expect(prior).toBeTruthy();
+    }
+  });
+
   it("does not claim a complete digitized corpus", () => {
     expect(CORPUS_HONESTY).toMatch(/does not ship a complete digitized corpus/i);
     expect(CORPUS_HONESTY).not.toMatch(/every U\.S\. law since 1776 is included/i);
@@ -124,7 +160,7 @@ describe("historical evaluation", () => {
     expect(result.standing.some((r) => r.citation.includes("amend. XVIII"))).toBe(true);
     const text = formatHistoricalBlock(result);
     expect(text).toMatch(/does not ship a complete digitized corpus/i);
-    expect(text).toContain("https://www.archives.gov/milestone-documents/18th-amendment");
+    expect(text).toContain("https://www.archives.gov/founding-docs/amendments-11-27");
     expect(result.later.some((r) => r.event_type === "repeal" && r.citation.includes("amend. XVIII"))).toBe(true);
     expect(text).toMatch(/not yet in force/i);
     expect(text).toMatch(/UNKNOWN/);

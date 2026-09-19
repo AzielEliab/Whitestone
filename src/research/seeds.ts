@@ -187,14 +187,9 @@ const FEDERAL_SEEDS: ExtraSeed[] = [
     keywords: ["constitution", "amendment", "historical", "as of", "annotated"],
   },
   {
-    url: "https://www.archives.gov/milestone-documents/18th-amendment",
-    title: "National Archives — 18th Amendment",
-    keywords: ["prohibition", "18th", "eighteenth", "volstead", "historical"],
-  },
-  {
-    url: "https://www.archives.gov/milestone-documents/21st-amendment",
-    title: "National Archives — 21st Amendment",
-    keywords: ["prohibition", "21st", "repeal", "historical"],
+    url: "https://www.archives.gov/founding-docs/amendments-11-27",
+    title: "National Archives — Constitution Amendments 11–27 (XVIII / XXI)",
+    keywords: ["prohibition", "18th", "eighteenth", "volstead", "21st", "repeal", "historical"],
   },
 ];
 
