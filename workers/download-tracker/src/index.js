@@ -908,6 +908,8 @@ export default {
         identity: "Aziel Eliab only",
         title: "Whitestone",
         github: GITHUB_REPO,
+        x: "https://x.com/AzielEliab",
+        x_handle: "@AzielEliab",
         download: HOST + "/download",
         live_app: APP_WORKER + "/",
         license: "Apache-2.0",
@@ -920,6 +922,7 @@ export default {
     if ((url.pathname === "/llms.txt" || url.pathname === "/llms.txt/") && request.method === "GET") {
       const body = [
         "Whitestone — Aziel Eliab",
+        "X / Twitter: @AzielEliab https://x.com/AzielEliab",
         "One ephemeral pro se advisor for Criminal, Civil, and Divorce.",
         "Live app: " + APP_WORKER + "/",
         "Counted zip: " + HOST + "/download",
