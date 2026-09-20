@@ -63,6 +63,39 @@ export default {
       return Response.redirect(dest, 302);
     }
 
+    if (path === "/v1/health") {
+      if (request.method !== "GET" && request.method !== "HEAD") {
+        return json({ ok: false, error: "method-not-allowed" }, 405);
+      }
+      // Honest liveness before SPA ASSETS catch-all. Product truth only (NO-LIE).
+      const body = {
+        ok: true,
+        author: SOFTWARE.author,
+        identity: SOFTWARE.identity,
+        product: SOFTWARE.slug,
+        version: SOFTWARE.version,
+        confidence_cap: 0.75,
+        lawyer: false,
+        legal_advice: false,
+        stores_cases: false,
+        stores_uploads: false,
+        fraggate_engine: false,
+        limitation:
+          "Whitestone is one ephemeral pro se advisor for Criminal, Civil, and Divorce. Educational procedural software — not a lawyer, not legal advice. Session-only memory; End & erase wipes the session. Uploads only in-browser; this Worker never stores case files. Case Mode confidence hard-capped at 0.75. TrajectoryLock-lite: labeled geometric-line fit from session text/layers; GET peer /v1/health only — does not POST media, name a shooter, or claim LIVE physics. Author: Aziel Eliab only.",
+      };
+      if (request.method === "HEAD") {
+        return new Response(null, {
+          status: 200,
+          headers: {
+            "content-type": "application/json; charset=utf-8",
+            "cache-control": "no-store",
+            "access-control-allow-origin": "*",
+          },
+        });
+      }
+      return json(body);
+    }
+
     if (path === "/v1/software") {
       return json({
         ok: true,
@@ -120,8 +153,9 @@ async function bump(env: Env, key: string, increment: boolean): Promise<number> 
   return data.n;
 }
 
-function json(data: unknown): Response {
+function json(data: unknown, status = 200): Response {
   return new Response(JSON.stringify(data, null, 2), {
+    status,
     headers: {
       "content-type": "application/json; charset=utf-8",
       "cache-control": "no-store",
