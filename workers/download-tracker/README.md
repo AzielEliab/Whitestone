@@ -128,7 +128,7 @@ proven human. KV history is not rewritten. New traffic updates both the
 total and one bucket. Shared modules (copy into other product trackers):
 `src/classify.js` and `src/stats-shape.js`.
 
-Homepage HTML is unchanged. Metrics / subsurface only.
+Homepage shows Views and Downloads only. Human/bot fields stay on /stats and /count.
 
 ## Deploy
 

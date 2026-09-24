@@ -445,55 +445,203 @@ async function indexHtml(env) {
 }
 </script>
 <style>
-  :root { color-scheme: light; --bg:#f4efe6; --paper:#fffdf8; --ink:#241f1a; --muted:#5d564d; --line:#d8cfc0; --accent:#4f6f5a; --gold:#c9a227; }
-  body { font: 16px/1.45 "Segoe UI", system-ui, sans-serif; max-width: 42rem; margin: 3rem auto; padding: 0 1.25rem 4rem; background: var(--bg); color: var(--ink); }
-  .brandrow { display: flex; align-items: center; justify-content: flex-start; gap: 12px; margin: 0 0 1.15rem; }
-  .brandmark { width: 40px; height: 40px; border-radius: 10px; object-fit: cover; flex: 0 0 auto; box-shadow: 0 0 0 1px #d4af3733; }
-  h1 { font-family: Palatino, Georgia, serif; font-size: 1.75rem; margin: 0 0 .35rem; }
-  .motto { color: var(--muted); margin: 0 0 1.5rem; }
-  .card { border: 1px solid var(--line); border-radius: 12px; padding: 1.25rem 1.35rem; background: var(--paper); }
-  .nums { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; margin: 0 0 1rem; }
-  .count { font-size: 2.2rem; font-variant-numeric: tabular-nums; font-weight: 700; margin: 0; }
-  .count span { display: block; font-size: .95rem; font-weight: 500; color: var(--muted); }
-  .kid { font-size: 1.05rem; margin: 0 0 1rem; }
-  .btns { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; margin: 0 0 .85rem; }
-  @media (max-width: 520px) { .btns { grid-template-columns: 1fr; } }
-  a.btn, button.btn { display: block; width: 100%; box-sizing: border-box; text-align: center; font: inherit; font-size: 1.2rem; font-weight: 750; padding: 1rem 1.1rem; border-radius: 10px; border: 0; cursor: pointer; text-decoration: none; }
-  a.btn.primary { background: var(--accent); color: #f4efe6; }
-  a.btn.live { background: #241f1a; color: #f4efe6; }
-  button.btn.install { background: var(--gold); color: #14110a; }
-  button.btn.install.copied { background: #7dcf9a; color: #0e1014; }
-  .meta { margin-top: 1.1rem; color: var(--muted); font-size: .92rem; }
-  .meta a { color: #2f5d8c; }
-  .iso { margin-top: .85rem; font-size: .85rem; color: #7d8696; }
-  .banner { border: 1px solid #c4a27a; background: #f8efe4; color: #8a4b2f; padding: .85rem 1rem; border-radius: 8px; margin: 0 0 1.2rem; font-size: .92rem; }
-  pre { background: #efe7da; padding: .75rem .9rem; overflow: auto; border-radius: 8px; font-size: .82rem; }
-  code { font-size: .88rem; }
-  .cite { margin-top: 1.4rem; padding-top: 1rem; border-top: 1px solid var(--line); }
-  .cite h2 { font-size: 1.05rem; margin: 0 0 .4rem; }
-  .cite p { color: #3a342c; font-size: .95rem; }
-  .cite a { color: #2f5d8c; }
-  #meshStrip { border: 1px solid var(--gold); border-radius: 12px; padding: .85rem 1rem; background: var(--paper); margin: 0 0 1.1rem; display: flex; flex-wrap: wrap; align-items: center; gap: .7rem 1rem; font-size: .88rem; color: var(--muted); }
+  :root {
+    color-scheme: light;
+    --bg: #f4efe6;
+    --paper: #fffdf8;
+    --ink: #241f1a;
+    --muted: #5d564d;
+    --line: #8a8072;
+    --btn: #1e3a2f;
+    --btn-ink: #f7f4ec;
+    --gold: #7a5a10;
+    --focus: #0b57d0;
+    --link: #1e4d82;
+    --banner-bg: #f8efe4;
+    --banner-ink: #8a4b2f;
+    --code-bg: #efe7da;
+    --install: #fffdf8;
+    --install-ink: #241f1a;
+    --ok: #1e3a2f;
+    --ok-ink: #f7f4ec;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      color-scheme: dark;
+      --bg: #161411;
+      --paper: #221e19;
+      --ink: #f4efe6;
+      --muted: #d2c7b6;
+      --line: #8a8074;
+      --btn: #e6d3a1;
+      --btn-ink: #1c1914;
+      --gold: #e6d19a;
+      --focus: #9ec1ff;
+      --link: #c5d9ff;
+      --banner-bg: #2a2418;
+      --banner-ink: #f0d78c;
+      --code-bg: #100e0c;
+      --install: #221e19;
+      --install-ink: #f4efe6;
+      --ok: #9dceb4;
+      --ok-ink: #1c1914;
+    }
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--ink); }
+  html { overflow-x: clip; }
+  body {
+    font: 16px/1.5 system-ui, "Segoe UI", sans-serif;
+    overflow-x: clip;
+  }
+  .wrap { max-width: 42rem; margin: 0 auto; padding: 1.25rem 1rem 2.75rem; }
+  .skip {
+    position: absolute;
+    left: 0.75rem;
+    top: 0.75rem;
+    transform: translateY(-160%);
+    background: var(--btn);
+    color: var(--btn-ink);
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    text-decoration: none;
+    z-index: 2;
+  }
+  .skip:focus { transform: none; }
+  a { color: var(--link); }
+  .brandrow { display: flex; align-items: center; gap: 12px; margin: 0 0 0.85rem; }
+  .brandmark { width: 40px; height: 40px; border-radius: 10px; object-fit: cover; flex: 0 0 auto; box-shadow: 0 0 0 1px var(--line); }
+  h1 { font-family: Palatino, Georgia, serif; font-size: clamp(1.85rem, 5vw, 2.4rem); line-height: 1.1; letter-spacing: -0.02em; margin: 0 0 0.35rem; }
+  h2 { font-size: 1.05rem; margin: 0 0 0.55rem; }
+  .motto { margin: 0 0 0.45rem; font-size: 1.08rem; }
+  .lede { color: var(--muted); margin: 0 0 1.05rem; max-width: 38rem; }
+  a.btn, button.btn {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+    font: 700 1.25rem/1.15 system-ui, "Segoe UI", sans-serif;
+    padding: 1.05rem 1.15rem;
+    border-radius: 12px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  a.btn.primary { background: var(--btn); color: var(--btn-ink); border-color: var(--btn); }
+  a.btn.primary:hover { filter: brightness(1.08); }
+  .asset-note, .same, .meta, .iso, footer { color: var(--muted); }
+  .asset-note { margin: 0.7rem 0 0.35rem; font-size: 0.95rem; }
+  .same { margin: 0 0 1rem; }
+  .features { margin: 0 0 0.25rem; padding-left: 1.15rem; }
+  .features li { margin: 0.35rem 0; }
+  .card { border: 1px solid var(--line); border-radius: 14px; padding: 1rem 1rem 1.1rem; background: var(--paper); margin: 0 0 1rem; }
+  .nums { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin: 0; }
+  .count { font-size: 1.65rem; font-variant-numeric: tabular-nums; font-weight: 700; margin: 0; color: var(--ink); }
+  .count span { display: block; font-size: 0.92rem; font-weight: 500; color: var(--muted); }
+  button.btn.install {
+    font-size: 1rem;
+    padding: 0.75rem 0.9rem;
+    background: var(--install);
+    color: var(--install-ink);
+    border-color: var(--line);
+  }
+  button.btn.install.copied { background: var(--ok); color: var(--ok-ink); border-color: var(--ok); }
+  pre {
+    background: var(--code-bg);
+    color: var(--ink);
+    padding: 0.75rem 0.9rem;
+    overflow-x: auto;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    max-width: 100%;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+  code { font-size: 0.88rem; overflow-wrap: anywhere; }
+  .iso { margin: 0.35rem 0 0; font-size: 0.88rem; }
+  a:focus-visible, button:focus-visible, input:focus-visible, .skip:focus {
+    outline: 3px solid var(--focus);
+    outline-offset: 3px;
+  }
+  #meshStrip {
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 0.85rem 1rem;
+    background: var(--paper);
+    margin: 0 0 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.7rem 1rem;
+    font-size: 0.88rem;
+    color: var(--muted);
+    min-width: 0;
+  }
+  #meshStrip > * { min-width: 0; max-width: 100%; }
   #meshStrip .live { color: var(--ink); }
-  #meshStrip .live b { color: var(--gold); font-size: 1.35rem; margin-right: .35rem; }
-  #meshStrip .rollup b { color: var(--gold); }
-  #meshStrip button { font: 700 .78rem/1 ui-monospace, Menlo, Consolas, monospace; height: 2rem; padding: 0 .75rem; border-radius: 8px; background: #241f1a; color: #efe7da; border: 1px solid var(--gold); cursor: pointer; }
-  #meshStrip button:hover { background: #3a2f14; color: var(--gold); }
-  #meshStrip input { width: 10rem; padding: .4rem .55rem; border: 1px solid var(--gold); border-radius: 8px; background: #fffdf8; color: var(--ink); font: inherit; }
-  #meshProducts { flex-basis: 100%; margin: 0; }
+  #meshStrip .live b, #meshStrip .rollup b { color: var(--gold); }
+  #meshStrip .live b { font-size: 1.35rem; margin-right: 0.35rem; }
+  #meshStrip .actions { display: flex; flex-wrap: wrap; gap: 0.45rem; width: 100%; align-items: center; }
+  #meshStrip button {
+    font: 700 0.78rem/1 ui-monospace, Menlo, Consolas, monospace;
+    height: 2rem;
+    padding: 0 0.75rem;
+    border-radius: 8px;
+    background: var(--bg);
+    color: var(--ink);
+    border: 1px solid var(--gold);
+    cursor: pointer;
+  }
+  #meshStrip button:hover { color: var(--gold); }
+  #meshStrip input {
+    width: min(16rem, 100%);
+    max-width: 100%;
+    padding: 0.4rem 0.55rem;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--bg);
+    color: var(--ink);
+    font: inherit;
+  }
+  #meshProducts { flex-basis: 100%; margin: 0; overflow-wrap: anywhere; }
+  footer.quiet { margin-top: 0.35rem; font-size: 0.92rem; }
+  footer.quiet p { margin: 0.35rem 0; }
+  @media (prefers-reduced-motion: reduce) {
+    * { scroll-behavior: auto; }
+  }
 </style>
 <body>
-  <div class="brandrow"><img class="brandmark" src="/sigil.png" width="40" height="40" alt="" decoding="async"></div>
-  <h1>Whitestone</h1>
-  <p class="motto">Ephemeral pro se advisor. Criminal, Civil, Divorce. Author Aziel Eliab.</p>
-  <p class="banner">One ephemeral pro se advisor for Criminal, Civil, and Divorce. Educational procedural software. Session-only memory. Uploads only. The live app is the product — this page counts the optional zip.</p>
+  <a class="skip" href="#download">Skip to download</a>
+  <div class="wrap">
+  <header class="hero">
+    <div class="brandrow"><img class="brandmark" src="/sigil.png" width="40" height="40" alt="" decoding="async"></div>
+    <h1>Whitestone</h1>
+    <p class="motto">Ephemeral pro se advisor. Criminal, Civil, Divorce.</p>
+    <p class="lede">One ephemeral pro se advisor for Criminal, Civil, and Divorce. Educational procedural software. Session-only memory. Uploads only. Author Aziel Eliab.</p>
+    <a class="btn primary" id="download" href="/download?asset=${DEFAULT_ASSET}" aria-describedby="downloadNote">Download</a>
+    <p class="asset-note" id="downloadNote">${n} downloads · ${DEFAULT_ASSET} · one click serves the zip (HTTP 200) and counts it for every branch and fork.</p>
+    <p class="same"><a href="${APP_WORKER}/">Open the live app</a> — the hosted product, without installing.</p>
+    <ul class="features">
+      <li>Educational procedural software for Criminal, Civil, and Divorce.</li>
+      <li>Session-only memory.</li>
+      <li>Uploads only. The live app is the product. This page counts the optional zip.</li>
+    </ul>
+  </header>
+  <section class="card" aria-labelledby="counts-heading">
+    <h2 id="counts-heading">Counted here</h2>
+    <div class="nums">
+      <p class="count">${v}<span>Views</span></p>
+      <p class="count">${n}<span>Downloads</span></p>
+    </div>
+  </section>
   <aside id="meshStrip" aria-label="Live Nodes">
     <span class="live"><b id="meshLiveCount">0</b> Live Nodes</span>
     <span id="meshLine">Suite mesh: off (default). QNM-BUILD-1.0. QNS-CD-1.0. Not an anonymity network.</span>
     <span class="rollup">live <b id="qnmLive">0</b> · locked <b id="qnmLocked">0</b> · isolated <b id="qnmIsolated">0</b></span>
     <span>No Node Gate · No auto-heal · Aziel Eliab only</span>
-    <span>
-      <input id="meshBearer" type="text" placeholder="bearer (required to enable)" autocomplete="off" spellcheck="false">
+    <span class="actions">
+      <input id="meshBearer" type="text" placeholder="bearer (required to enable)" aria-label="bearer (required to enable)" autocomplete="off" spellcheck="false">
       <button type="button" id="meshEnable">Enable</button>
       <button type="button" id="meshDisable">Disable</button>
       <button type="button" id="meshJoin">Join</button>
@@ -501,25 +649,24 @@ async function indexHtml(env) {
     </span>
     <p id="meshProducts">Catalog MCP mesh_* · FragGate slug=mesh · /v1/mesh/* PROXY · QNS-CD-1.0 cite · not AnonBroadcast · not AZMail ring · not a Node Gate · no public qnsd proxy</p>
   </aside>
-  <div class="card">
-    <div class="nums">
-      <p class="count">${v}<span>Views</span></p>
-      <p class="count">${n}<span>Downloads</span></p>
-    </div>
-    <p class="kid"><strong>Two big buttons.</strong> Download saves the zip (the Downloads number goes up). Open live app uses the hosted product without installing.</p>
-    <div class="btns">
-      <a class="btn primary dl" href="/download?asset=${DEFAULT_ASSET}">Download</a>
-      <a class="btn live" href="${APP_WORKER}/">Open live app</a>
-    </div>
-    <p class="kid">Optional unzip helper (copies a Terminal command). After it finishes, serve the <code>whitestone/</code> folder.</p>
-    <div class="btns">
-      <button type="button" class="btn install" id="install-btn">Copy unzip command</button>
-    </div>
+  <section class="card" aria-labelledby="install-heading">
+    <h2 id="install-heading">Optional unzip</h2>
+    <p class="meta">Copies a Terminal command. After it finishes, serve the <code>whitestone/</code> folder.</p>
+    <button type="button" class="btn install" id="install-btn">Copy unzip command</button>
     <pre id="install-cmd">${INSTALL_LINE}</pre>
-    <p class="meta">The download count ticks on the Download click. The Worker serves the zip (HTTP 200). No 302 to GitHub. Forks using this same link are counted automatically. ${DEFAULT_ASSET} — ${n} counted.</p>
+  </section>
+  <section class="card" aria-labelledby="forks-heading">
+    <h2 id="forks-heading">Per repo / branch / fork</h2>
+    <ul>${breakdown}</ul>
+  </section>
+  <footer class="quiet">
+    <p>Aziel Eliab. Whitestone. ${GITHUB_REPO}. ${HOST}. ${APP_WORKER}.</p>
+    <p><a href="https://aziel-runtime.vibelock.workers.dev/">Catalog</a> · <a href="${GITHUB_REPO}">GitHub</a> · <a href="${HOST}/download?asset=${DEFAULT_ASSET}">Download</a> · <a href="${HOST}/cite.json">cite.json</a> · <a href="${APP_WORKER}/">live app</a></p>
+    <p><a href="/stats">JSON stats</a> · <a href="/count">/count</a> · <a href="/openapi.json">OpenAPI</a> · <a href="/mcp">MCP</a> · <a href="/v1/mesh">/v1/mesh</a> · <a href="/v1/skill">Skill</a> · <a href="/ai">AI runtime</a> · <a href="${GITHUB_LATEST}">releases</a></p>
     <p class="iso">Isolated counter: Worker <code>whitestone-download-tracker</code>, project <code>whitestone</code>, KV <code>WHITESTONE_DOWNLOADS</code>. Not mixed with any other product. /v1, /mcp, and /v1/mesh/* do not increment downloads. The app Worker at ${APP_WORKER} is unchanged.</p>
-    <p class="meta">Apache-2.0 · Aziel Eliab</p>
-    <p class="meta"><a href="/stats">JSON stats</a> · <a href="/count">/count</a> · <a href="/openapi.json">OpenAPI</a> · <a href="/mcp">MCP</a> · <a href="/v1/mesh">/v1/mesh</a> · <a href="/v1/skill">Skill</a> · <a href="/ai">AI runtime</a> · <a href="${GITHUB_REPO}">GitHub</a> · <a href="${GITHUB_LATEST}">releases</a> · <a href="${APP_WORKER}/">live app</a></p>
+    <p>Apache-2.0 · Aziel Eliab</p>
+  </footer>
+  </div>
     <script>
       (function () {
         var cmd = ${JSON.stringify(INSTALL_LINE)};
@@ -648,15 +795,6 @@ async function indexHtml(env) {
         document.addEventListener("visibilitychange", function () { if (!document.hidden) refreshMesh(); });
       })();
     </script>
-    <h2>Per repo / branch / fork</h2>
-    <ul>${breakdown}</ul>
-  </div>
-
-<section class="cite" id="cite">
-  <h2>How to cite</h2>
-  <p>Aziel Eliab. Whitestone. ${GITHUB_REPO}. ${HOST}. ${APP_WORKER}.</p>
-  <p><a href="https://aziel-runtime.vibelock.workers.dev/">Catalog</a> · <a href="${GITHUB_REPO}">GitHub</a> · <a href="${HOST}/download">Download</a> · <a href="${HOST}/cite.json">cite.json</a> · <a href="${APP_WORKER}/">live app</a></p>
-</section>
 </body>
 </html>`;
 }
