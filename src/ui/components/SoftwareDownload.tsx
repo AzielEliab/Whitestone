@@ -1,6 +1,6 @@
-import { softwareDownloadHref, shouldOfferSoftwareDownload } from "../../host";
+import { isHostedWorkerApp, softwareDownloadHref, shouldOfferSoftwareDownload } from "../../host";
 
-type Variant = "header" | "welcome" | "footer";
+type Variant = "header" | "welcome" | "footer" | "menu";
 
 function currentHostname(): string {
   return typeof window === "undefined" ? "" : window.location.hostname;
@@ -14,9 +14,9 @@ export function SoftwareDownload({ variant = "footer" }: { variant?: Variant }) 
   }
   const href = softwareDownloadHref(hostname);
 
-  if (variant === "header") {
+  if (variant === "header" || variant === "menu") {
     return (
-      <a className="btn download-cta" href={href} rel="noreferrer">
+      <a className={variant === "header" ? "btn download-cta" : "more-link"} href={href} rel="noreferrer">
         Download software
       </a>
     );
@@ -30,7 +30,9 @@ export function SoftwareDownload({ variant = "footer" }: { variant?: Variant }) 
         </a>
         <span className="muted">
           {" "}
-          — optional GitHub Release zip. This live site is the full product and works without installing.
+          {isHostedWorkerApp(hostname)
+            ? "— optional zip. The live site works without installing."
+            : "— GitHub Release page for this software."}
         </span>
       </p>
     );

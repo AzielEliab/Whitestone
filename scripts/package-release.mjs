@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { createHash } from "node:crypto";
-import { createWriteStream, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { chmodSync, createWriteStream, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { cp } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -19,30 +19,11 @@ if (!existsSync(dist)) {
 
 mkdirSync(release, { recursive: true });
 await cp(dist, folder, { recursive: true });
-writeFileSync(
-  join(folder, "RUN.txt"),
-  `Whitestone standalone build
-===========================
-
-This folder is the built UI. It does not include your case files.
-
-Serve it locally (do not expect file:// to run module workers in every browser):
-
-  npx --yes serve .
-  # or: python3 -m http.server 4173
-
-Then open the printed URL.
-
-Rules:
-- Session memory only. End & erase wipes chat, uploads, and any fetched web notes.
-- Uploads only — no export / print / save-as of filings or evidence packages.
-- This offline zip uses the bundled knowledge layer. The hosted Worker may fetch allowlisted public court/legal-aid pages.
-
-Source: https://github.com/AzielEliab/Whitestone
-`,
-);
+await cp(join(root, "pack", "RUN.txt"), join(folder, "RUN.txt"));
+await cp(join(root, "pack", "README.md"), join(folder, "README.md"));
+await cp(join(root, "bin", "whitestone.mjs"), join(folder, "whitestone.mjs"));
+chmodSync(join(folder, "whitestone.mjs"), 0o755);
 await cp(join(root, "LICENSE"), join(folder, "LICENSE"));
-await cp(join(root, "README.md"), join(folder, "README.md")).catch(() => undefined);
 
 try {
   execFileSync("zip", ["-r", "-q", zip, "whitestone"], { cwd: release });

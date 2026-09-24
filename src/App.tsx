@@ -16,7 +16,7 @@ export function App() {
   const { state, setStep, resetPracticeArea } = useSession();
   const subtitle = state.practiceArea
     ? PRACTICE_SUBTITLES[state.practiceArea]
-    : "Ephemeral pro se advisor — web or download";
+    : "Criminal, Civil, or Divorce";
 
   return (
     <div className="shell">
@@ -59,10 +59,15 @@ export function App() {
               {PRACTICE_LABELS[state.practiceArea]}
             </button>
           )}
-          <SoftwareDownload variant="header" />
-          <a className="btn desktop-only" href="./catalog.json">
-            Catalog
-          </a>
+          <details className="more">
+            <summary className="btn">More</summary>
+            <div className="more-menu">
+              <SoftwareDownload variant="menu" />
+              <a className="more-link" href="./catalog.json">
+                Catalog
+              </a>
+            </div>
+          </details>
           <ThemeToggle />
         </div>
       </header>
