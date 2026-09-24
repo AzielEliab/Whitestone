@@ -6,11 +6,14 @@
   "license": "Apache-2.0",
   "author": "Aziel Eliab",
   "type": "module",
+  "bin": {
+    "whitestone": "./bin/whitestone.mjs"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host 127.0.0.1 --port 4173",
-    "test": "vitest run",
+    "test": "vitest run && node --test scripts/verify-cli.mjs",
     "test:watch": "vitest",
     "package": "npm run build && node scripts/package-release.mjs",
     "deploy": "npm run build && wrangler deploy",
