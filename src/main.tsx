@@ -7,13 +7,21 @@ import { SessionProvider } from "./session/store";
 import { themeStorageKey } from "./session/wipe";
 import "./styles.css";
 
-try {
-  const saved = localStorage.getItem(themeStorageKey());
-  if (saved === "dark" || saved === "light") {
-    document.documentElement.dataset.theme = saved;
-  } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-    document.documentElement.dataset.theme = "dark";
+function applyThemeFromPreference() {
+  let saved: string | null = null;
+  try {
+    saved = localStorage.getItem(themeStorageKey());
+  } catch {
+    /* ignore */
   }
+  const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const mode = saved === "dark" || saved === "light" ? saved : systemDark ? "dark" : "light";
+  document.documentElement.dataset.theme = mode;
+}
+
+try {
+  applyThemeFromPreference();
+  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", applyThemeFromPreference);
 } catch {
   /* ignore */
 }

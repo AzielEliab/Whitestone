@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { buildFilingOutline } from "../../engine/filing";
 import { defaultResearchQuery } from "../../practice/areas";
 import { useSession } from "../../session/store";
+import { Advanced } from "../components/Advanced";
 import { Button } from "../components/Button";
 import { MathPanel } from "../components/MathPanel";
 import { WebSources } from "../components/WebSources";
@@ -65,23 +66,25 @@ export function Filing() {
           </p>
         ))}
       </div>
-      <WebSources
-        sources={state.webNotes}
-        status={state.webStatus}
-        message={state.webMessage}
-        enabled={state.webEnabled}
-        onToggle={setWebEnabled}
-        onClear={clearWebNotes}
-        onRefresh={() => {
-          void refreshResearch(`${defaultResearchQuery(state.practiceArea)} clerk packet official forms`, "manual");
-        }}
-      />
-      <MathPanel
-        onInsert={(text) => {
-          ask(text);
-          setStep("advise");
-        }}
-      />
+      <Advanced>
+        <WebSources
+          sources={state.webNotes}
+          status={state.webStatus}
+          message={state.webMessage}
+          enabled={state.webEnabled}
+          onToggle={setWebEnabled}
+          onClear={clearWebNotes}
+          onRefresh={() => {
+            void refreshResearch(`${defaultResearchQuery(state.practiceArea)} clerk packet official forms`, "manual");
+          }}
+        />
+        <MathPanel
+          onInsert={(text) => {
+            ask(text);
+            setStep("advise");
+          }}
+        />
+      </Advanced>
       <div className="chips sticky-actions">
         <Button onClick={() => setStep("advise")}>Back to advisor</Button>
       </div>

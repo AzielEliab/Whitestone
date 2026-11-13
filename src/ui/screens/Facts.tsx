@@ -1,6 +1,7 @@
 import { canSkipToAdvisor } from "../../engine/facts";
 import { PARTY_LABELS } from "../../practice/areas";
 import { useSession } from "../../session/store";
+import { Advanced } from "../components/Advanced";
 import { Button } from "../components/Button";
 import { AsOfPicker } from "../components/AsOfPicker";
 import { HistoricalUploads } from "../components/HistoricalUploads";
@@ -72,18 +73,18 @@ export function Facts() {
           placeholder={relationshipPlaceholder}
         />
       </div>
-      <div className="history-option">
+      <Advanced startOpen={state.historicalMode || state.caseMode}>
         <label className="web-toggle">
           <input
             type="checkbox"
             checked={state.historicalMode}
             onChange={(e) => setHistoricalMode(e.target.checked)}
           />
-          Historical as-of evaluation (year + month). Seeded federal timeline — not every law since 1776.
+          <span>Historical as-of (year and month). Seeded federal timeline.</span>
         </label>
         <label className="web-toggle">
           <input type="checkbox" checked={state.caseMode} onChange={(e) => setCaseMode(e.target.checked)} />
-          Case Mode — labeled case evaluation + optional score-card export (educational / archival).
+          <span>Case Mode — labeled evaluation and optional score-card export.</span>
         </label>
         {state.historicalMode && (
           <>
@@ -94,7 +95,7 @@ export function Facts() {
                 id="archival"
                 value={state.facts.archival ?? ""}
                 onChange={(e) => patch({ facts: { ...state.facts, archival: e.target.value } })}
-                placeholder="Dated facts from the archival file — do not ask Whitestone to invent a holding."
+                placeholder="Dated facts from the archival file. Whitestone will not invent a holding."
               />
             </div>
             <div className="field">
@@ -103,26 +104,26 @@ export function Facts() {
                 id="stated-outcome"
                 value={state.facts.stated_outcome ?? ""}
                 onChange={(e) => patch({ facts: { ...state.facts, stated_outcome: e.target.value } })}
-                placeholder="What the official report or later write-up claimed happened — Whitestone will not invent a buried-truth finding without dated uploads."
+                placeholder="What the report claimed. A buried-truth finding needs dated uploads."
               />
             </div>
             <div className="field">
-              <label htmlFor="official-narrative">Official narrative (optional, defaults to stated outcome)</label>
+              <label htmlFor="official-narrative">Official narrative (optional)</label>
               <textarea
                 id="official-narrative"
                 value={state.facts.official_narrative ?? ""}
                 onChange={(e) => patch({ facts: { ...state.facts, official_narrative: e.target.value } })}
-                placeholder="The public / official story. Official narrative is never treated as evidence."
+                placeholder="The public story. An official narrative is never treated as evidence."
               />
             </div>
             <HistoricalUploads />
             <p className="muted">
               End & erase wipes the as-of date, archival notes, honesty lattice, and uploads with the rest of
-              the session. Not legal advice.
+              the session.
             </p>
           </>
         )}
-      </div>
+      </Advanced>
       <div className="field">
         <label htmlFor="goals">What do you need the court to do?</label>
         <textarea

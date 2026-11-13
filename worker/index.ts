@@ -81,7 +81,7 @@ export default {
         stores_uploads: false,
         fraggate_engine: false,
         limitation:
-          "Whitestone is one ephemeral pro se advisor for Criminal, Civil, and Divorce. Educational procedural software — not a lawyer, not legal advice. Session-only memory; End & erase wipes the session. Uploads only in-browser; this Worker never stores case files. Case Mode confidence hard-capped at 0.75. TrajectoryLock-lite: labeled geometric-line fit from session text/layers; GET peer /v1/health only — does not POST media, name a shooter, or claim LIVE physics. Author: Aziel Eliab only.",
+          "Whitestone is one ephemeral pro se advisor for Criminal, Civil, and Divorce. Educational procedural software. Session-only memory; End & erase wipes the session. Uploads only in-browser; this Worker never stores case files. Case Mode confidence hard-capped at 0.75. TrajectoryLock-lite: labeled geometric-line fit from session text/layers; GET peer /v1/health only — does not POST media, name a shooter, or claim LIVE physics. Author: Aziel Eliab only.",
       };
       if (request.method === "HEAD") {
         return new Response(null, {

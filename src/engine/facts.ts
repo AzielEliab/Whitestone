@@ -108,7 +108,7 @@ export function canSkipToAdvisor(state: SessionState): boolean {
 export function whatsNextLine(state: SessionState): string {
   switch (state.step) {
     case "welcome":
-      return "Pick Criminal, Civil, or Divorce. Optional: turn on historical as-of evaluation. Notices stay under Important notices.";
+      return "Pick Criminal, Civil, or Divorce. Historical as-of, Case Mode, and notes are under Advanced.";
     case "jurisdiction":
       return "Choose the state or D.C. of the court you expect to use.";
     case "matter":
@@ -125,9 +125,7 @@ export function whatsNextLine(state: SessionState): string {
         ? "Upload case filings, evidence, historical reports, or news clippings (in only). Add a document date when you have one."
         : "Uploads are optional and never exported. Continue when ready.";
     case "advise":
-      return state.historicalMode
-        ? "Ask a question, tap a follow-up, or open Math / Statistics / Historical as-of / Honesty eval / Case Mode. Composer stays usable on a phone keyboard."
-        : "Ask a question, tap a follow-up, or open Math / Statistics. Composer stays usable on a phone keyboard.";
+      return "Ask a question or tap a follow-up. Math, statistics, and evaluations are under Advanced.";
     case "filing":
       return "Review the on-screen structure only. Recreate papers on the clerk's form. Nothing is exported.";
     default:

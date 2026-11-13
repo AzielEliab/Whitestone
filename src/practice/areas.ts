@@ -9,15 +9,18 @@ export const PRACTICE_LABELS: Record<PracticeArea, string> = {
 };
 
 export const PRACTICE_BLURBS: Record<PracticeArea, string> = {
-  criminal: "Bail, arraignment, discovery, pleas, sentencing basics, expungement, and rights education. Not help committing a crime. Get a lawyer or public defender for serious charges.",
-  civil: "Small claims, contracts, landlord-tenant, civil protection orders, name change, and debt-collection defense — high-level court self-help. Not business-formation mill advice.",
-  divorce: "Divorce, custody, support, parentage, guardianship, family protection orders, and related family filings — the existing family-law track.",
+  criminal:
+    "Bail, arraignment, discovery, pleas, sentencing basics, expungement, and rights education. For a serious charge, contact a lawyer or the public defender.",
+  civil:
+    "Small claims, contracts, landlord-tenant, civil protection orders, name change, and debt-collection defense.",
+  divorce:
+    "Divorce, custody, support, parentage, guardianship, family protection orders, and related family filings.",
 };
 
 export const PRACTICE_SUBTITLES: Record<PracticeArea, string> = {
-  criminal: "Criminal — educational, not a lawyer",
-  civil: "Civil — educational, not a lawyer",
-  divorce: "Divorce / family — educational, not a lawyer",
+  criminal: "Criminal procedure",
+  civil: "Civil procedure",
+  divorce: "Family procedure",
 };
 
 export const MATTERS_BY_AREA: Record<PracticeArea, MatterType[]> = {

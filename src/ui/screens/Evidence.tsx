@@ -6,7 +6,6 @@ import {
   formatFileSize,
   LARGE_BYTES,
 } from "../../extract/files";
-import { canSkipToAdvisor } from "../../engine/facts";
 import { useSession } from "../../session/store";
 import { Button } from "../components/Button";
 import { HistoricalUploads } from "../components/HistoricalUploads";
@@ -157,15 +156,6 @@ export function Evidence() {
         >
           Continue to guided advisor
         </Button>
-        {canSkipToAdvisor(state) && (
-          <Button
-            onClick={() => {
-              seedAdvisor();
-            }}
-          >
-            Skip remaining uploads
-          </Button>
-        )}
         <Button onClick={() => setStep("facts")}>Back</Button>
       </div>
     </section>

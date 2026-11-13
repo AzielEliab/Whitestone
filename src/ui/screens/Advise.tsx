@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { starterPrompts } from "../../engine/dialogue";
 import { defaultResearchQuery } from "../../practice/areas";
 import { useSession } from "../../session/store";
+import { Advanced } from "../components/Advanced";
 import { Button } from "../components/Button";
 import { GroundingBadge } from "../components/GroundingBadge";
 import { HistoryPanel } from "../components/HistoryPanel";
@@ -69,28 +70,30 @@ export function Advise() {
             send(draft);
           }}
         >
-          <div className="advise-toolbar">
-            <button type="button" className="chip" aria-pressed={tool === "math"} onClick={() => setTool(tool === "math" ? "none" : "math")}>
-              Math
-            </button>
-            <button type="button" className="chip" aria-pressed={tool === "stats"} onClick={() => setTool(tool === "stats" ? "none" : "stats")}>
-              Statistics
-            </button>
-            <button type="button" className="chip" aria-pressed={tool === "history"} onClick={() => setTool(tool === "history" ? "none" : "history")}>
-              Historical as-of
-            </button>
-            <button type="button" className="chip" aria-pressed={tool === "honesty"} onClick={() => setTool(tool === "honesty" ? "none" : "honesty")}>
-              Honesty eval
-            </button>
-            <button type="button" className="chip" aria-pressed={tool === "casemode"} onClick={() => setTool(tool === "casemode" ? "none" : "casemode")}>
-              Case Mode
-            </button>
-          </div>
-          {tool === "math" && <MathPanel onInsert={send} />}
-          {tool === "stats" && <StatsPanel onInsert={send} />}
-          {tool === "history" && <HistoryPanel onInsert={send} />}
-          {tool === "honesty" && <HonestyPanel onInsert={send} />}
-          {tool === "casemode" && <CaseModePanel onInsert={send} />}
+          <Advanced startOpen={tool !== "none"}>
+            <div className="advise-toolbar">
+              <button type="button" className="chip" aria-pressed={tool === "math"} onClick={() => setTool(tool === "math" ? "none" : "math")}>
+                Math
+              </button>
+              <button type="button" className="chip" aria-pressed={tool === "stats"} onClick={() => setTool(tool === "stats" ? "none" : "stats")}>
+                Statistics
+              </button>
+              <button type="button" className="chip" aria-pressed={tool === "history"} onClick={() => setTool(tool === "history" ? "none" : "history")}>
+                Historical as-of
+              </button>
+              <button type="button" className="chip" aria-pressed={tool === "honesty"} onClick={() => setTool(tool === "honesty" ? "none" : "honesty")}>
+                Honesty eval
+              </button>
+              <button type="button" className="chip" aria-pressed={tool === "casemode"} onClick={() => setTool(tool === "casemode" ? "none" : "casemode")}>
+                Case Mode
+              </button>
+            </div>
+            {tool === "math" && <MathPanel onInsert={send} />}
+            {tool === "stats" && <StatsPanel onInsert={send} />}
+            {tool === "history" && <HistoryPanel onInsert={send} />}
+            {tool === "honesty" && <HonestyPanel onInsert={send} />}
+            {tool === "casemode" && <CaseModePanel onInsert={send} />}
+          </Advanced>
           <div className="field">
             <label htmlFor="ask">Your question or facts</label>
             <textarea
@@ -151,9 +154,7 @@ export function Advise() {
           <p>Structured questions for this matter are complete.</p>
         )}
         <div className="chips sticky-actions">
-          <Button kind="primary" onClick={() => setStep("filing")}>
-            Open filing structure
-          </Button>
+          <Button onClick={() => setStep("filing")}>Open filing structure</Button>
           <Button onClick={() => setStep("evidence")}>Back</Button>
         </div>
         {state.learned.safetyFlag && (
@@ -161,17 +162,19 @@ export function Advise() {
             Safety flag is on for this session. 911 · 1-800-799-7233 · 988
           </p>
         )}
-        <WebSources
-          sources={state.webNotes}
-          status={state.webStatus}
-          message={state.webMessage}
-          enabled={state.webEnabled}
-          onToggle={setWebEnabled}
-          onClear={clearWebNotes}
-          onRefresh={() => {
-            void refreshResearch(defaultResearchQuery(state.practiceArea), "manual");
-          }}
-        />
+        <Advanced title="Web sources">
+          <WebSources
+            sources={state.webNotes}
+            status={state.webStatus}
+            message={state.webMessage}
+            enabled={state.webEnabled}
+            onToggle={setWebEnabled}
+            onClear={clearWebNotes}
+            onRefresh={() => {
+              void refreshResearch(defaultResearchQuery(state.practiceArea), "manual");
+            }}
+          />
+        </Advanced>
       </aside>
     </div>
   );
