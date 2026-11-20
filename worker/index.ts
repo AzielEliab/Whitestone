@@ -1,3 +1,4 @@
+import { CONTENT_SIGNAL, matchDiscovery } from "./discovery";
 import { handleResearch } from "./research";
 
 export interface Env {
@@ -43,107 +44,135 @@ export class CounterDO {
   }
 }
 
+function withSignal(response: Response): Response {
+  const headers = new Headers(response.headers);
+  headers.set("Content-Signal", CONTENT_SIGNAL);
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  });
+}
+
+function discoveryResponse(request: Request): Response | null {
+  const hit = matchDiscovery(new URL(request.url).pathname, request.method);
+  if (!hit) return null;
+  const bytes = new TextEncoder().encode(hit.body);
+  return new Response(request.method === "HEAD" ? null : bytes, {
+    status: hit.status,
+    headers: {
+      "content-type": hit.contentType,
+      "content-length": String(bytes.byteLength),
+      "cache-control": hit.status === 200 ? "public, max-age=3600" : "no-store",
+      "x-content-type-options": "nosniff",
+    },
+  });
+}
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
-    const url = new URL(request.url);
-    const path = url.pathname.replace(/\/+$/, "") || "/";
-
-    if (path === "/count/view" || path === "/count/download") {
-      const key = path.endsWith("download") ? "download" : "view";
-      const count = await bump(env, key, url.searchParams.get("inc") !== "0");
-      if (url.searchParams.get("format") === "json") {
-        return json({ key, count, name: "Whitestone" });
-      }
-      return badge(key === "view" ? "views" : "downloads", String(count));
-    }
-
-    if (path === "/download") {
-      await bump(env, "download", true);
-      const dest = env.RELEASE_ASSET_URL || DEFAULT_RELEASE;
-      return Response.redirect(dest, 302);
-    }
-
-    if (path === "/v1/health") {
-      if (request.method !== "GET" && request.method !== "HEAD") {
-        return json({ ok: false, error: "method-not-allowed" }, 405);
-      }
-      // Honest liveness before SPA ASSETS catch-all. Product truth only (NO-LIE).
-      const body = {
-        ok: true,
-        author: SOFTWARE.author,
-        identity: SOFTWARE.identity,
-        product: SOFTWARE.slug,
-        version: SOFTWARE.version,
-        confidence_cap: 0.75,
-        lawyer: false,
-        legal_advice: false,
-        stores_cases: false,
-        stores_uploads: false,
-        fraggate_engine: false,
-        limitation:
-          "Whitestone is one ephemeral pro se advisor for Criminal, Civil, and Divorce. Educational procedural software. Session-only memory; End & erase wipes the session. Uploads only in-browser; this Worker never stores case files. Case Mode confidence hard-capped at 0.75. TrajectoryLock-lite: labeled geometric-line fit from session text/layers; GET peer /v1/health only — does not POST media, name a shooter, or claim LIVE physics. Author: Aziel Eliab only.",
-      };
-      if (request.method === "HEAD") {
-        return new Response(null, {
-          status: 200,
-          headers: {
-            "content-type": "application/json; charset=utf-8",
-            "cache-control": "no-store",
-            "access-control-allow-origin": "*",
-          },
-        });
-      }
-      return json(body);
-    }
-
-    if (path === "/v1/software") {
-      return json({
-        ok: true,
-        author: SOFTWARE.author,
-        identity: SOFTWARE.identity,
-        version: SOFTWARE.version,
-        framing: "Standalone human UI. No MCP LLM backdoor. No third-party LLM glue.",
-        count: 1,
-        software: [
-          {
-            ...SOFTWARE,
-            worker_home: url.origin + "/",
-            download_url: url.origin + "/download",
-            catalog: url.origin + "/catalog.json",
-            download_required: false,
-            sha256_tip: "see GitHub Release asset digest when published",
-          },
-        ],
-      });
-    }
-
-    if (path === "/api/research" || path === "/api/research/allowlist") {
-      return handleResearch(request);
-    }
-
-    if (path === "/sw.js") {
-      const res = await env.ASSETS.fetch(request);
-      const headers = new Headers(res.headers);
-      headers.set("content-type", "text/javascript; charset=utf-8");
-      headers.set("cache-control", "no-cache");
-      headers.set("service-worker-allowed", "/");
-      return new Response(res.body, { status: res.status, headers });
-    }
-
-    if (path === "/manifest.webmanifest") {
-      const res = await env.ASSETS.fetch(request);
-      const headers = new Headers(res.headers);
-      headers.set("content-type", "application/manifest+json; charset=utf-8");
-      return new Response(res.body, { status: res.status, headers });
-    }
-
-    if (path === "/robots.txt" || path === "/sitemap.xml" || path === "/catalog.json") {
-      return env.ASSETS.fetch(request);
-    }
-
-    return env.ASSETS.fetch(request);
+    return withSignal(await route(request, env));
   },
 };
+
+async function route(request: Request, env: Env): Promise<Response> {
+  const discovered = discoveryResponse(request);
+  if (discovered) return discovered;
+
+  const url = new URL(request.url);
+  const path = url.pathname.replace(/\/+$/, "") || "/";
+
+  if (path === "/count/view" || path === "/count/download") {
+    const key = path.endsWith("download") ? "download" : "view";
+    const count = await bump(env, key, url.searchParams.get("inc") !== "0");
+    if (url.searchParams.get("format") === "json") {
+      return json({ key, count, name: "Whitestone" });
+    }
+    return badge(key === "view" ? "views" : "downloads", String(count));
+  }
+
+  if (path === "/download") {
+    await bump(env, "download", true);
+    const dest = env.RELEASE_ASSET_URL || DEFAULT_RELEASE;
+    return Response.redirect(dest, 302);
+  }
+
+  if (path === "/v1/health") {
+    if (request.method !== "GET" && request.method !== "HEAD") {
+      return json({ ok: false, error: "method-not-allowed" }, 405);
+    }
+    // Honest liveness before SPA ASSETS catch-all. Product truth only (NO-LIE).
+    const body = {
+      ok: true,
+      author: SOFTWARE.author,
+      identity: SOFTWARE.identity,
+      product: SOFTWARE.slug,
+      version: SOFTWARE.version,
+      confidence_cap: 0.75,
+      lawyer: false,
+      legal_advice: false,
+      stores_cases: false,
+      stores_uploads: false,
+      fraggate_engine: false,
+      limitation:
+        "Whitestone is one ephemeral pro se advisor for Criminal, Civil, and Divorce. Educational procedural software. Session-only memory; End & erase wipes the session. Uploads only in-browser; this Worker never stores case files. Case Mode confidence hard-capped at 0.75. TrajectoryLock-lite: labeled geometric-line fit from session text/layers; GET peer /v1/health only — does not POST media, name a shooter, or claim LIVE physics. Author: Aziel Eliab only.",
+    };
+    if (request.method === "HEAD") {
+      return new Response(null, {
+        status: 200,
+        headers: {
+          "content-type": "application/json; charset=utf-8",
+          "cache-control": "no-store",
+          "access-control-allow-origin": "*",
+        },
+      });
+    }
+    return json(body);
+  }
+
+  if (path === "/v1/software") {
+    return json({
+      ok: true,
+      author: SOFTWARE.author,
+      identity: SOFTWARE.identity,
+      version: SOFTWARE.version,
+      framing: "Standalone human UI. No MCP LLM backdoor. No third-party LLM glue.",
+      count: 1,
+      software: [
+        {
+          ...SOFTWARE,
+          worker_home: url.origin + "/",
+          download_url: url.origin + "/download",
+          catalog: url.origin + "/catalog.json",
+          download_required: false,
+          sha256_tip: "see GitHub Release asset digest when published",
+        },
+      ],
+    });
+  }
+
+  if (path === "/api/research" || path === "/api/research/allowlist") {
+    return handleResearch(request);
+  }
+
+  if (path === "/sw.js") {
+    const res = await env.ASSETS.fetch(request);
+    const headers = new Headers(res.headers);
+    headers.set("content-type", "text/javascript; charset=utf-8");
+    headers.set("cache-control", "no-cache");
+    headers.set("service-worker-allowed", "/");
+    return new Response(res.body, { status: res.status, headers });
+  }
+
+  if (path === "/manifest.webmanifest") {
+    const res = await env.ASSETS.fetch(request);
+    const headers = new Headers(res.headers);
+    headers.set("content-type", "application/manifest+json; charset=utf-8");
+    return new Response(res.body, { status: res.status, headers });
+  }
+
+  return env.ASSETS.fetch(request);
+}
 
 async function bump(env: Env, key: string, increment: boolean): Promise<number> {
   const id = env.COUNTERS.idFromName("whitestone");
