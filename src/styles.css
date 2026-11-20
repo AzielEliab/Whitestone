@@ -422,6 +422,33 @@ img, video { max-width: 100%; height: auto; }
   color: var(--muted);
   text-align: center;
 }
+.ecosystem-strip {
+  margin: 10px 0 0;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--muted);
+  text-align: center;
+}
+.ecosystem-strip ul {
+  display: inline;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ecosystem-strip li { display: inline; }
+.ecosystem-strip li:not(:last-child)::after {
+  content: " · ";
+  color: var(--muted);
+}
+.ecosystem-strip a {
+  color: var(--muted);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.ecosystem-strip .eco-label {
+  font-weight: 650;
+  margin-right: 0.35rem;
+}
 .download-welcome { margin: 0; }
 .area-grid {
   display: grid;
