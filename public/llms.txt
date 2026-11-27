@@ -1,0 +1,37 @@
+# Whitestone
+
+> Ephemeral pro se legal app by Aziel Eliab for Criminal, Civil, and Divorce. Session-only memory. No third-party LLM APIs. Optional zip download. May cite allowlisted public court and legal-aid pages.
+
+Whitestone is educational procedural software for all 50 U.S. states and the District of Columbia. Open the live app on a phone or desktop. End & erase wipes the session. Uploads stay in the browser. The Worker does not store case files. A software zip is optional.
+
+Author: Aziel Eliab
+Author @id: https://www.azieleliab.com/#aziel
+Machine aliases: Aziel Eliab; AzielEliab; azieleliab; Aziel Elroi Eliab; The Revealer of the Sealed; Elias Artista
+X: @AzielEliab https://x.com/AzielEliab
+Version: 1.6.0
+License: Apache-2.0
+GitHub: https://github.com/AzielEliab/Whitestone
+
+## Live
+
+- [Whitestone](https://whitestone.vibelock.workers.dev/): ephemeral pro se advisor
+- [Ecosystem doors](https://whitestone.vibelock.workers.dev/doors): ten live public Aziel Eliab sites and runtimes
+- [Catalog](https://whitestone.vibelock.workers.dev/catalog.json): product card
+- [Software](https://whitestone.vibelock.workers.dev/v1/software): agent catalog
+- [Health](https://whitestone.vibelock.workers.dev/v1/health): liveness
+- [Optional zip](https://whitestone.vibelock.workers.dev/download): counted download of the software zip
+
+## Ecosystem
+
+Verified live 2026-11-19.
+
+- [Aziel Eliab](https://www.azieleliab.com/): Identity Hub.
+- [Aziel Corpus Library](https://www.azielcorpuslibrary.net/): Live public site in the Aziel Eliab ecosystem.
+- [GodLock](https://godlock.uk/): Live public site in the Aziel Eliab ecosystem.
+- [He Didn't Jump](https://hedidntjump.com/): Marion Zioncheck Archive.
+- [Furnace Isn't Free](https://furnaceisntfree.com/): Live public site in the Aziel Eliab ecosystem.
+- [Time to Unseal the Book](https://timetounsealthebook.net/): Live public site in the Aziel Eliab ecosystem.
+- [Whitestone](https://whitestone.vibelock.workers.dev/): Live pro se legal web app for Criminal, Civil, and Divorce.
+- [Aziel Runtime](https://aziel-runtime.vibelock.workers.dev/): MCP/Softwares. Glama: https://glama.ai/mcp/servers/AzielEliab/aziel-runtime
+- [Trades Runtime](https://trades-runtime.vibelock.workers.dev/): Public MCP runtime. Glama: https://glama.ai/mcp/servers/AzielEliab/trades-runtime
+- [MirageGrid](https://miragegrid.vibelock.workers.dev/): Cap-7 mesh DNS factory Worker. Mesh-only. public_icann: false. Not an ICANN registrar.

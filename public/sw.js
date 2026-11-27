@@ -2,7 +2,7 @@
  * Caches static UI only. Never stores chat, uploads, or session JSON.
  * End & erase posts "whitestone-wipe" and unregisters this worker.
  */
-const CACHE = "whitestone-shell-v1";
+const CACHE = "whitestone-shell-v2";
 const PRECACHE = ["./", "./index.html", "./manifest.webmanifest", "./favicon.svg"];
 
 self.addEventListener("install", (event) => {
@@ -28,6 +28,8 @@ self.addEventListener("fetch", (event) => {
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return;
   if (/^\/(count|download|v1|api)(\/|$)/.test(url.pathname)) return;
+  // Real discovery files. Never substitute the app shell for these paths.
+  if (isMachineSurface(url.pathname)) return;
 
   event.respondWith(
     fetch(req)
@@ -49,6 +51,15 @@ self.addEventListener("fetch", (event) => {
       }),
   );
 });
+
+function isMachineSurface(pathname) {
+  if (pathname === "/doors" || pathname === "/doors.html") return true;
+  if (pathname === "/robots.txt" || pathname === "/sitemap.xml") return true;
+  if (pathname === "/llms.txt" || pathname === "/ai.txt") return true;
+  if (pathname.startsWith("/.well-known/")) return true;
+  if (/^\/[a-f0-9]{32}\.txt$/i.test(pathname)) return true;
+  return false;
+}
 
 function shouldCache(url) {
   const path = url.pathname;

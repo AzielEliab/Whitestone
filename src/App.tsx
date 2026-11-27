@@ -1,6 +1,7 @@
 import { PRACTICE_LABELS, PRACTICE_SUBTITLES } from "./practice/areas";
 import { useSession } from "./session/store";
 import { EraseBar } from "./ui/components/EraseBar";
+import { EcosystemStrip } from "./ui/components/EcosystemStrip";
 import { SoftwareDownload } from "./ui/components/SoftwareDownload";
 import { Stepper } from "./ui/components/Stepper";
 import { ThemeToggle } from "./ui/components/ThemeToggle";
@@ -66,6 +67,9 @@ export function App() {
               <a className="more-link" href="./catalog.json">
                 Catalog
               </a>
+              <a className="more-link" href="/doors">
+                Ecosystem
+              </a>
             </div>
           </details>
           <ThemeToggle />
@@ -83,6 +87,7 @@ export function App() {
       </main>
       {state.disclaimerAccepted && <EraseBar />}
       <SoftwareDownload variant="footer" />
+      <EcosystemStrip />
     </div>
   );
 }

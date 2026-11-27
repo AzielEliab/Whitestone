@@ -1,9 +1,11 @@
 import react from "@vitejs/plugin-react";
+import type { Connect, Plugin } from "vite";
 import { defineConfig } from "vitest/config";
+import { CONTENT_SIGNAL, matchDiscovery } from "./worker/discovery";
 
 export default defineConfig({
   base: "./",
-  plugins: [react()],
+  plugins: [react(), discoveryPlugin()],
   build: {
     outDir: "dist",
     emptyOutDir: true,
@@ -43,6 +45,37 @@ export default defineConfig({
   },
   test: {
     environment: "jsdom",
-    include: ["src/**/*.test.ts"],
+    include: ["src/**/*.test.ts", "worker/**/*.test.ts"],
   },
 });
+
+function discoveryPlugin(): Plugin {
+  const attach = (middlewares: Connect.Server) => {
+    middlewares.use((req, res, next) => {
+      res.setHeader("Content-Signal", CONTENT_SIGNAL);
+      const hit = matchDiscovery(req.url || "/", req.method || "GET");
+      if (!hit) {
+        next();
+        return;
+      }
+      res.statusCode = hit.status;
+      res.setHeader("content-type", hit.contentType);
+      res.setHeader("cache-control", hit.status === 200 ? "public, max-age=3600" : "no-store");
+      res.setHeader("x-content-type-options", "nosniff");
+      if ((req.method || "GET") === "HEAD") {
+        res.end();
+        return;
+      }
+      res.end(hit.body);
+    });
+  };
+  return {
+    name: "whitestone-discovery",
+    configureServer(server) {
+      attach(server.middlewares);
+    },
+    configurePreviewServer(server) {
+      attach(server.middlewares);
+    },
+  };
+}
